@@ -312,12 +312,18 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     const DAILY_EVENTS = [
-        { description: "A local farm's truck broke down nearby, they've donated all their veggies!", effect: { type: 'donation_multiplier', item: 'veg', modifier: 2 } },
+        { description: "Second valley harvest have donated a lot of their veggies!", effect: { type: 'donation_multiplier', item: 'veg', modifier: 2 } },
         { description: "The kitchen's oven is running extra hot today! Cooking is faster.", effect: { type: 'cooking_speed', modifier: 0.8 } },
         { description: "It's a chilly day, everyone is craving something warm. Guests are more patient.", effect: { type: 'guest_patience', modifier: 1.25 } },
-        { description: "A generous patron sponsored today's Tacos! Bonus points for serving them.", effect: { type: 'score_bonus', item: 'recipe-0', modifier: 5 } },
+        { description: "A generous Taqueria sponsored today's Tacos! Bonus points for serving them.", effect: { type: 'score_bonus', item: 'recipe-0', modifier: 5 } },
         { description: "A calm, quiet day. Business as usual.", effect: { type: 'nothing' } },
-        { description: "The pantry is overflowing with carbs from a bakery donation!", effect: { type: 'donation_multiplier', item: 'carbs', modifier: 2 } }
+        { description: "The pantry is overflowing with carbs from Manresa bread donation!", effect: { type: 'donation_multiplier', item: 'carbs', modifier: 2 } },
+        { description: "Protein Power! Extra protein donations today.", effect: { type: 'donation_multiplier', item: 'protein', modifier: 2 } },
+        { description: "Miguel is in a good mood today! All meals give +3 bonus points.", effect: { type: 'score_bonus', item: 'all', modifier: 3 } },
+        { description: "Rainy day rush: Guests arrive faster!", effect: { type: 'guest_arrival_speed', modifier: 1.5 } },
+        { description: "Volunteer shortage: Cooking is slower today.", effect: { type: 'cooking_speed', modifier: 1.3 } },
+        { description: "4th of July holiday! More guests, but they're extra patient.", effect: { type: 'guest_patience', modifier: 1.5 } },
+        { description: "Power outage! No new meals can be cooked for a short time.", effect: { type: 'no_cooking', duration: 10000 } }
     ];
 
 
