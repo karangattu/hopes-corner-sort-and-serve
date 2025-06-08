@@ -312,7 +312,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     const DAILY_EVENTS = [
-        { description: "Second valley harvest have donated a lot of their veggies!", effect: { type: 'donation_multiplier', item: 'veg', modifier: 2 } },
+        { description: "Second Harvest of Silicon Valley have donated a lot of their veggies!", effect: { type: 'donation_multiplier', item: 'veg', modifier: 2 } },
         { description: "The kitchen's oven is running extra hot today! Cooking is faster.", effect: { type: 'cooking_speed', modifier: 0.8 } },
         { description: "It's a chilly day, everyone is craving something warm. Guests are more patient.", effect: { type: 'guest_patience', modifier: 1.25 } },
         { description: "A generous Taqueria sponsored today's Tacos! Bonus points for serving them.", effect: { type: 'score_bonus', item: 'recipe-0', modifier: 5 } },
@@ -443,11 +443,22 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderRecipes() {
         recipeAreaEl.innerHTML = '<h3 class="font-medium text-center mb-2">Available Recipes</h3>';
         gameState.knownRecipes.forEach(recipe => {
-            const ingredientsStr = Object.entries(recipe.ingredients).filter(([, val]) => val > 0).map(([key, val]) => `${val}${CONFIG.ITEM_TYPES[key].emoji}`).join(', ');
+            const ingredientsStr = Object.entries(recipe.ingredients)
+                .filter(([, val]) => val > 0)
+                .map(([key, val]) => `${val}${CONFIG.ITEM_TYPES[key].emoji}`)
+                .join(', ');
             const canCook = Object.keys(recipe.ingredients).every(ing => gameState.inventory[ing] >= recipe.ingredients[ing]) && gameState.cooking.length < CONFIG.MAX_COOKING_SLOTS;
+            const cookTimeSec = Math.round((recipe.cookTime * (gameState.eventModifiers.cooking_speed || 1)) / 1000);
             const recipeEl = document.createElement('div');
             recipeEl.className = 'p-3 bg-gray-50 rounded-lg';
-            recipeEl.innerHTML = `<div class="flex justify-between items-center"><h3 class="font-medium text-sm md:text-base">${recipe.emoji} ${recipe.name} (${ingredientsStr})</h3><button data-recipe-id="${recipe.id}" class="cook-btn bg-green-500 text-white font-bold py-1 px-3 rounded hover:bg-green-600 transition duration-300 ${!canCook ? 'opacity-50' : ''}" ${!canCook ? 'disabled' : ''}>Cook</button></div>`;
+            recipeEl.innerHTML = `<div class="flex flex-col md:flex-row md:justify-between md:items-center gap-1 md:gap-0">
+                <div class="text-left">
+                    <h3 class="font-medium text-sm md:text-base">${recipe.emoji} ${recipe.name}</h3>
+                    <div class="text-xs text-gray-600">Ingredients: ${ingredientsStr}</div>
+                    <div class="text-xs text-gray-600">Cook Time: ${cookTimeSec}s &nbsp;|&nbsp; Servings: ${recipe.servings}</div>
+                </div>
+                <button data-recipe-id="${recipe.id}" class="cook-btn bg-green-500 text-white font-bold py-1 px-3 rounded hover:bg-green-600 transition duration-300 ${!canCook ? 'opacity-50' : ''}" ${!canCook ? 'disabled' : ''}>Cook</button>
+            </div>`;
             recipeAreaEl.appendChild(recipeEl);
         });
     }
