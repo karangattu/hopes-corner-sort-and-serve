@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hope's Corner - The Game</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-XXXXXXXXXX'); // Replace with your Measurement ID
+    </script>
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            background-color: #e2e8f0;
+        }
+        .game-container {
+            display: grid;
+            grid-template-columns: 1fr; /* Mobile first */
+            grid-template-rows: auto auto auto auto;
+            gap: 1rem;
+            width: 100vw;
+        }
+        @media (min-width: 1024px) {
+            .game-container {
+                grid-template-columns: 1fr 2fr 1.5fr;
+                grid-template-rows: auto 1fr;
+                height: 100vh;
+            }
+        }
+        .header {
+            grid-column: 1 / -1;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background-color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .station {
+            background-color: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s ease-in-out;
+        }
+        .donation-item, .guest, .meal {
+            cursor: pointer;
+            padding: 0.75rem 0.5rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            user-select: none;
+            transition: all 0.2s ease-in-out;
+            border: 2px solid #e5e7eb;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+        .meal.ring-4, .donation-item.selected {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5), 0 4px 6px -1px rgba(0,0,0,0.1);
+            transform: scale(1.05);
+        }
+        .storage-bin {
+            border: 2px dashed #cbd5e1;
+            transition: all 0.2s ease;
+        }
+        .storage-bin.over {
+            background-color: #e2e8f0;
+            border-color: #94a3b8;
+            transform: scale(1.05);
+        }
+        .progress-bar {
+            background-color: #e5e7eb;
+            border-radius: 9999px;
+            overflow: hidden;
+            position: relative;
+        }
+        .progress-bar-fill {
+            background: linear-gradient(45deg, rgba(255,255,255,.15) 25%, transparent 25%, transparent 50%, rgba(255,255,255,.15) 50%, rgba(255,255,255,.15) 75%, transparent 75%, transparent);
+            background-size: 1rem 1rem;
+            height: 100%;
+            transition: width 0.3s ease;
+            animation: progress-bar-stripes 1s linear infinite;
+        }
+        #modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            display: flex; /* Always flex for centering */
+            justify-content: center;
+            align-items: center;
+            z-index: 50;
+            transition: opacity 0.3s ease;
+        }
+        .modal {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            text-align: center;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+            margin: 1rem;
+            transform: scale(0.95);
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        #modal-overlay.hidden {
+            opacity: 0;
+            pointer-events: none; /* Prevent clicks when hidden */
+        }
+        #modal-overlay.hidden .modal {
+             transform: scale(0.95);
+        }
+        .btn-primary {
+             background-image: linear-gradient(to right, #4f46e5, #7c3aed);
+             transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.4), 0 4px 6px -2px rgba(79, 70, 229, 0.2);
+            transform: translateY(-2px);
+        }
+        .btn-primary:active {
+            transform: translateY(0px) scale(0.98);
+        }
+        @keyframes pop-in { 0% { opacity: 0; transform: scale(0.5); } 100% { opacity: 1; transform: scale(1); } }
+        .meal { animation: pop-in 0.3s ease forwards; }
+        
+        @keyframes drop-in {
+            0% {
+                opacity: 0;
+                transform: translateY(-50px) scale(0.8);
+            }
+            80% {
+                transform: translateY(5px) scale(1.05);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        .donation-item {
+             animation: drop-in 0.4s ease-out forwards;
+        }
+
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); } 20%, 40%, 60%, 80% { transform: translateX(5px); } }
+        .shake { animation: shake 0.5s ease-in-out; }
+        @keyframes progress-bar-stripes { from { background-position: 1rem 0; } to { background-position: 0 0; } }
+    </style>
+</head>
+<body class="bg-gray-200">
+
+    <div id="game-container" class="game-container p-2 md:p-4">
+        <header class="header">
+            <div class="flex items-center gap-3 w-full lg:w-auto mb-2 lg:mb-0">
+                <img src="https://images.squarespace-cdn.com/content/5622cd82e4b0501d40689558/2aedb400-89b8-4f93-856f-cd2c7d5385e4/Hopes_Corner_Logo_Green.png?format=1500w&content-type=image%2Fpng" alt="Hope's Corner Logo" class="h-10 md:h-12" onerror="this.style.display='none'">
+                <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Hope's Corner</h1>
+            </div>
+            <div class="flex-1 text-center px-4 w-full lg:w-auto order-3 lg:order-2 my-2 lg:my-0">
+                <h2 class="text-md md:text-lg font-semibold text-indigo-600">Daily Update</h2>
+                <p id="daily-event-text" class="text-sm md:text-base text-gray-700 italic h-10 flex items-center justify-center">The day is just beginning...</p>
+            </div>
+            <div class="flex items-center justify-around w-full lg:w-auto space-x-2 md:space-x-4 order-2 lg:order-3">
+                 <div class="text-center">
+                    <span class="text-xs md:text-sm text-gray-500">High Score</span>
+                    <p id="high-score-display" class="text-lg md:text-2xl font-semibold text-amber-500">0</p>
+                </div>
+                <div class="text-center">
+                    <span class="text-xs md:text-sm text-gray-500">Score</span>
+                    <p id="score" class="text-lg md:text-2xl font-semibold text-blue-600">0</p>
+                </div>
+                <div class="text-center">
+                    <span class="text-xs md:text-sm text-gray-500">Day</span>
+                     <p id="day" class="text-lg md:text-2xl font-semibold text-gray-700">1</p>
+                </div>
+                <div class="w-24 md:w-48 text-center">
+                    <span class="text-xs md:text-sm text-gray-500">Overwhelm</span>
+                    <div class="progress-bar h-3 md:h-4 mt-1">
+                        <div id="overwhelm-bar" class="progress-bar-fill bg-red-500" style="width: 0%;"></div>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <span class="text-xs md:text-sm text-gray-500">Angry Guests</span>
+                    <p id="angry-guests-display" class="text-lg md:text-2xl font-semibold text-red-600">0 / 5</p>
+                </div>
+            </div>
+        </header>
+
+        <div id="donations-station" class="station">
+            <h2 class="text-xl font-semibold text-gray-700 mb-2">Donations & Sorting</h2>
+            <div id="donation-arrival-area" class="h-24 border-b-2 border-gray-200 mb-2 flex items-center justify-center">
+                 <button id="accept-donation-btn" class="text-white font-bold py-3 px-5 rounded-lg transition duration-300 opacity-50 btn-primary" disabled>Accept Donation</button>
+            </div>
+            <div class="p-2 bg-indigo-100 border border-indigo-200 rounded-md mb-2">
+                 <h3 class="font-semibold text-indigo-800 text-center">How to Sort:</h3>
+                 <p id="sort-instruction-text" class="text-center text-indigo-700">1. Click a donation item to select it.</p>
+             </div>
+            <div id="sorting-area" class="flex-grow p-2 bg-gray-50 rounded-md min-h-[150px] grid grid-cols-3 gap-2"></div>
+        </div>
+        <div id="kitchen-station" class="station lg:col-span-1">
+            <h2 class="text-xl font-semibold text-gray-700 mb-2">Storage & Kitchen</h2>
+            <div class="grid grid-cols-3 gap-2 md:gap-4 mb-4">
+                <div id="veg-bin" class="storage-bin p-2 rounded-lg text-center" data-type="veg"><h3 class="font-medium">🥦 Veggies</h3><p id="veg-count" class="text-lg md:text-2xl font-bold">0</p></div>
+                <div id="protein-bin" class="storage-bin p-2 rounded-lg text-center" data-type="protein"><h3 class="font-medium">🍗 Protein</h3><p id="protein-count" class="text-lg md:text-2xl font-bold">0</p></div>
+                <div id="carbs-bin" class="storage-bin p-2 rounded-lg text-center" data-type="carbs"><h3 class="font-medium">🍞 Carbs</h3><p id="carbs-count" class="text-lg md:text-2xl font-bold">0</p></div>
+            </div>
+            <div class="mb-4 border-t-2 pt-4">
+                <h3 class="font-medium text-center">Currently Cooking</h3>
+                <div id="cooking-slots" class="mt-2 space-y-2 min-h-[72px]"></div>
+            </div>
+            <div id="recipe-area" class="flex-grow space-y-4 border-t-2 pt-4">
+                 <h3 class="font-medium text-center mb-2">Available Recipes</h3>
+            </div>
+        </div>
+        <div id="serving-station" class="station">
+             <h2 class="text-xl font-semibold text-gray-700 mb-2">Serving Area</h2>
+             <div class="p-2 bg-indigo-100 border border-indigo-200 rounded-md mb-2">
+                 <h3 class="font-semibold text-indigo-800 text-center">How to Serve:</h3>
+                 <p id="instruction-text" class="text-center text-indigo-700">1. Click a ready meal to select it.</p>
+             </div>
+             <div class="flex justify-between items-center mb-2"><h3 class="font-medium">Ready Meals</h3><h3 class="font-medium">Waiting Guests</h3></div>
+            <div class="flex h-full min-h-[200px]">
+                <div id="ready-meals-area" class="w-1/3 pr-2 border-r-2 border-gray-200 space-y-2 overflow-y-auto"></div>
+                <div id="guest-area" class="w-2/3 pl-2 space-y-2 overflow-y-auto"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-overlay" class="hidden">
+        <div id="start-modal" class="modal">
+            <img src="https://images.squarespace-cdn.com/content/5622cd82e4b0501d40689558/2aedb400-89b8-4f93-856f-cd2c7d5385e4/Hopes_Corner_Logo_Green.png?format=1500w&content-type=image%2Fpng" alt="Hope's Corner Logo" class="h-16 mx-auto mb-4" onerror="this.style.display='none'">
+            <h1 class="text-3xl md:text-4xl font-bold mb-2 text-gray-800">Welcome to Hope's Corner!</h1>
+            <div class="border-y-2 border-gray-200 my-4 py-4">
+                <p class="text-gray-700 max-w-lg mx-auto">This game is inspired by the real Hope's Corner in Mountain View, CA, which provides free nutritious meals and warm showers to anyone in need.</p>
+                <p class="mt-2">
+                    <a href="https://www.hopes-corner.org/" target="_blank" class="text-blue-600 hover:underline font-semibold">Visit their website to learn more or get involved!</a>
+                </p>
+            </div>
+            <p class="text-gray-600 mb-2 max-w-md mx-auto"><strong>Your mission:</strong> Accept donations, sort food, cook meals, and serve guests. Don't get overwhelmed!</p>
+            <p class="font-semibold text-gray-700 mt-2"><strong>Key Tip:</strong> Guests will arrive once you have 5 meal servings ready. If 5 guests leave angry, the game is over!</p>
+            <p class="text-lg my-4">Your High Score: <span id="high-score-modal" class="font-bold text-amber-500"></span></p>
+            <button id="start-game-btn" class="text-white font-bold py-3 px-6 rounded-lg text-lg transition duration-300 btn-primary">Start Playing</button>
+        </div>
+        <div id="game-over-modal" class="modal hidden">
+            <h1 id="game-over-title" class="text-3xl md:text-4xl font-bold mb-2 text-red-600">Game Over!</h1>
+            <p id="game-over-reason" class="text-lg text-gray-700 mb-4"></p>
+            <p id="new-high-score-msg" class="text-xl font-semibold text-green-500 hidden mb-4">New High Score!</p>
+            <p class="text-lg mb-6">Final Score: <span id="final-score" class="font-bold text-blue-600"></span></p>
+            <button id="restart-game-btn" class="text-white font-bold py-3 px-6 rounded-lg text-lg transition duration-300 btn-primary">Play Again</button>
+        </div>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const scoreEl = document.getElementById('score');
+    const dayEl = document.getElementById('day');
+    const overwhelmBarEl = document.getElementById('overwhelm-bar');
+    const angryGuestsDisplay = document.getElementById('angry-guests-display');
+    const sortingAreaEl = document.getElementById('sorting-area');
+    const storageCounts = {
+        veg: document.getElementById('veg-count'), protein: document.getElementById('protein-count'), carbs: document.getElementById('carbs-count'),
+    };
+    const recipeAreaEl = document.getElementById('recipe-area');
+    const cookingSlotsEl = document.getElementById('cooking-slots');
+    const readyMealsAreaEl = document.getElementById('ready-meals-area');
+    const guestAreaEl = document.getElementById('guest-area');
+    const acceptDonationBtn = document.getElementById('accept-donation-btn');
+    const instructionTextEl = document.getElementById('instruction-text');
+    const sortInstructionTextEl = document.getElementById('sort-instruction-text');
+    const gameOverReasonEl = document.getElementById('game-over-reason');
+    const modalOverlay = document.getElementById('modal-overlay');
+    const startModal = document.getElementById('start-modal');
+    const gameOverModal = document.getElementById('game-over-modal');
+    const startGameBtn = document.getElementById('start-game-btn');
+    const restartGameBtn = document.getElementById('restart-game-btn');
+    const finalScoreEl = document.getElementById('final-score');
+    const newHighScoreMsg = document.getElementById('new-high-score-msg');
+    const highScoreDisplay = document.getElementById('high-score-display');
+    const highScoreModalDisplay = document.getElementById('high-score-modal');
+    const dailyEventTextEl = document.getElementById('daily-event-text');
+
+    let gameState = {};
+    let highScore = 0;
+    let synth;
+
+    const MASTER_RECIPE_LIST = [
+        { id: 'recipe-0', name: 'Tacos', emoji: '�', ingredients: { protein: 2, veg: 1, carbs: 1 }, cookTime: 9000, servings: 3 },
+        { id: 'recipe-1', name: 'Fried Chicken', emoji: '🍗', ingredients: { protein: 2, carbs: 2 }, cookTime: 12000, servings: 4 },
+        { id: 'recipe-2', name: 'Shepherd\'s Pie', emoji: '🥧', ingredients: { protein: 2, veg: 2, carbs: 1 }, cookTime: 14000, servings: 5 },
+        { id: 'recipe-3', name: 'Chicken Noodle Soup', emoji: '🍜', ingredients: { protein: 1, veg: 1, carbs: 2 }, cookTime: 10000, servings: 4 },
+        { id: 'recipe-4', name: 'Chili', emoji: '🌶️', ingredients: { protein: 2, veg: 2, carbs: 0 }, cookTime: 15000, servings: 5 },
+        { id: 'recipe-5', name: 'Mac & Cheese', emoji: '🧀', ingredients: { protein: 0, veg: 0, carbs: 3 }, cookTime: 8000, servings: 4 },
+        { id: 'recipe-6', name: 'Burritos', emoji: '🌯', ingredients: { protein: 1, veg: 1, carbs: 2 }, cookTime: 11000, servings: 3 },
+        { id: 'recipe-7', name: 'Meatloaf', emoji: '🍞', ingredients: { protein: 3, veg: 1, carbs: 1 }, cookTime: 16000, servings: 6 },
+        { id: 'recipe-8', name: 'Quesadillas', emoji: '🧀', ingredients: { protein: 1, carbs: 2 }, cookTime: 7000, servings: 2 },
+        { id: 'recipe-9', name: 'Gumbo', emoji: '🍲', ingredients: { protein: 2, veg: 2, carbs: 1 }, cookTime: 18000, servings: 6 },
+        { id: 'recipe-10', name: 'BBQ Pulled Pork', emoji: '🐷', ingredients: { protein: 3, carbs: 1 }, cookTime: 20000, servings: 5 },
+        { id: 'recipe-11', name: 'Cornbread', emoji: '🌽', ingredients: { carbs: 2 }, cookTime: 6000, servings: 4 }
+    ];
+
+    const DAILY_EVENTS = [
+        { description: "A local farm's truck broke down nearby, they've donated all their veggies!", effect: { type: 'donation_multiplier', item: 'veg', modifier: 2 } },
+        { description: "The kitchen's oven is running extra hot today! Cooking is faster.", effect: { type: 'cooking_speed', modifier: 0.8 } },
+        { description: "It's a chilly day, everyone is craving something warm. Guests are more patient.", effect: { type: 'guest_patience', modifier: 1.25 } },
+        { description: "A generous patron sponsored today's Tacos! Bonus points for serving them.", effect: { type: 'score_bonus', item: 'recipe-0', modifier: 5 } },
+        { description: "A calm, quiet day. Business as usual.", effect: { type: 'nothing' } },
+        { description: "The pantry is overflowing with carbs from a bakery donation!", effect: { type: 'donation_multiplier', item: 'carbs', modifier: 2 } }
+    ];
+
+
+    function initializeGameState() {
+        gameState = {
+            score: 0, day: 1, overwhelm: 0, hungryGuestsLeft: 0,
+            inventory: { veg: 0, protein: 0, carbs: 0 },
+            donationsInSorting: 0, guests: [], cooking: [], readyMeals: [], gameRunning: false,
+            nextGuestId: 0, nextDonationId: 0, nextMealId: 0, selectedMealId: null, selectedDonationId: null,
+            dayDuration: 60000, dayTimer: null,
+            knownRecipes: MASTER_RECIPE_LIST.slice(0, 4),
+            eventModifiers: {},
+            hasGuestsStarted: false,
+        };
+    }
+
+    const CONFIG = {
+        MAX_OVERWHELM: 100, MAX_ANGRY_GUESTS: 5, OVERWHELM_PER_GUEST_TICK: 0.1, SCORE_PER_GUEST: 10,
+        DONATION_SIZE: 3, MAX_COOKING_SLOTS: 3, 
+        ITEM_TYPES: {
+            veg: { emoji: '🥦', color: 'bg-green-200' }, protein: { emoji: '🍗', color: 'bg-red-200' }, carbs: { emoji: '🍞', color: 'bg-yellow-200' }
+        }
+    };
+
+    let gameLoopInterval = null;
+
+    function loadHighScore() {
+        highScore = parseInt(localStorage.getItem('hopesCornerHighScore') || '0', 10);
+        highScoreDisplay.textContent = highScore;
+        highScoreModalDisplay.textContent = highScore;
+    }
+
+    function saveHighScore() {
+        if (gameState.score > highScore) {
+            highScore = gameState.score;
+            localStorage.setItem('hopesCornerHighScore', highScore);
+            newHighScoreMsg.classList.remove('hidden');
+        } else {
+            newHighScoreMsg.classList.add('hidden');
+        }
+    }
+
+    function gameLoop() {
+        if (!gameState.gameRunning) return;
+        updateGuests();
+        if (sortingAreaEl.children.length > 8) gameState.overwhelm += 0.2;
+        gameState.overwhelm = Math.max(0, gameState.overwhelm - 0.05);
+        updateUI();
+        if (gameState.overwhelm >= CONFIG.MAX_OVERWHELM) {
+            endGame("You got overwhelmed!");
+        }
+        if (gameState.hungryGuestsLeft >= CONFIG.MAX_ANGRY_GUESTS) {
+            endGame("Too many guests left hungry!");
+        }
+    }
+    
+    function updateGuests() {
+        let satisfactionPenalty = 0;
+        if (!gameState.guests) return;
+        gameState.guests.forEach(g => { satisfactionPenalty += (1 - g.satisfaction) * CONFIG.OVERWHELM_PER_GUEST_TICK; });
+        gameState.overwhelm = Math.min(CONFIG.MAX_OVERWHELM, gameState.overwhelm + satisfactionPenalty);
+    }
+
+    function startDayCycle() {
+        getDailyEvent(gameState.day);
+        gameState.dayTimer = setInterval(() => {
+            if (!gameState.gameRunning) { clearInterval(gameState.dayTimer); return; }
+            gameState.day++;
+            gtag('event', 'day_complete', { 'day_number': gameState.day });
+            getDailyEvent(gameState.day);
+            if (gameState.day > 1 && gameState.day % 2 === 0) learnNewRecipe();
+            if (gameState.hasGuestsStarted) spawnGuest();
+            if (gameState.day > 1) spawnDonation();
+            updateUI();
+        }, gameState.dayDuration / (1 + gameState.day * 0.15));
+    }
+
+    function learnNewRecipe() {
+        const unknownRecipes = MASTER_RECIPE_LIST.filter(r => !gameState.knownRecipes.some(kr => kr.id === r.id));
+        if (unknownRecipes.length > 0) {
+            const newRecipe = unknownRecipes[Math.floor(Math.random() * unknownRecipes.length)];
+            gameState.knownRecipes.push(newRecipe);
+            dailyEventTextEl.textContent = `New recipe learned: ${newRecipe.name}!`;
+        } else {
+            dailyEventTextEl.textContent = "You've learned all the recipes!";
+        }
+    }
+
+    function getDailyEvent(day) {
+        if (day === 1) { dailyEventTextEl.textContent = 'Get your kitchen ready!'; return; }
+        const eventData = DAILY_EVENTS[Math.floor(Math.random() * DAILY_EVENTS.length)];
+        applyEvent(eventData);
+    }
+
+    function applyEvent(eventData) {
+        gameState.eventModifiers = {};
+        const { description, effect } = eventData;
+        dailyEventTextEl.textContent = description;
+        switch (effect.type) {
+            case 'donation_multiplier': gameState.eventModifiers.DONATION_MULTIPLIER = { ...{ veg: 1, protein: 1, carbs: 1 }, [effect.item]: effect.modifier || 2 }; break;
+            case 'guest_patience': gameState.eventModifiers.guest_patience = effect.modifier || 1.25; break;
+            case 'cooking_speed': gameState.eventModifiers.cooking_speed = effect.modifier || 0.75; break;
+            case 'score_bonus': gameState.eventModifiers.score_bonus_item = effect.item; gameState.eventModifiers.score_bonus = effect.modifier || 5; break;
+        }
+    }
+
+    function updateUI() {
+        scoreEl.textContent = gameState.score;
+        dayEl.textContent = gameState.day;
+        highScoreDisplay.textContent = highScore;
+        overwhelmBarEl.style.width = `${gameState.overwhelm}%`;
+        angryGuestsDisplay.textContent = `${gameState.hungryGuestsLeft} / ${CONFIG.MAX_ANGRY_GUESTS}`;
+        Object.keys(storageCounts).forEach(type => { storageCounts[type].textContent = gameState.inventory[type]; });
+        renderRecipes();
+    }
+
+    function renderRecipes() {
+        recipeAreaEl.innerHTML = '<h3 class="font-medium text-center mb-2">Available Recipes</h3>';
+        gameState.knownRecipes.forEach(recipe => {
+            const ingredientsStr = Object.entries(recipe.ingredients).filter(([, val]) => val > 0).map(([key, val]) => `${val}${CONFIG.ITEM_TYPES[key].emoji}`).join(', ');
+            const canCook = Object.keys(recipe.ingredients).every(ing => gameState.inventory[ing] >= recipe.ingredients[ing]) && gameState.cooking.length < CONFIG.MAX_COOKING_SLOTS;
+            const recipeEl = document.createElement('div');
+            recipeEl.className = 'p-3 bg-gray-50 rounded-lg';
+            recipeEl.innerHTML = `<div class="flex justify-between items-center"><h3 class="font-medium text-sm md:text-base">${recipe.emoji} ${recipe.name} (${ingredientsStr})</h3><button data-recipe-id="${recipe.id}" class="cook-btn bg-green-500 text-white font-bold py-1 px-3 rounded hover:bg-green-600 transition duration-300 ${!canCook ? 'opacity-50' : ''}" ${!canCook ? 'disabled' : ''}>Cook</button></div>`;
+            recipeAreaEl.appendChild(recipeEl);
+        });
+    }
+
+    function showStartModal() {
+        modalOverlay.classList.remove('hidden');
+        startModal.classList.remove('hidden');
+        gameOverModal.classList.add('hidden');
+        loadHighScore();
+    }
+
+    function startGame() {
+        initializeGameState();
+        gtag('event', 'game_start');
+        gameState.gameRunning = true;
+        modalOverlay.classList.add('hidden');
+        if (typeof Tone !== 'undefined') {
+             synth = new Tone.Synth().toDestination();
+        }
+        gameLoopInterval = setInterval(gameLoop, 100);
+        startDayCycle();
+        spawnDonation();
+        updateUI();
+    }
+
+    function endGame(reason) {
+        if (!gameState.gameRunning) return;
+        gameState.gameRunning = false;
+        clearInterval(gameLoopInterval);
+        if (gameState.dayTimer) clearInterval(gameState.dayTimer);
+        gameState.guests.forEach(g => clearInterval(g.timer));
+        gameState.cooking.forEach(c => clearInterval(c.timerId));
+        gtag('event', 'game_over', {
+            'reason': reason,
+            'final_score': gameState.score,
+            'day_reached': gameState.day
+        });
+        saveHighScore();
+        finalScoreEl.textContent = gameState.score;
+        gameOverReasonEl.textContent = reason;
+        loadHighScore();
+        modalOverlay.classList.remove('hidden');
+        startModal.classList.add('hidden');
+        gameOverModal.classList.remove('hidden');
+        sortingAreaEl.innerHTML = ''; readyMealsAreaEl.innerHTML = ''; guestAreaEl.innerHTML = ''; recipeAreaEl.innerHTML = ''; cookingSlotsEl.innerHTML = '';
+    }
+
+    function createDonationItem(forcedType = null) {
+        if (sortingAreaEl.children.length >= 9) return;
+        gameState.donationsInSorting++;
+        const typeKeys = Object.keys(CONFIG.ITEM_TYPES);
+        const type = forcedType || typeKeys[Math.floor(Math.random() * typeKeys.length)];
+        const itemInfo = CONFIG.ITEM_TYPES[type];
+        const itemEl = document.createElement('div');
+        itemEl.id = `donation-${gameState.nextDonationId++}`;
+        itemEl.className = `donation-item ${itemInfo.color} font-bold`;
+        itemEl.textContent = itemInfo.emoji;
+        itemEl.dataset.type = type;
+        sortingAreaEl.appendChild(itemEl);
+    }
+
+    function startCooking(recipe) {
+        if (gameState.cooking.length >= CONFIG.MAX_COOKING_SLOTS) return;
+        
+        gtag('event', 'cook_recipe', {'recipe_name': recipe.name});
+        const cookButton = recipeAreaEl.querySelector(`button[data-recipe-id="${recipe.id}"]`);
+        if(cookButton) {
+            cookButton.disabled = true;
+            cookButton.classList.add('opacity-50');
+        }
+
+        Object.entries(recipe.ingredients).forEach(([ing, amount]) => { gameState.inventory[ing] -= amount; });
+        
+        const mealId = `cooking-${gameState.nextMealId++}`;
+        const cookTime = recipe.cookTime * (gameState.eventModifiers.cooking_speed || 1);
+        
+        const progressEl = document.createElement('div');
+        progressEl.id = mealId; progressEl.className = 'progress-bar h-6 mt-2';
+        progressEl.innerHTML = `<div class="progress-bar-fill bg-green-500 h-full text-white text-sm flex items-center justify-center" style="width: 0%;">${recipe.name}</div>`;
+        cookingSlotsEl.appendChild(progressEl);
+
+        const timerId = setInterval(() => {
+            const cookingMeal = gameState.cooking.find(m => m.id === mealId);
+            if (!cookingMeal || !gameState.gameRunning) { clearInterval(timerId); if (progressEl.parentElement) progressEl.remove(); return; }
+            cookingMeal.timeLeft -= 100;
+            const progress = 100 - (cookingMeal.timeLeft / cookTime) * 100;
+            const pBarFill = progressEl.querySelector('.progress-bar-fill');
+            if (pBarFill) pBarFill.style.width = `${progress}%`;
+            
+            if (cookingMeal.timeLeft <= 0) {
+                clearInterval(timerId); 
+                if (progressEl.parentElement) progressEl.remove();
+                gameState.cooking = gameState.cooking.filter(m => m.id !== mealId);
+                createReadyMeal(recipe);
+                updateUI();
+            }
+        }, 100);
+        
+        gameState.cooking.push({ id: mealId, recipe: recipe, timeLeft: cookTime, timerId: timerId });
+        updateUI();
+    }
+
+    function createReadyMeal(recipe) {
+        const mealId = `meal-${gameState.nextMealId++}`;
+        const newMeal = { id: mealId, recipe: recipe, servingsLeft: recipe.servings };
+        gameState.readyMeals.push(newMeal);
+        const mealEl = document.createElement('div');
+        mealEl.id = mealId; mealEl.className = 'meal bg-blue-200 hover:bg-blue-300';
+        mealEl.innerHTML = `<span>${recipe.emoji} ${recipe.name}</span><span class="font-bold ml-2">x${newMeal.servingsLeft}</span>`;
+        readyMealsAreaEl.appendChild(mealEl);
+        if (!gameState.hasGuestsStarted) {
+            const totalServings = gameState.readyMeals.reduce((total, meal) => total + meal.servingsLeft, 0);
+            if (totalServings >= 5) {
+                gameState.hasGuestsStarted = true;
+                dailyEventTextEl.textContent = 'Guests are starting to arrive!';
+                spawnGuest();
+            }
+        }
+    }
+
+    recipeAreaEl.addEventListener('click', e => {
+        if (e.target.classList.contains('cook-btn') && !e.target.disabled) {
+            const recipeId = e.target.dataset.recipeId;
+            const recipe = gameState.knownRecipes.find(r => r.id === recipeId);
+            if (recipe) startCooking(recipe);
+        }
+    });
+
+    readyMealsAreaEl.addEventListener('click', e => {
+        const mealEl = e.target.closest('.meal'); if (!mealEl) return;
+        const mealId = mealEl.id;
+        if (gameState.selectedMealId === mealId) {
+            gameState.selectedMealId = null; mealEl.classList.remove('ring-4');
+            instructionTextEl.textContent = '1. Click a ready meal to select it.';
+        } else {
+            const currentlySelected = document.querySelector('.meal.ring-4');
+            if (currentlySelected) currentlySelected.classList.remove('ring-4');
+            gameState.selectedMealId = mealId; mealEl.classList.add('ring-4');
+            instructionTextEl.textContent = '2. Now click a guest to serve!';
+        }
+    });
+
+    guestAreaEl.addEventListener('click', e => {
+        const guestEl = e.target.closest('.guest');
+        if (guestEl && gameState.selectedMealId) serveGuest(guestEl.id);
+    });
+
+    function serveGuest(guestId) {
+        const mealIndex = gameState.readyMeals.findIndex(m => m.id === gameState.selectedMealId);
+        const guestIndex = gameState.guests.findIndex(g => g.id === guestId);
+        if (mealIndex === -1 || guestIndex === -1) return;
+        const meal = gameState.readyMeals[mealIndex];
+        const guest = gameState.guests[guestIndex];
+        let bonus = (gameState.eventModifiers.score_bonus_item === meal.recipe.id) ? gameState.eventModifiers.score_bonus : 0;
+        gameState.score += CONFIG.SCORE_PER_GUEST + Math.floor(guest.satisfaction * 5) + bonus;
+        clearInterval(guest.timer);
+        gameState.guests.splice(guestIndex, 1);
+        const guestEl = document.getElementById(guestId); if (guestEl) guestEl.remove();
+        meal.servingsLeft--;
+        const mealEl = document.getElementById(meal.id);
+        if (meal.servingsLeft <= 0) {
+            gameState.readyMeals.splice(mealIndex, 1); if (mealEl) mealEl.remove();
+            gameState.selectedMealId = null;
+            instructionTextEl.textContent = '1. Click a ready meal to select it.';
+        } else {
+            if (mealEl) mealEl.innerHTML = `<span>${meal.recipe.emoji} ${meal.recipe.name}</span><span class="font-bold ml-2">x${meal.servingsLeft}</span>`;
+        }
+        gameState.overwhelm = Math.max(0, gameState.overwhelm - 5);
+        updateUI();
+    }
+
+    function spawnGuest() {
+        if (!gameState.gameRunning) return;
+        const guestId = gameState.nextGuestId++;
+        const id = `guest-${guestId}`;
+        const waitTime = 30000 * (gameState.eventModifiers.guest_patience || 1);
+        const guest = { id: id, satisfaction: 1, timer: null, waitTime: waitTime };
+        const guestEl = document.createElement('div');
+        guestEl.id = id; guestEl.className = 'guest bg-purple-200 p-2 rounded-lg';
+        guestEl.innerHTML = `<div class="flex justify-between items-center text-sm"><span>Guest #${guestId + 1}</span><span class="satisfaction-emoji">😊</span></div><div class="progress-bar h-2 mt-1"><div class="satisfaction-bar progress-bar-fill bg-green-500" style="width: 100%;"></div></div>`;
+        guestAreaEl.appendChild(guestEl);
+        guest.timer = setInterval(() => {
+            const guestToUpdate = gameState.guests.find(g => g.id === id);
+            if (!guestToUpdate || !gameState.gameRunning) { clearInterval(guest.timer); return; }
+            guestToUpdate.satisfaction -= 100 / guest.waitTime;
+            const thisGuestEl = document.getElementById(id);
+            if (thisGuestEl) {
+                const satBar = thisGuestEl.querySelector('.satisfaction-bar');
+                const satEmoji = thisGuestEl.querySelector('.satisfaction-emoji');
+                satBar.style.width = `${guestToUpdate.satisfaction * 100}%`;
+                if (guestToUpdate.satisfaction > 0.7) { satBar.className = 'satisfaction-bar progress-bar-fill bg-green-500'; satEmoji.textContent = '😊'; }
+                else if (guestToUpdate.satisfaction > 0.3) { satBar.className = 'satisfaction-bar progress-bar-fill bg-yellow-500'; satEmoji.textContent = '😐'; }
+                else { satBar.className = 'satisfaction-bar progress-bar-fill bg-red-500'; satEmoji.textContent = '😠'; }
+            }
+            if (guestToUpdate.satisfaction <= 0) {
+                clearInterval(guest.timer);
+                gameState.hungryGuestsLeft++;
+                updateUI();
+                const guestElement = document.getElementById(id);
+                if (guestElement) {
+                    guestElement.classList.add('shake');
+                    setTimeout(() => {
+                        if(guestElement.parentElement) guestElement.remove();
+                        gameState.guests = gameState.guests.filter(g => g.id !== id);
+                    }, 500);
+                }
+            }
+        }, 100);
+        gameState.guests.push(guest);
+        const nextGuestDelay = (Math.random() * 12000 + 8000) / (1 + (gameState.day - 1) * 0.3);
+        setTimeout(() => { if (gameState.gameRunning) spawnGuest(); }, nextGuestDelay);
+    }
+    
+    function spawnDonation() {
+        if (!gameState.gameRunning) return;
+        acceptDonationBtn.disabled = false;
+        acceptDonationBtn.style.opacity = '1';
+        acceptDonationBtn.classList.add('animate-pulse');
+    }
+
+    function playSound(note, len = '16n') {
+        if (synth) {
+            synth.triggerAttackRelease(note, len);
+        }
+    }
+
+    startGameBtn.addEventListener('click', () => {
+        if(typeof Tone !== 'undefined' && Tone.context.state !== 'running') {
+            Tone.start();
+        }
+        startGame();
+    });
+    
+    restartGameBtn.addEventListener('click', () => { gameOverModal.classList.add('hidden'); showStartModal(); });
+    acceptDonationBtn.addEventListener('click', () => {
+        if (acceptDonationBtn.disabled) return;
+        const baseDonationSize = CONFIG.DONATION_SIZE + Math.floor(gameState.day / 3);
+        for (let i = 0; i < baseDonationSize; i++) createDonationItem();
+        const multipliers = gameState.eventModifiers.DONATION_MULTIPLIER || { veg: 1, protein: 1, carbs: 1 };
+        Object.keys(multipliers).forEach(itemType => {
+            if (multipliers[itemType] > 1) {
+                const bonusCount = Math.floor(baseDonationSize * (multipliers[itemType] - 1));
+                for (let i = 0; i < bonusCount; i++) createDonationItem(itemType);
+            }
+        });
+        acceptDonationBtn.disabled = true; acceptDonationBtn.style.opacity = '0.5';
+        acceptDonationBtn.classList.remove('animate-pulse');
+        const nextDonationDelay = (Math.random() * 8000 + 8000) / (1 + (gameState.day - 1) * 0.2);
+        setTimeout(() => { if (gameState.gameRunning) spawnDonation(); }, nextDonationDelay);
+    });
+
+    sortingAreaEl.addEventListener('click', (e) => {
+        const item = e.target.closest('.donation-item');
+        if (!item) return;
+
+        playSound('C4');
+        if (gameState.selectedDonationId === item.id) {
+            item.classList.remove('selected');
+            gameState.selectedDonationId = null;
+            sortInstructionTextEl.textContent = '1. Click a donation item to select it.';
+        } else {
+            if(gameState.selectedDonationId) {
+                const oldSelected = document.getElementById(gameState.selectedDonationId);
+                if (oldSelected) oldSelected.classList.remove('selected');
+            }
+            item.classList.add('selected');
+            gameState.selectedDonationId = item.id;
+            sortInstructionTextEl.textContent = '2. Now tap the correct bin to sort!';
+        }
+    });
+
+    document.querySelectorAll('.storage-bin').forEach(bin => {
+        bin.addEventListener('click', () => {
+            if (!gameState.selectedDonationId) return;
+
+            const selectedItem = document.getElementById(gameState.selectedDonationId);
+            if (!selectedItem) return;
+
+            if(selectedItem.dataset.type === bin.dataset.type) {
+                playSound('E5', '8n');
+                selectedItem.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+                selectedItem.style.transform = 'scale(0)';
+                selectedItem.style.opacity = '0';
+                setTimeout(() => {
+                    gameState.inventory[bin.dataset.type]++;
+                    selectedItem.remove();
+                    gameState.donationsInSorting--;
+                    gameState.score++;
+                    updateUI();
+                }, 300);
+            } else {
+                playSound('C2', '8n');
+                gameState.overwhelm = Math.min(100, gameState.overwhelm + 5);
+                selectedItem.classList.add('shake');
+                setTimeout(() => selectedItem.classList.remove('shake'), 500);
+                updateUI();
+            }
+            
+            selectedItem.classList.remove('selected');
+            gameState.selectedDonationId = null;
+            sortInstructionTextEl.textContent = '1. Click a donation item to select it.';
+        });
+    });
+
+    showStartModal();
+});
+</script>
+</body>
+</html>
