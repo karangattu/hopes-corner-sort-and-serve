@@ -406,6 +406,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (unknownRecipes.length > 0) {
             const newRecipe = unknownRecipes[Math.floor(Math.random() * unknownRecipes.length)];
             gameState.knownRecipes.push(newRecipe);
+            gtag('event', 'learn_new_recipe', { recipe_name: newRecipe.name, day: gameState.day });
             dailyEventTextEl.textContent = `New recipe learned: ${newRecipe.name}!`;
         } else {
             dailyEventTextEl.textContent = "You've learned all the recipes!";
@@ -522,8 +523,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function startCooking(recipe) {
         if (gameState.cooking.length >= CONFIG.MAX_COOKING_SLOTS) return;
-        
-        gtag('event', 'cook_recipe', {'recipe_name': recipe.name});
+        gtag('event', 'cook_recipe', { recipe_name: recipe.name, day: gameState.day });
         const cookButton = recipeAreaEl.querySelector(`button[data-recipe-id="${recipe.id}"]`);
         if(cookButton) {
             cookButton.disabled = true;
@@ -613,6 +613,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const meal = gameState.readyMeals[mealIndex];
         const guest = gameState.guests[guestIndex];
         let bonus = (gameState.eventModifiers.score_bonus_item === meal.recipe.id) ? gameState.eventModifiers.score_bonus : 0;
+        gtag('event', 'serve_guest', {
+            recipe_name: meal.recipe.name,
+            guest_satisfaction: guest.satisfaction,
+            day: gameState.day
+        });
         gameState.score += CONFIG.SCORE_PER_GUEST + Math.floor(guest.satisfaction * 5) + bonus;
         clearInterval(guest.timer);
         gameState.guests.splice(guestIndex, 1);
@@ -656,6 +661,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (guestToUpdate.satisfaction <= 0) {
                 clearInterval(guest.timer);
                 gameState.hungryGuestsLeft++;
+                gtag('event', 'guest_left_angry', { day: gameState.day });
                 updateUI();
                 const guestElement = document.getElementById(id);
                 if (guestElement) {
@@ -696,6 +702,7 @@ document.addEventListener('DOMContentLoaded', () => {
     acceptDonationBtn.addEventListener('click', () => {
         if (acceptDonationBtn.disabled) return;
         const baseDonationSize = CONFIG.DONATION_SIZE + Math.floor(gameState.day / 3);
+        gtag('event', 'accept_donation', { day: gameState.day, donation_size: baseDonationSize });
         for (let i = 0; i < baseDonationSize; i++) createDonationItem();
         const multipliers = gameState.eventModifiers.DONATION_MULTIPLIER || { veg: 1, protein: 1, carbs: 1 };
         Object.keys(multipliers).forEach(itemType => {
