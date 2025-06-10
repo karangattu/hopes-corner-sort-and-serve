@@ -4,7 +4,7 @@ A web-based game inspired by the real Hope's Corner in Mountain View, CA, which 
 
 ## Play Online
 
-Just open `index.html` in your browser, or [visit Hope's Corner](https://www.hopes-corner.org/) to learn more about the real organization!
+Navigate to the [game](https://karangattu.github.io/hopes-corner-sort-and-serve/) in your browser, or [visit Hope's Corner](https://www.hopes-corner.org/) to learn more about the real organization!
 
 ## How to Play
 
