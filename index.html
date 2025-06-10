@@ -1,36 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hope's Corner - The Game</title>
+    <title>Hope's corner - Sort & Serve Game</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Google Analytics -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-SHMY0176JE"></script>
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-SHMY0176JE');
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-SHMY0176JE');
     </script>
-    
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            overflow-x: hidden;
-            background-color: #e2e8f0;
+        :root {
+            --primary: #3f6212;
+            --primary-light: #84cc16;
+            --primary-dark: #365314;
+            --accent: #d97706;
+            --accent-light: #fbbf24;
+            --bg-main: #f8fafc;
+            --box-bg: #ffffff;
+            --text-main: #1f2937;
+            --text-light: #4b5563;
         }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            overflow-x: hidden;
+            background-color: var(--bg-main);
+            transition: background-color 0.3s ease;
+            margin: 0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%2384cc16' fill-opacity='0.1'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z'/%3E%3Cpath d='M6 5V0H5v5H0v1h5v94h1V6h94V5H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
         .game-container {
             display: grid;
-            grid-template-columns: 1fr; /* Mobile first */
+            grid-template-columns: 1fr;
             grid-template-rows: auto auto auto auto;
             gap: 1rem;
-            width: 100vw;
+            width: 100%;
         }
+
         @media (min-width: 1024px) {
             .game-container {
                 grid-template-columns: 1fr 2fr 1.5fr;
@@ -38,6 +52,7 @@
                 height: 100vh;
             }
         }
+
         .header {
             grid-column: 1 / -1;
             display: flex;
@@ -45,733 +60,2280 @@
             justify-content: space-between;
             align-items: center;
             padding: 1rem;
-            background-color: white;
+            background-color: var(--box-bg);
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             border-bottom: 1px solid #e2e8f0;
+            position: relative;
+            overflow: hidden;
+            z-index: 10;
         }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
+        }
+
         .station {
-            background-color: white;
+            background-color: var(--box-bg);
             border-radius: 0.75rem;
             box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
             padding: 1rem;
             display: flex;
             flex-direction: column;
-            transition: transform 0.2s ease-in-out;
+            transition: all 0.3s ease;
+            position: relative;
         }
-        .donation-item, .guest, .meal {
+
+        .station:hover {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transform: translateY(-2px);
+        }
+
+        .station-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+            margin-bottom: 0.5rem;
+        }
+
+        .station-icon {
+            width: 24px;
+            height: 24px;
+            background-color: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-weight: bold;
+        }
+
+        .donation-item,
+        .guest,
+        .meal {
             cursor: pointer;
             padding: 0.75rem 0.5rem;
             border-radius: 0.5rem;
             text-align: center;
             user-select: none;
             transition: all 0.2s ease-in-out;
-            border: 2px solid #e5e7eb;
+            border: 2px solid rgba(0, 0, 0, 0.1);
             box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            color: var(--text-main);
+            background: var(--box-bg);
         }
-        .meal.ring-4, .donation-item.selected {
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5), 0 4px 6px -1px rgba(0,0,0,0.1);
+
+        .donation-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .meal.ring-4,
+        .donation-item.selected {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(132, 204, 22, 0.5), 0 4px 6px -1px rgba(0, 0, 0, 0.1);
             transform: scale(1.05);
         }
+
         .storage-bin {
-            border: 2px dashed #cbd5e1;
-            transition: all 0.2s ease;
+            border: 2px dashed rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            background-color: var(--box-bg);
+            border-radius: 0.5rem;
         }
+
+        .storage-bin:hover {
+            transform: translateY(-2px);
+        }
+
         .storage-bin.over {
-            background-color: #e2e8f0;
-            border-color: #94a3b8;
+            background-color: rgba(132, 204, 22, 0.1);
+            border-color: var(--primary);
             transform: scale(1.05);
         }
+
         .progress-bar {
-            background-color: #e5e7eb;
+            background-color: rgba(0, 0, 0, 0.1);
             border-radius: 9999px;
             overflow: hidden;
             position: relative;
         }
+
         .progress-bar-fill {
-            background: linear-gradient(45deg, rgba(255,255,255,.15) 25%, transparent 25%, transparent 50%, rgba(255,255,255,.15) 50%, rgba(255,255,255,.15) 75%, transparent 75%, transparent);
+            background: linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent);
             background-size: 1rem 1rem;
             height: 100%;
             transition: width 0.3s ease;
             animation: progress-bar-stripes 1s linear infinite;
         }
+
         #modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            display: flex; /* Always flex for centering */
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
             justify-content: center;
             align-items: center;
             z-index: 50;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.5s ease;
+            backdrop-filter: blur(5px);
         }
+
         .modal {
-            background: white;
+            background: var(--box-bg);
             padding: 2rem;
             border-radius: 1rem;
             text-align: center;
-            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
             margin: 1rem;
             transform: scale(0.95);
-            transition: transform 0.3s ease, opacity 0.3s ease;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+            max-width: 90vw;
+            max-height: 90vh;
+            overflow-y: auto;
+            color: var(--text-main);
+            position: relative;
         }
+
         #modal-overlay.hidden {
             opacity: 0;
-            pointer-events: none; /* Prevent clicks when hidden */
+            pointer-events: none;
         }
+
         #modal-overlay.hidden .modal {
-             transform: scale(0.95);
+            transform: scale(0.95);
         }
+
         .btn-primary {
-             background-image: linear-gradient(to right, #4f46e5, #7c3aed);
-             transition: all 0.3s ease;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            font-weight: bold;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            border: none;
+            outline: none;
+            cursor: pointer;
         }
+
         .btn-primary:hover {
-            box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.4), 0 4px 6px -2px rgba(79, 70, 229, 0.2);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
             transform: translateY(-2px);
         }
+
         .btn-primary:active {
             transform: translateY(0px) scale(0.98);
         }
-        @keyframes pop-in { 0% { opacity: 0; transform: scale(0.5); } 100% { opacity: 1; transform: scale(1); } }
-        .meal { animation: pop-in 0.3s ease forwards; }
-        
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--primary);
+            font-weight: bold;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            border: 2px solid var(--primary);
+            outline: none;
+            cursor: pointer;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(132, 204, 22, 0.1);
+            transform: translateY(-2px);
+        }
+
+        @keyframes pop-in {
+            0% {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+
+            70% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .meal {
+            animation: pop-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
         @keyframes drop-in {
             0% {
                 opacity: 0;
                 transform: translateY(-50px) scale(0.8);
             }
-            80% {
-                transform: translateY(5px) scale(1.05);
+
+            70% {
+                transform: translateY(10px) scale(1.1);
             }
+
             100% {
                 opacity: 1;
                 transform: translateY(0) scale(1);
             }
         }
+
         .donation-item {
-             animation: drop-in 0.4s ease-out forwards;
+            animation: drop-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
 
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); } 20%, 40%, 60%, 80% { transform: translateX(5px); } }
-        .shake { animation: shake 0.5s ease-in-out; }
-        @keyframes progress-bar-stripes { from { background-position: 1rem 0; } to { background-position: 0 0; } }
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            10%,
+            30%,
+            50%,
+            70%,
+            90% {
+                transform: translateX(-5px);
+            }
+
+            20%,
+            40%,
+            60%,
+            80% {
+                transform: translateX(5px);
+            }
+        }
+
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes progress-bar-stripes {
+            from {
+                background-position: 1rem 0;
+            }
+
+            to {
+                background-position: 0 0;
+            }
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes glow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 5px rgba(251, 191, 36, 0.6);
+            }
+
+            50% {
+                box-shadow: 0 0 20px rgba(251, 191, 36, 1);
+            }
+        }
+
+        .heart-particle {
+            position: absolute;
+            pointer-events: none;
+            animation: float 1s ease-in-out forwards;
+            opacity: 0.8;
+            font-size: 1.5rem;
+        }
+
+        .coin-particle {
+            position: absolute;
+            pointer-events: none;
+            animation: float 1s ease-in-out forwards;
+            z-index: 50;
+            font-size: 1.2rem;
+        }
+
+        .card {
+            background-color: var(--box-bg);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .badge-accent {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        .notification {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: var(--box-bg);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            max-width: 300px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .notification.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .achievement-badge {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem;
+            margin: 0.5rem 0;
+            border-radius: 0.5rem;
+            background-color: rgba(132, 204, 22, 0.1);
+            border: 1px solid var(--primary);
+        }
+
+        .achievement-badge img {
+            width: 40px;
+            height: 40px;
+            margin-right: 0.5rem;
+            border-radius: 50%;
+            background-color: var(--primary);
+            padding: 5px;
+        }
+
+        .achievement-icon {
+            font-size: 2rem;
+            margin-right: 0.5rem;
+        }
+
+        .achievement-text {
+            flex: 1;
+        }
+
+        .achievement-text h3 {
+            font-size: 1rem;
+            margin: 0;
+            color: var(--text-main);
+        }
+
+        .achievement-text p {
+            font-size: 0.8rem;
+            margin: 0;
+            color: var(--text-light);
+        }
+
+        .recipe-card {
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, rgba(132, 204, 22, 0.1) 0%, rgba(132, 204, 22, 0.05) 100%);
+            border: 1px solid rgba(132, 204, 22, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .recipe-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .recipe-card.locked {
+            filter: grayscale(1);
+            opacity: 0.5;
+        }
+
+        .holiday-theme {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.5;
+        }
+
+        .snow {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            animation: snowfall linear infinite;
+        }
+
+        @keyframes snowfall {
+            0% {
+                transform: translateY(-100px) translateX(0);
+                opacity: 0;
+            }
+
+            20% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(100vh) translateX(100px);
+                opacity: 0;
+            }
+        }
+
+        .stats-panel {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            background-color: rgba(0, 0, 0, 0.03);
+            margin-bottom: 1rem;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.25rem 0;
+            border-bottom: 1px dashed rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-row:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        .stat-value {
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .pulse-animation {
+            animation: pulse 1s ease-in-out infinite;
+        }
+
+        .glow-animation {
+            animation: glow 1.5s ease-in-out infinite;
+        }
+
+        .power-up {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.5rem;
+            margin: 0.5rem 0;
+            border-radius: 0.5rem;
+            background-color: rgba(132, 204, 22, 0.1);
+            border: 1px solid var(--primary);
+            transition: all 0.3s ease;
+        }
+
+        .power-up:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .power-up-icon {
+            font-size: 1.5rem;
+            margin-right: 0.5rem;
+            color: var(--primary);
+        }
+
+        .power-up-info {
+            flex: 1;
+        }
+
+        .power-up-name {
+            font-weight: bold;
+            color: var(--text-main);
+        }
+
+        .power-up-desc {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        .power-up-cost {
+            background-color: var(--accent);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .tutorial-tooltip {
+            position: absolute;
+            background-color: var(--box-bg);
+            border: 2px solid var(--primary);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            max-width: 250px;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .tutorial-tooltip:after {
+            content: "";
+            position: absolute;
+            border-width: 8px;
+            border-style: solid;
+        }
+
+        .tutorial-tooltip.top:after {
+            top: 100%;
+            left: 50%;
+            margin-left: -8px;
+            border-color: var(--primary) transparent transparent transparent;
+        }
+
+        .tutorial-tooltip.bottom:after {
+            bottom: 100%;
+            left: 50%;
+            margin-left: -8px;
+            border-color: transparent transparent var(--primary) transparent;
+        }
+
+        .tutorial-tooltip.left:after {
+            top: 50%;
+            left: 100%;
+            margin-top: -8px;
+            border-color: transparent transparent transparent var(--primary);
+        }
+
+        .tutorial-tooltip.right:after {
+            top: 50%;
+            right: 100%;
+            margin-top: -8px;
+            border-color: transparent var(--primary) transparent transparent;
+        }
+
+        .loader {
+            width: 30px;
+            height: 30px;
+            border: 3px solid rgba(132, 204, 22, 0.2);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            margin-bottom: 1rem;
+        }
+
+        .tab {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+
+        .tab:hover {
+            opacity: 1;
+            background-color: rgba(132, 204, 22, 0.1);
+        }
+
+        .tab.active {
+            opacity: 1;
+            border-bottom-color: var(--primary);
+            font-weight: bold;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 0.5rem;
+            }
+
+            .btn-primary {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .donation-item,
+            .guest,
+            .meal {
+                padding: 0.5rem 0.25rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        .badge-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            letter-spacing: 0.05em;
+        }
+
+        .settings-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: var(--box-bg);
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+            z-index: 100;
+            min-width: 200px;
+            opacity: 0;
+            transform: translateY(-10px);
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+
+        .settings-menu.active {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .settings-item {
+            padding: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .settings-item:hover {
+            background-color: rgba(132, 204, 22, 0.1);
+            border-radius: 0.25rem;
+        }
+
+        .recipe-card-new {
+            background-color: var(--box-bg);
+            border-radius: 0.75rem;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        .recipe-banner {
+            height: 40px;
+            background-color: var(--primary);
+            position: relative;
+        }
+
+        .recipe-icon {
+            position: absolute;
+            left: 1rem;
+            top: 0.5rem;
+            width: 40px;
+            height: 40px;
+            background-color: white;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .recipe-body {
+            padding: 1.5rem 1rem 1rem;
+        }
+
+        .recipe-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .recipe-name {
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        .recipe-servings {
+            font-size: 0.8rem;
+            background-color: rgba(132, 204, 22, 0.1);
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+        }
+
+        .recipe-ingredients {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .recipe-ingredient {
+            background-color: rgba(0, 0, 0, 0.05);
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .recipe-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
     </style>
 </head>
+
 <body class="bg-gray-200">
 
     <div id="game-container" class="game-container p-2 md:p-4">
         <header class="header">
-            <div class="flex items-center gap-3 w-full lg:w-auto mb-2 lg:mb-0">
-                <img src="https://images.squarespace-cdn.com/content/5622cd82e4b0501d40689558/2aedb400-89b8-4f93-856f-cd2c7d5385e4/Hopes_Corner_Logo_Green.png?format=1500w&content-type=image%2Fpng" alt="Hope's Corner Logo" class="h-10 md:h-12" onerror="this.style.display='none'">
-                <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Hope's Corner</h1>
+            <div class="flex items-center gap-3">
+                <img src="https://images.squarespace-cdn.com/content/5622cd82e4b0501d40689558/2aedb400-89b8-4f93-856f-cd2c7d5385e4/Hopes_Corner_Logo_Green.png?format=1500w&content-type=image%2Fpng"
+                    alt="Hope's Corner Official Logo" class="h-10 md:h-12"
+                    onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgNTAiPjxwYXRoIGQ9Ik0xMCAxMEgzMFYzMEgxMFoiIGZpbGw9IiM4NGNjMTYiLz48dGV4dCB4PSI0MCIgeT0iMzAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiBmaWxsPSIjODRjYzE2Ij5Ib3BlJ3MgQ29ybmVyPC90ZXh0Pjwvc3ZnPg=='">
+                <h1 class="text-2xl md:text-3xl font-bold" style="color: var(--primary);">Hope's Corner</h1>
             </div>
-            <div class="flex-1 text-center px-4 w-full lg:w-auto order-3 lg:order-2 my-2 lg:my-0">
-                <h2 class="text-md md:text-lg font-semibold text-indigo-600">Daily Update</h2>
-                <p id="daily-event-text" class="text-sm md:text-base text-gray-700 italic h-10 flex items-center justify-center">The day is just beginning...</p>
+            <div class="flex-1 text-center px-4 w-full lg:w-auto order-last lg:order-none mt-2 lg:mt-0">
+                <h2 class="text-md md:text-lg font-semibold" style="color: var(--primary-dark);">Daily Update</h2>
+                <p id="daily-event-text"
+                    class="text-sm md:text-base italic min-h-[2.5rem] flex items-center justify-center text-primary-dark">
+                    The day is just beginning...</p>
+                <div id="event-effects" class="flex justify-center gap-2 mt-1"></div>
             </div>
-            <div class="flex items-center justify-around w-full lg:w-auto space-x-2 md:space-x-4 order-2 lg:order-3">
-                 <div class="text-center">
-                    <span class="text-xs md:text-sm text-gray-500">High Score</span>
-                    <p id="high-score-display" class="text-lg md:text-2xl font-semibold text-amber-500">0</p>
+            <div class="flex items-center justify-around w-full lg:w-auto space-x-2 md:space-x-4">
+                <div class="text-center">
+                    <span class="text-xs md:text-sm" style="color: var(--text-light);">Coins</span>
+                    <p id="coins-display" class="text-lg md:text-2xl font-semibold" style="color: var(--accent);">0</p>
                 </div>
                 <div class="text-center">
-                    <span class="text-xs md:text-sm text-gray-500">Score</span>
-                    <p id="score" class="text-lg md:text-2xl font-semibold text-blue-600">0</p>
+                    <span class="text-xs md:text-sm" style="color: var(--text-light);">High Score</span>
+                    <p id="high-score-display" class="text-lg md:text-2xl font-semibold" style="color: var(--accent);">0
+                    </p>
                 </div>
                 <div class="text-center">
-                    <span class="text-xs md:text-sm text-gray-500">Day</span>
-                     <p id="day" class="text-lg md:text-2xl font-semibold text-gray-700">1</p>
+                    <span class="text-xs md:text-sm" style="color: var(--text-light);">Score</span>
+                    <p id="score" class="text-lg md:text-2xl font-semibold" style="color: var(--primary);">0</p>
+                </div>
+                <div class="text-center">
+                    <span class="text-xs md:text-sm" style="color: var(--text-light);">Day</span>
+                    <p id="day" class="text-lg md:text-2xl font-semibold" style="color: var(--text-main);">1</p>
                 </div>
                 <div class="w-24 md:w-48 text-center">
-                    <span class="text-xs md:text-sm text-gray-500">Overwhelm</span>
+                    <span class="text-xs md:text-sm" style="color: var(--text-light);">Overwhelm</span>
                     <div class="progress-bar h-3 md:h-4 mt-1">
                         <div id="overwhelm-bar" class="progress-bar-fill bg-red-500" style="width: 0%;"></div>
                     </div>
                 </div>
                 <div class="text-center">
-                    <span class="text-xs md:text-sm text-gray-500">Angry Guests</span>
+                    <span class="text-xs md:text-sm" style="color: var(--text-light);">Angry Guests</span>
                     <p id="angry-guests-display" class="text-lg md:text-2xl font-semibold text-red-600">0 / 5</p>
                 </div>
             </div>
         </header>
 
         <div id="donations-station" class="station">
-            <h2 class="text-xl font-semibold text-gray-700 mb-2">Donations & Sorting</h2>
-            <div id="donation-arrival-area" class="h-24 border-b-2 border-gray-200 mb-2 flex items-center justify-center">
-                 <button id="accept-donation-btn" class="text-white font-bold py-3 px-5 rounded-lg transition duration-300 opacity-50 btn-primary" disabled>Accept Donation</button>
+            <div class="station-header">
+                <h2 class="text-xl font-semibold" style="color: var(--text-main);">
+                    <span class="station-icon">📦</span> Donations & Sorting
+                </h2>
+                <span id="sorting-level" class="badge badge-primary">Level 1</span>
             </div>
-            <div class="p-2 bg-indigo-100 border border-indigo-200 rounded-md mb-2">
-                 <h3 class="font-semibold text-indigo-800 text-center">How to Sort:</h3>
-                 <p id="sort-instruction-text" class="text-center text-indigo-700">1. Click a donation item to select it.</p>
-             </div>
-            <div id="sorting-area" class="flex-grow p-2 bg-gray-50 rounded-md min-h-[150px] grid grid-cols-3 gap-2"></div>
+            <div id="donation-arrival-area"
+                class="h-24 border-b-2 border-gray-200 mb-2 flex items-center justify-center relative">
+                <button id="accept-donation-btn"
+                    class="text-white font-bold py-3 px-5 rounded-lg transition duration-300 opacity-50 btn-primary"
+                    disabled>Accept Donation</button>
+            </div>
+            <div class="p-2 bg-indigo-100 border border-indigo-200 rounded-md mb-2"
+                style="background-color: rgba(132, 204, 22, 0.1); border-color: rgba(132, 204, 22, 0.3);">
+                <h3 class="font-semibold text-center" style="color: var(--primary-dark);">How to Sort:</h3>
+                <p id="sort-instruction-text" class="text-center" style="color: var(--text-main);">1. Click a donation
+                    item to select it.</p>
+            </div>
+            <div id="sorting-area" class="flex-grow p-2 rounded-md min-h-[150px] grid grid-cols-3 gap-2"
+                style="background-color: rgba(0, 0, 0, 0.03);"></div>
+
+            <div id="sorting-upgrade-area" class="mt-4 p-3 border-t-2 border-gray-200">
+                <h3 class="font-semibold mb-2" style="color: var(--text-main);">Sorting Upgrades</h3>
+                <div class="power-up" id="auto-sort-upgrade">
+                    <div class="power-up-icon">🤖</div>
+                    <div class="power-up-info">
+                        <div class="power-up-name">Auto-Sort Assistant</div>
+                        <div class="power-up-desc">Automatically sorts 1 item every 10 seconds</div>
+                    </div>
+                    <button class="power-up-cost">100 🪙</button>
+                </div>
+            </div>
         </div>
+
         <div id="kitchen-station" class="station lg:col-span-1">
-            <h2 class="text-xl font-semibold text-gray-700 mb-2">Storage & Kitchen</h2>
+            <div class="station-header">
+                <h2 class="text-xl font-semibold" style="color: var(--text-main);">
+                    <span class="station-icon">🍳</span> Storage & Kitchen
+                </h2>
+                <span id="kitchen-level" class="badge badge-primary">Level 1</span>
+            </div>
             <div class="grid grid-cols-3 gap-2 md:gap-4 mb-4">
-                <div id="veg-bin" class="storage-bin p-2 rounded-lg text-center" data-type="veg"><h3 class="font-medium">🥦 Veggies</h3><p id="veg-count" class="text-lg md:text-2xl font-bold">0</p></div>
-                <div id="protein-bin" class="storage-bin p-2 rounded-lg text-center" data-type="protein"><h3 class="font-medium">🍗 Protein</h3><p id="protein-count" class="text-lg md:text-2xl font-bold">0</p></div>
-                <div id="carbs-bin" class="storage-bin p-2 rounded-lg text-center" data-type="carbs"><h3 class="font-medium">🍞 Carbs</h3><p id="carbs-count" class="text-lg md:text-2xl font-bold">0</p></div>
+                <div id="veg-bin" class="storage-bin p-2 rounded-lg text-center" data-type="veg">
+                    <h3 class="font-medium">🥦 Veggies</h3>
+                    <p id="veg-count" class="text-lg md:text-2xl font-bold">0</p>
+                </div>
+                <div id="protein-bin" class="storage-bin p-2 rounded-lg text-center" data-type="protein">
+                    <h3 class="font-medium">🍗 Protein</h3>
+                    <p id="protein-count" class="text-lg md:text-2xl font-bold">0</p>
+                </div>
+                <div id="carbs-bin" class="storage-bin p-2 rounded-lg text-center" data-type="carbs">
+                    <h3 class="font-medium">🍞 Carbs</h3>
+                    <p id="carbs-count" class="text-lg md:text-2xl font-bold">0</p>
+                </div>
             </div>
             <div class="mb-4 border-t-2 pt-4">
-                <h3 class="font-medium text-center">Currently Cooking</h3>
-                <div id="cooking-slots" class="mt-2 space-y-2 min-h-[72px]"></div>
+                <div class="flex justify-between items-center mb-2">
+                    <h3 class="font-medium">Currently Cooking</h3>
+                    <span id="cooking-slots-display" class="text-sm font-medium" style="color: var(--text-light);">0/3
+                        Slots</span>
+                </div>
+                <div id="cooking-slots" class="mt-2 space-y-2 min-h-[100px]"></div>
             </div>
             <div id="recipe-area" class="flex-grow space-y-4 border-t-2 pt-4">
-                 <h3 class="font-medium text-center mb-2">Available Recipes</h3>
+                <h3 class="font-medium text-center mb-2">Available Recipes</h3>
+                <div id="recipe-list" class="space-y-2"></div>
+            </div>
+
+            <div id="kitchen-upgrade-area" class="mt-4 p-3 border-t-2 border-gray-200">
+                <h3 class="font-semibold mb-2" style="color: var(--text-main);">Kitchen Upgrades</h3>
+                <div class="power-up" id="faster-cooking-upgrade">
+                    <div class="power-up-icon">⚡</div>
+                    <div class="power-up-info">
+                        <div class="power-up-name">Faster Cooking</div>
+                        <div class="power-up-desc">Reduces cooking time by 10%</div>
+                    </div>
+                    <button class="power-up-cost">150 🪙</button>
+                </div>
+                <div class="power-up" id="extra-slot-upgrade">
+                    <div class="power-up-icon">➕</div>
+                    <div class="power-up-info">
+                        <div class="power-up-name">Extra Cooking Slot</div>
+                        <div class="power-up-desc">Add one more cooking slot (max 5)</div>
+                    </div>
+                    <button class="power-up-cost">300 🪙</button>
+                </div>
             </div>
         </div>
+
         <div id="serving-station" class="station">
-             <h2 class="text-xl font-semibold text-gray-700 mb-2">Serving Area</h2>
-             <div class="p-2 bg-indigo-100 border border-indigo-200 rounded-md mb-2">
-                 <h3 class="font-semibold text-indigo-800 text-center">How to Serve:</h3>
-                 <p id="instruction-text" class="text-center text-indigo-700">1. Click a ready meal to select it.</p>
-             </div>
-             <div class="flex justify-between items-center mb-2"><h3 class="font-medium">Ready Meals</h3><h3 class="font-medium">Waiting Guests</h3></div>
-            <div class="flex h-full min-h-[200px]">
-                <div id="ready-meals-area" class="w-1/3 pr-2 border-r-2 border-gray-200 space-y-2 overflow-y-auto"></div>
+            <div class="station-header">
+                <h2 class="text-xl font-semibold" style="color: var(--text-main);">
+                    <span class="station-icon">🍽️</span> Serving Area
+                </h2>
+                <span id="serving-level" class="badge badge-primary">Level 1</span>
+            </div>
+            <div class="p-2 rounded-md mb-4"
+                style="background-color: rgba(132, 204, 22, 0.1); border: 1px solid rgba(132, 204, 22, 0.3);">
+                <h3 class="font-semibold text-center" style="color: var(--primary-dark);">How to Serve:</h3>
+                <p id="instruction-text" class="text-center" style="color: var(--text-main);">1. Click a ready meal to
+                    select it.</p>
+            </div>
+
+            <div class="mb-2">
+                <div class="stats-panel">
+                    <div class="stat-row">
+                        <span class="stat-label">Guests Served Today</span>
+                        <span id="guests-served-today" class="stat-value">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Meals Prepared</span>
+                        <span id="meals-prepared" class="stat-value">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Average Satisfaction</span>
+                        <span id="avg-satisfaction" class="stat-value">0%</span>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-between items-center mb-2">
+                <h3 class="font-medium">Ready Meals</h3>
+                <h3 class="font-medium">Waiting Guests</h3>
+            </div>
+            <div class="flex flex-grow h-full min-h-[200px]">
+                <div id="ready-meals-area" class="w-1/3 pr-2 border-r-2 border-gray-200 space-y-2 overflow-y-auto">
+                </div>
                 <div id="guest-area" class="w-2/3 pl-2 space-y-2 overflow-y-auto"></div>
+            </div>
+
+            <div id="serving-upgrade-area" class="mt-4 p-3 border-t-2 border-gray-200">
+                <h3 class="font-semibold mb-2" style="color: var(--text-main);">Serving Upgrades</h3>
+                <div class="power-up" id="guest-patience-upgrade">
+                    <div class="power-up-icon">⏱️</div>
+                    <div class="power-up-info">
+                        <div class="power-up-name">Guest Patience</div>
+                        <div class="power-up-desc">Guests wait 15% longer before getting angry</div>
+                    </div>
+                    <button class="power-up-cost">200 🪙</button>
+                </div>
+                <div class="power-up" id="bonus-points-upgrade">
+                    <div class="power-up-icon">🌟</div>
+                    <div class="power-up-info">
+                        <div class="power-up-name">Bonus Points</div>
+                        <div class="power-up-desc">Earn +2 points per satisfied guest</div>
+                    </div>
+                    <button class="power-up-cost">250 🪙</button>
+                </div>
             </div>
         </div>
     </div>
 
     <div id="modal-overlay" class="hidden">
         <div id="start-modal" class="modal">
-            <img src="https://images.squarespace-cdn.com/content/5622cd82e4b0501d40689558/2aedb400-89b8-4f93-856f-cd2c7d5385e4/Hopes_Corner_Logo_Green.png?format=1500w&content-type=image%2Fpng" alt="Hope's Corner Logo" class="h-16 mx-auto mb-4" onerror="this.style.display='none'">
-            <h1 class="text-3xl md:text-4xl font-bold mb-2 text-gray-800">Welcome to Hope's Corner!</h1>
+            <img src="https://images.squarespace-cdn.com/content/5622cd82e4b0501d40689558/2aedb400-89b8-4f93-856f-cd2c7d5385e4/Hopes_Corner_Logo_Green.png?format=1500w&content-type=image%2Fpng"
+                alt="Hope's Corner Official Logo" class="h-16 mx-auto mb-4"
+                onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgNTAiPjxwYXRoIGQ9Ik0xMCAxMEgzMFYzMEgxMFoiIGZpbGw9IiM4NGNjMTYiLz48dGV4dCB4PSI0MCIgeT0iMzAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiBmaWxsPSIjODRjYzE2Ij5Ib3BlJ3MgQ29ybmVyPC90ZXh0Pjwvc3ZnPg=='">
+            <h1 class="text-3xl md:text-4xl font-bold mb-2" style="color: var(--primary);">Welcome to Hope's Corner!
+            </h1>
+            <div class="badge-container">
+                <span class="badge"
+                    style="background: linear-gradient(90deg, #6d28d9, #4f46e5); color: white;">COMMUNITY IMPACT</span>
+                <span class="badge" style="background-color: var(--accent); color: white;">EDUCATIONAL</span>
+            </div>
             <div class="border-y-2 border-gray-200 my-4 py-4">
-                <p class="text-gray-700 max-w-lg mx-auto">This game is inspired by the real Hope's Corner in Mountain View, CA, which provides free nutritious meals and warm showers to anyone in need.</p>
+                <p class="text-gray-700 max-w-lg mx-auto" style="color: var(--text-main);">This game is inspired by the
+                    real Hope's Corner in Mountain View, CA, which provides free nutritious meals and warm showers to
+                    anyone in need.</p>
                 <p class="mt-2">
-                    <a href="https://www.hopes-corner.org/" target="_blank" class="text-blue-600 hover:underline font-semibold">Visit their website to learn more or get involved!</a>
+                    <a href="https://www.hopes-corner.org/" target="_blank" class="font-semibold hover:underline"
+                        style="color: var(--primary);">Visit their website to learn more or get involved!</a>
                 </p>
             </div>
-            <p class="text-gray-600 mb-2 max-w-md mx-auto"><strong>Your mission:</strong> Accept donations, sort food, cook meals, and serve guests. Don't get overwhelmed!</p>
-            <p class="font-semibold text-gray-700 mt-2"><strong>Key Tip:</strong> Guests will arrive once you have 5 meal servings ready. If 5 guests leave angry, the game is over!</p>
-            <p class="text-lg my-4">Your High Score: <span id="high-score-modal" class="font-bold text-amber-500"></span></p>
-            <button id="start-game-btn" class="text-white font-bold py-3 px-6 rounded-lg text-lg transition duration-300 btn-primary">Start Playing</button>
+
+            <div class="tabs">
+                <div class="tab active" data-tab="how-to-play">How To Play</div>
+                <div class="tab" data-tab="features">Features</div>
+                <div class="tab" data-tab="achievements">Achievements</div>
+            </div>
+
+            <div id="how-to-play" class="tab-content active">
+                <p class="mb-2" style="color: var(--text-main);"><strong>Your mission:</strong> Accept donations, sort
+                    food, cook meals, and serve guests. Don't get overwhelmed!</p>
+                <ul class="list-disc pl-5 mb-4 text-left" style="color: var(--text-main);">
+                    <li>Click "Accept Donation" to receive food items</li>
+                    <li>Sort items into the correct storage bins</li>
+                    <li>Use stored ingredients to cook meals</li>
+                    <li>Serve prepared meals to waiting guests</li>
+                    <li>Earn coins to purchase upgrades</li>
+                </ul>
+                <p class="font-semibold mt-2" style="color: var(--text-main);"><strong>Key Tip:</strong> Guests will
+                    arrive once you have 5 meal servings ready. If 5 guests leave angry, the game is over!</p>
+            </div>
+
+            <div id="features" class="tab-content">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div class="card">
+                        <h3 class="font-bold mb-1" style="color: var(--primary);">⚡ Upgrades System</h3>
+                        <p style="color: var(--text-main);">Use coins to purchase upgrades for your stations</p>
+                    </div>
+                    <div class="card">
+                        <h3 class="font-bold mb-1" style="color: var(--primary);">🏆 Achievements</h3>
+                        <p style="color: var(--text-main);">Complete tasks to unlock special achievements</p>
+                    </div>
+                    <div class="card">
+                        <h3 class="font-bold mb-1" style="color: var(--primary);">📊 Daily Statistics</h3>
+                        <p style="color: var(--text-main);">Track your performance and improve each day</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="achievements" class="tab-content">
+                <div class="achievement-badge">
+                    <div class="achievement-icon">🌟</div>
+                    <div class="achievement-text">
+                        <h3>First Day Survivor</h3>
+                        <p>Complete your first day serving the community</p>
+                    </div>
+                </div>
+                <div class="achievement-badge">
+                    <div class="achievement-icon">👨‍🍳</div>
+                    <div class="achievement-text">
+                        <h3>Master Chef</h3>
+                        <p>Cook 50 meals for the community</p>
+                    </div>
+                </div>
+                <div class="achievement-badge">
+                    <div class="achievement-icon">💯</div>
+                    <div class="achievement-text">
+                        <h3>Perfect Service</h3>
+                        <p>Serve 10 guests with 100% satisfaction</p>
+                    </div>
+                </div>
+            </div>
+
+            <p class="text-lg my-4">Your High Score: <span id="high-score-modal" class="font-bold"
+                    style="color: var(--accent);">0</span></p>
+            <button id="start-game-btn" class="btn-primary">Start Playing</button>
         </div>
+
         <div id="game-over-modal" class="modal hidden">
             <h1 id="game-over-title" class="text-3xl md:text-4xl font-bold mb-2 text-red-600">Game Over!</h1>
-            <p id="game-over-reason" class="text-lg text-gray-700 mb-4"></p>
-            <p id="new-high-score-msg" class="text-xl font-semibold text-green-500 hidden mb-4">New High Score!</p>
-            <p class="text-lg mb-6">Final Score: <span id="final-score" class="font-bold text-blue-600"></span></p>
-            <button id="restart-game-btn" class="text-white font-bold py-3 px-6 rounded-lg text-lg transition duration-300 btn-primary">Play Again</button>
+            <p id="game-over-reason" class="text-lg mb-4" style="color: var(--text-main);"></p>
+            <div id="game-stats" class="stats-panel mb-6">
+                <div class="stat-row">
+                    <span class="stat-label">Days Completed</span>
+                    <span id="final-days" class="stat-value">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Guests Served</span>
+                    <span id="final-guests" class="stat-value">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Meals Prepared</span>
+                    <span id="final-meals" class="stat-value">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Final Score</span>
+                    <span id="final-score" class="stat-value">0</span>
+                </div>
+            </div>
+            <p id="new-high-score-msg" class="text-xl font-semibold hidden mb-4" style="color: var(--primary);">New High
+                Score!</p>
+
+            <div id="unlocked-achievement" class="achievement-badge hidden mb-4">
+                <div class="achievement-icon">🏆</div>
+                <div class="achievement-text">
+                    <h3 id="achievement-title">Achievement Unlocked!</h3>
+                    <p id="achievement-desc"></p>
+                </div>
+            </div>
+
+            <button id="restart-game-btn" class="btn-primary">Play Again</button>
+            <button id="share-score-btn" class="btn-secondary mt-2">Share Score</button>
+        </div>
+
+        <div id="achievement-modal" class="modal hidden">
+            <div class="achievement-icon text-5xl mb-2">🏆</div>
+            <h2 class="text-2xl font-bold mb-2" style="color: var(--primary);">Achievement Unlocked!</h2>
+            <h3 id="achievement-modal-title" class="text-xl font-semibold mb-4" style="color: var(--text-main);"></h3>
+            <p id="achievement-modal-desc" class="mb-6" style="color: var(--text-light);"></p>
+            <p class="mb-4"><span id="achievement-modal-bonus" class="font-bold" style="color: var(--accent);">+50
+                    points!</span></p>
+            <button id="close-achievement-btn" class="btn-primary">Awesome!</button>
+        </div>
+
+        <div id="level-up-modal" class="modal hidden">
+            <div class="text-5xl mb-2">🎉</div>
+            <h2 class="text-2xl font-bold mb-2" style="color: var(--primary);">Level Up!</h2>
+            <h3 id="level-up-title" class="text-xl font-semibold mb-4" style="color: var(--text-main);">Your kitchen is
+                now level 2!</h3>
+            <p id="level-up-desc" class="mb-6" style="color: var(--text-light);">You can now cook meals faster and have
+                a larger inventory capacity.</p>
+            <button id="close-level-up-btn" class="btn-primary">Great!</button>
+        </div>
+
+        <div id="recipe-unlock-modal" class="modal hidden">
+            <div class="text-5xl mb-2">🍳</div>
+            <h2 class="text-2xl font-bold mb-2" style="color: var(--primary);">New Recipe Unlocked!</h2>
+            <div id="new-recipe-display" class="recipe-card-new mb-6">
+                <div class="recipe-banner"></div>
+                <div class="recipe-icon" id="recipe-unlock-emoji">🍜</div>
+                <div class="recipe-body">
+                    <div class="recipe-heading">
+                        <h3 id="recipe-unlock-name" class="recipe-name">Chicken Noodle Soup</h3>
+                        <span id="recipe-unlock-servings" class="recipe-servings">4 servings</span>
+                    </div>
+                    <div class="recipe-ingredients" id="recipe-unlock-ingredients">
+                        <span class="recipe-ingredient">🍗 x1</span>
+                        <span class="recipe-ingredient">🥦 x1</span>
+                        <span class="recipe-ingredient">🍞 x2</span>
+                    </div>
+                    <div class="recipe-stats">
+                        <span>Cook time: <span id="recipe-unlock-time">10s</span></span>
+                        <span id="recipe-unlock-bonus">+3 points per serving</span>
+                    </div>
+                </div>
+            </div>
+            <button id="close-recipe-btn" class="btn-primary">Let's Cook!</button>
         </div>
     </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const scoreEl = document.getElementById('score');
-    const dayEl = document.getElementById('day');
-    const overwhelmBarEl = document.getElementById('overwhelm-bar');
-    const angryGuestsDisplay = document.getElementById('angry-guests-display');
-    const sortingAreaEl = document.getElementById('sorting-area');
-    const storageCounts = {
-        veg: document.getElementById('veg-count'), protein: document.getElementById('protein-count'), carbs: document.getElementById('carbs-count'),
-    };
-    const recipeAreaEl = document.getElementById('recipe-area');
-    const cookingSlotsEl = document.getElementById('cooking-slots');
-    const readyMealsAreaEl = document.getElementById('ready-meals-area');
-    const guestAreaEl = document.getElementById('guest-area');
-    const acceptDonationBtn = document.getElementById('accept-donation-btn');
-    const instructionTextEl = document.getElementById('instruction-text');
-    const sortInstructionTextEl = document.getElementById('sort-instruction-text');
-    const gameOverReasonEl = document.getElementById('game-over-reason');
-    const modalOverlay = document.getElementById('modal-overlay');
-    const startModal = document.getElementById('start-modal');
-    const gameOverModal = document.getElementById('game-over-modal');
-    const startGameBtn = document.getElementById('start-game-btn');
-    const restartGameBtn = document.getElementById('restart-game-btn');
-    const finalScoreEl = document.getElementById('final-score');
-    const newHighScoreMsg = document.getElementById('new-high-score-msg');
-    const highScoreDisplay = document.getElementById('high-score-display');
-    const highScoreModalDisplay = document.getElementById('high-score-modal');
-    const dailyEventTextEl = document.getElementById('daily-event-text');
+    <div id="notification-container"></div>
 
-    let gameState = {};
-    let highScore = 0;
-    let synth;
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const scoreEl = document.getElementById('score');
+            const dayEl = document.getElementById('day');
+            const coinsDisplayEl = document.getElementById('coins-display');
+            const overwhelmBarEl = document.getElementById('overwhelm-bar');
+            const angryGuestsDisplay = document.getElementById('angry-guests-display');
+            const sortingAreaEl = document.getElementById('sorting-area');
+            const storageCounts = {
+                veg: document.getElementById('veg-count'), protein: document.getElementById('protein-count'), carbs: document.getElementById('carbs-count'),
+            };
+            const recipeAreaEl = document.getElementById('recipe-list');
+            const cookingSlotsEl = document.getElementById('cooking-slots');
+            const cookingSlotsDisplay = document.getElementById('cooking-slots-display');
+            const readyMealsAreaEl = document.getElementById('ready-meals-area');
+            const guestAreaEl = document.getElementById('guest-area');
+            const acceptDonationBtn = document.getElementById('accept-donation-btn');
+            const instructionTextEl = document.getElementById('instruction-text');
+            const sortInstructionTextEl = document.getElementById('sort-instruction-text');
+            const gameOverReasonEl = document.getElementById('game-over-reason');
+            const modalOverlay = document.getElementById('modal-overlay');
+            const startModal = document.getElementById('start-modal');
+            const gameOverModal = document.getElementById('game-over-modal');
+            const startGameBtn = document.getElementById('start-game-btn');
+            const restartGameBtn = document.getElementById('restart-game-btn');
+            const finalScoreEl = document.getElementById('final-score');
+            const finalDaysEl = document.getElementById('final-days');
+            const finalGuestsEl = document.getElementById('final-guests');
+            const finalMealsEl = document.getElementById('final-meals');
+            const newHighScoreMsg = document.getElementById('new-high-score-msg');
+            const highScoreDisplay = document.getElementById('high-score-display');
+            const highScoreModalDisplay = document.getElementById('high-score-modal');
+            const dailyEventTextEl = document.getElementById('daily-event-text');
+            const eventEffectsEl = document.getElementById('event-effects');
+            const unlockedAchievementEl = document.getElementById('unlocked-achievement');
+            const achievementTitle = document.getElementById('achievement-title');
+            const achievementDesc = document.getElementById('achievement-desc');
+            const shareScoreBtn = document.getElementById('share-score-btn');
+            const achievementModal = document.getElementById('achievement-modal');
+            const achievementModalTitle = document.getElementById('achievement-modal-title');
+            const achievementModalDesc = document.getElementById('achievement-modal-desc');
+            const achievementModalBonus = document.getElementById('achievement-modal-bonus');
+            const closeAchievementBtn = document.getElementById('close-achievement-btn');
+            const levelUpModal = document.getElementById('level-up-modal');
+            const levelUpTitle = document.getElementById('level-up-title');
+            const levelUpDesc = document.getElementById('level-up-desc');
+            const closeLevelUpBtn = document.getElementById('close-level-up-btn');
+            const recipeUnlockModal = document.getElementById('recipe-unlock-modal');
+            const recipeUnlockEmoji = document.getElementById('recipe-unlock-emoji');
+            const recipeUnlockName = document.getElementById('recipe-unlock-name');
+            const recipeUnlockServings = document.getElementById('recipe-unlock-servings');
+            const recipeUnlockIngredients = document.getElementById('recipe-unlock-ingredients');
+            const recipeUnlockTime = document.getElementById('recipe-unlock-time');
+            const recipeUnlockBonus = document.getElementById('recipe-unlock-bonus');
+            const closeRecipeBtn = document.getElementById('close-recipe-btn');
+            const guestsServedToday = document.getElementById('guests-served-today');
+            const mealsPrepared = document.getElementById('meals-prepared');
+            const avgSatisfaction = document.getElementById('avg-satisfaction');
+            const sortingLevelEl = document.getElementById('sorting-level');
+            const kitchenLevelEl = document.getElementById('kitchen-level');
+            const servingLevelEl = document.getElementById('serving-level');
+            const autoSortUpgrade = document.getElementById('auto-sort-upgrade');
+            const fasterCookingUpgrade = document.getElementById('faster-cooking-upgrade');
+            const extraSlotUpgrade = document.getElementById('extra-slot-upgrade');
+            const guestPatienceUpgrade = document.getElementById('guest-patience-upgrade');
+            const bonusPointsUpgrade = document.getElementById('bonus-points-upgrade');
 
-    const MASTER_RECIPE_LIST = [
-        { id: 'recipe-0', name: 'Tacos', emoji: '🌮', ingredients: { protein: 2, veg: 1, carbs: 1 }, cookTime: 9000, servings: 3 },
-        { id: 'recipe-1', name: 'Fried Chicken', emoji: '🍗', ingredients: { protein: 2, carbs: 2 }, cookTime: 12000, servings: 4 },
-        { id: 'recipe-2', name: 'Shepherd\'s Pie', emoji: '🥧', ingredients: { protein: 2, veg: 2, carbs: 1 }, cookTime: 14000, servings: 5 },
-        { id: 'recipe-3', name: 'Chicken Noodle Soup', emoji: '🍜', ingredients: { protein: 1, veg: 1, carbs: 2 }, cookTime: 10000, servings: 4 },
-        { id: 'recipe-4', name: 'Chili', emoji: '🌶️', ingredients: { protein: 2, veg: 2, carbs: 0 }, cookTime: 15000, servings: 5 },
-        { id: 'recipe-5', name: 'Mac & Cheese', emoji: '🧀', ingredients: { protein: 0, veg: 0, carbs: 3 }, cookTime: 8000, servings: 4 },
-        { id: 'recipe-6', name: 'Burritos', emoji: '🌯', ingredients: { protein: 1, veg: 1, carbs: 2 }, cookTime: 11000, servings: 3 },
-        { id: 'recipe-7', name: 'Meatloaf', emoji: '🍞', ingredients: { protein: 3, veg: 1, carbs: 1 }, cookTime: 16000, servings: 6 },
-        { id: 'recipe-8', name: 'Quesadillas', emoji: '🧀', ingredients: { protein: 1, carbs: 2 }, cookTime: 7000, servings: 2 },
-        { id: 'recipe-9', name: 'Gumbo', emoji: '🍲', ingredients: { protein: 2, veg: 2, carbs: 1 }, cookTime: 18000, servings: 6 },
-        { id: 'recipe-10', name: 'BBQ Pulled Pork', emoji: '🐷', ingredients: { protein: 3, carbs: 1 }, cookTime: 20000, servings: 5 },
-        { id: 'recipe-11', name: 'Cornbread', emoji: '🌽', ingredients: { carbs: 2 }, cookTime: 6000, servings: 4 }
-    ];
+            let gameState = {};
+            let highScore = 0;
+            let soundsLoaded = false;
+            let sounds = {};
 
-    const DAILY_EVENTS = [
-        { description: "Second Harvest of Silicon Valley have donated a lot of their veggies!", effect: { type: 'donation_multiplier', item: 'veg', modifier: 2 } },
-        { description: "The kitchen's oven is running extra hot today! Cooking is faster.", effect: { type: 'cooking_speed', modifier: 0.8 } },
-        { description: "It's a chilly day, everyone is craving something warm. Guests are more patient.", effect: { type: 'guest_patience', modifier: 1.25 } },
-        { description: "A generous Taqueria sponsored today's Tacos! Bonus points for serving them.", effect: { type: 'score_bonus', item: 'recipe-0', modifier: 5 } },
-        { description: "A calm, quiet day. Business as usual.", effect: { type: 'nothing' } },
-        { description: "The pantry is overflowing with carbs from Manresa bread donation!", effect: { type: 'donation_multiplier', item: 'carbs', modifier: 2 } },
-        { description: "Protein Power! Extra protein donations today.", effect: { type: 'donation_multiplier', item: 'protein', modifier: 2 } },
-        { description: "Miguel is in a good mood today! All meals give +3 bonus points.", effect: { type: 'score_bonus', item: 'all', modifier: 3 } },
-        { description: "Rainy day rush: Guests arrive faster!", effect: { type: 'guest_arrival_speed', modifier: 1.5 } },
-        { description: "Volunteer shortage: Cooking is slower today.", effect: { type: 'cooking_speed', modifier: 1.3 } },
-        { description: "4th of July holiday! More guests, but they're extra patient.", effect: { type: 'guest_patience', modifier: 1.5 } },
-        { description: "Power outage! No new meals can be cooked for a short time.", effect: { type: 'no_cooking', duration: 10000 } }
-    ];
+            const MASTER_RECIPE_LIST = [
+                { id: 'recipe-0', name: 'Tacos', emoji: '🌮', ingredients: { protein: 2, veg: 1, carbs: 1 }, cookTime: 8000, servings: 3, pointsPerServing: 3 },
+                { id: 'recipe-1', name: 'Fried Chicken', emoji: '🍗', ingredients: { protein: 2, carbs: 2 }, cookTime: 10000, servings: 4, pointsPerServing: 3 },
+                { id: 'recipe-2', name: 'Shepherd\'s Pie', emoji: '🥧', ingredients: { protein: 2, veg: 2, carbs: 1 }, cookTime: 12000, servings: 5, pointsPerServing: 4 },
+                { id: 'recipe-3', name: 'Chicken Noodle Soup', emoji: '🍜', ingredients: { protein: 1, veg: 1, carbs: 2 }, cookTime: 9000, servings: 4, pointsPerServing: 3 },
+                { id: 'recipe-4', name: 'Vegetable Chili', emoji: '🌶️', ingredients: { protein: 1, veg: 3, carbs: 0 }, cookTime: 11000, servings: 4, pointsPerServing: 3 },
+                { id: 'recipe-5', name: 'Mac & Cheese', emoji: '🧀', ingredients: { protein: 0, veg: 0, carbs: 3 }, cookTime: 7000, servings: 4, pointsPerServing: 2 },
+                { id: 'recipe-6', name: 'Veggie Burritos', emoji: '🌯', ingredients: { protein: 0, veg: 2, carbs: 2 }, cookTime: 9000, servings: 3, pointsPerServing: 3 },
+                { id: 'recipe-7', name: 'Italian Meatloaf', emoji: '🍞', ingredients: { protein: 3, veg: 1, carbs: 1 }, cookTime: 14000, servings: 6, pointsPerServing: 4 },
+                { id: 'recipe-8', name: 'Cheese Quesadillas', emoji: '🧀', ingredients: { protein: 0, carbs: 2 }, cookTime: 6000, servings: 2, pointsPerServing: 2 },
+                { id: 'recipe-9', name: 'Seafood Gumbo', emoji: '🍲', ingredients: { protein: 2, veg: 2, carbs: 1 }, cookTime: 16000, servings: 5, pointsPerServing: 5 },
+                { id: 'recipe-10', name: 'BBQ Pulled Pork', emoji: '🐷', ingredients: { protein: 3, carbs: 1 }, cookTime: 15000, servings: 5, pointsPerServing: 4 },
+                { id: 'recipe-11', name: 'Cornbread', emoji: '🌽', ingredients: { carbs: 2 }, cookTime: 5000, servings: 4, pointsPerServing: 2 },
+                { id: 'recipe-12', name: 'Vegetable Curry', emoji: '🍛', ingredients: { veg: 3, carbs: 1 }, cookTime: 12000, servings: 4, pointsPerServing: 3 },
+                { id: 'recipe-13', name: 'Fruit Salad', emoji: '🍎', ingredients: { veg: 4 }, cookTime: 4000, servings: 5, pointsPerServing: 2 },
+                { id: 'recipe-14', name: 'Lasagna', emoji: '🍝', ingredients: { protein: 2, veg: 1, carbs: 2 }, cookTime: 18000, servings: 6, pointsPerServing: 5 },
+                { id: 'recipe-15', name: 'Turkey Sandwiches', emoji: '🥪', ingredients: { protein: 1, veg: 1, carbs: 2 }, cookTime: 6000, servings: 4, pointsPerServing: 3 }
+            ];
 
+            const DAILY_EVENTS = [
+                { description: "Second Harvest of Silicon Valley have donated a lot of fresh veggies!", effect: { type: 'donation_multiplier', item: 'veg', modifier: 2 }, icon: '🥦' },
+                { description: "The kitchen's oven is running extra hot today! Cooking is faster.", effect: { type: 'cooking_speed', modifier: 0.8 }, icon: '🔥' },
+                { description: "It's a chilly day, everyone is craving something warm. Guests are more patient.", effect: { type: 'guest_patience', modifier: 1.25 }, icon: '❄️' },
+                { description: "A generous Taqueria sponsored today's Tacos! Bonus points for serving them.", effect: { type: 'score_bonus', item: 'recipe-0', modifier: 5 }, icon: '🌮' },
+                { description: "A calm, quiet day. Business as usual.", effect: { type: 'nothing' }, icon: '☺️' },
+                { description: "Manresa bread donated fresh baked goods! Extra carbs today.", effect: { type: 'donation_multiplier', item: 'carbs', modifier: 2 }, icon: '🍞' },
+                { description: "Local butcher donated extra protein! Double protein in donations.", effect: { type: 'donation_multiplier', item: 'protein', modifier: 2 }, icon: '🥩' },
+                { description: "Community support day! All meals give +3 bonus points.", effect: { type: 'score_bonus', item: 'all', modifier: 3 }, icon: '💝' },
+                { description: "Rainy day rush: Guests arrive faster but are more understanding.", effect: { type: 'guest_arrival_speed', modifier: 1.5 }, icon: '🌧️' },
+                { description: "Volunteer shortage: Cooking is slower today.", effect: { type: 'cooking_speed', modifier: 1.3 }, icon: '⏱️' },
+                { description: "4th of July holiday! More guests, but they're extra patient.", effect: { type: 'guest_patience', modifier: 1.5 }, icon: '🎆' },
+                { description: "Brief power outage! No new meals can be cooked for a short time.", effect: { type: 'no_cooking', duration: 10000 }, icon: '⚡' },
+                { description: "Thanksgiving season! Guests are extra grateful.", effect: { type: 'guest_satisfaction', modifier: 1.2 }, icon: '🙏' },
+                { description: "Local restaurant partnering today! Cooking quality improved.", effect: { type: 'score_bonus', item: 'all', modifier: 2 }, icon: '👨‍🍳' },
+                { description: "Community drive! Bonus coins from each satisfied guest.", effect: { type: 'coin_bonus', modifier: 2 }, icon: '🪙' },
+                {
+                    description: "Corporate volunteers! Sorting is faster today.",
+                    effect: {
+                        type: 'sorting_bonus',
+                        modifier: 1.5
+                    },
+                    icon: '🎒'
+                }
+            ];
 
-    function initializeGameState() {
-        gameState = {
-            score: 0, day: 1, overwhelm: 0, hungryGuestsLeft: 0,
-            inventory: { veg: 0, protein: 0, carbs: 0 },
-            donationsInSorting: 0, guests: [], cooking: [], readyMeals: [], gameRunning: false,
-            nextGuestId: 0, nextDonationId: 0, nextMealId: 0, selectedMealId: null, selectedDonationId: null,
-            dayDuration: 60000, dayTimer: null,
-            knownRecipes: MASTER_RECIPE_LIST.slice(0, 4),
-            eventModifiers: {},
-            hasGuestsStarted: false,
-        };
-    }
+            const ACHIEVEMENTS = [
+                { id: 'first-day', title: 'First Day Complete', description: 'Survived your first day at Hope\'s Corner', reward: 50, icon: '🌟', unlocked: false, condition: state => state.day >= 2 },
+                { id: 'master-chef', title: 'Master Chef', description: 'Cook 50 meals for the community', reward: 100, icon: '👨‍🍳', unlocked: false, condition: state => state.stats.mealsPrepared >= 50 },
+                { id: 'perfect-service', title: 'Perfect Service', description: 'Serve 10 guests with 100% satisfaction', reward: 75, icon: '💯', unlocked: false, condition: state => state.stats.perfectServings >= 10 },
+                { id: 'donation-king', title: 'Donation King', description: 'Sort 100 donated items correctly', reward: 75, icon: '📦', unlocked: false, condition: state => state.stats.itemsSorted >= 100 },
+                { id: 'feeding-frenzy', title: 'Feeding Frenzy', description: 'Serve 25 guests in a single day', reward: 125, icon: '🍽️', unlocked: false, condition: state => state.stats.guestsServedToday >= 25 },
+                { id: 'ingredient-master', title: 'Ingredient Master', description: 'Collect 50 of each ingredient type', reward: 100, icon: '🥘', unlocked: false, condition: state => (state.totalInventory.veg >= 50 && state.totalInventory.protein >= 50 && state.totalInventory.carbs >= 50) },
+                { id: 'recipe-collector', title: 'Recipe Collector', description: 'Unlock all available recipes', reward: 150, icon: '📖', unlocked: false, condition: state => state.knownRecipes.length >= MASTER_RECIPE_LIST.length },
+                { id: 'overwhelmed', title: 'Crisis Manager', description: 'Recover from 90% overwhelm without game over', reward: 100, icon: '😰', unlocked: false, condition: state => state.stats.recoveredFromHighOverwhelm },
+                { id: 'marathon', title: 'Marathon Server', description: 'Complete 10 days without a game over', reward: 200, icon: '🏃', unlocked: false, condition: state => state.day >= 10 },
+                { id: 'tycoon', title: 'Donation Tycoon', description: 'Reach 500 coins', reward: 100, icon: '💰', unlocked: false, condition: state => state.coins >= 500 }
+            ];
 
-    const CONFIG = {
-        MAX_OVERWHELM: 100, MAX_ANGRY_GUESTS: 5, OVERWHELM_PER_GUEST_TICK: 0.1, SCORE_PER_GUEST: 10,
-        DONATION_SIZE: 3, MAX_COOKING_SLOTS: 3, 
-        ITEM_TYPES: {
-            veg: { emoji: '🥦', color: 'bg-green-200' }, protein: { emoji: '🍗', color: 'bg-red-200' }, carbs: { emoji: '🍞', color: 'bg-yellow-200' }
-        }
-    };
+            const TUTORIALS = [
+                { id: 'sorting', message: "Click on a donation item, then click the matching storage bin to sort it", target: '#sorting-area', position: 'bottom', shown: false },
+                { id: 'cooking', message: "Use your ingredients to cook meals. Different recipes need different ingredients", target: '#recipe-area', position: 'left', shown: false },
+                { id: 'serving', message: "Click a meal, then click on a guest to serve them. Happy guests give more points!", target: '#ready-meals-area', position: 'right', shown: false },
+                { id: 'upgrades', message: "Use coins to buy upgrades that make your job easier", target: '#sorting-upgrade-area', position: 'top', shown: false }
+            ];
 
-    let gameLoopInterval = null;
-
-    function loadHighScore() {
-        highScore = parseInt(localStorage.getItem('hopesCornerHighScore') || '0', 10);
-        highScoreDisplay.textContent = highScore;
-        highScoreModalDisplay.textContent = highScore;
-    }
-
-    function saveHighScore() {
-        if (gameState.score > highScore) {
-            highScore = gameState.score;
-            localStorage.setItem('hopesCornerHighScore', highScore);
-            newHighScoreMsg.classList.remove('hidden');
-        } else {
-            newHighScoreMsg.classList.add('hidden');
-        }
-    }
-
-    function gameLoop() {
-        if (!gameState.gameRunning) return;
-        updateGuests();
-        if (sortingAreaEl.children.length > 8) gameState.overwhelm += 0.2;
-        gameState.overwhelm = Math.max(0, gameState.overwhelm - 0.05);
-        updateUI();
-        if (gameState.overwhelm >= CONFIG.MAX_OVERWHELM) {
-            endGame("You got overwhelmed!");
-        }
-        if (gameState.hungryGuestsLeft >= CONFIG.MAX_ANGRY_GUESTS) {
-            endGame("Too many guests left hungry!");
-        }
-    }
-    
-    function updateGuests() {
-        let satisfactionPenalty = 0;
-        if (!gameState.guests) return;
-        gameState.guests.forEach(g => { satisfactionPenalty += (1 - g.satisfaction) * CONFIG.OVERWHELM_PER_GUEST_TICK; });
-        gameState.overwhelm = Math.min(CONFIG.MAX_OVERWHELM, gameState.overwhelm + satisfactionPenalty);
-    }
-
-    function startDayCycle() {
-        getDailyEvent(gameState.day);
-        gameState.dayTimer = setInterval(() => {
-            if (!gameState.gameRunning) { clearInterval(gameState.dayTimer); return; }
-            gameState.day++;
-            gtag('event', 'day_complete', { 'day_number': gameState.day });
-            getDailyEvent(gameState.day);
-            if (gameState.day > 1 && gameState.day % 2 === 0) learnNewRecipe();
-            if (gameState.hasGuestsStarted) spawnGuest();
-            if (gameState.day > 1) spawnDonation();
-            updateUI();
-        }, gameState.dayDuration / (1 + gameState.day * 0.15));
-    }
-
-    function learnNewRecipe() {
-        const unknownRecipes = MASTER_RECIPE_LIST.filter(r => !gameState.knownRecipes.some(kr => kr.id === r.id));
-        if (unknownRecipes.length > 0) {
-            const newRecipe = unknownRecipes[Math.floor(Math.random() * unknownRecipes.length)];
-            gameState.knownRecipes.push(newRecipe);
-            gtag('event', 'learn_new_recipe', { recipe_name: newRecipe.name, day: gameState.day });
-            dailyEventTextEl.textContent = `New recipe learned: ${newRecipe.name}!`;
-        } else {
-            dailyEventTextEl.textContent = "You've learned all the recipes!";
-        }
-    }
-
-    function getDailyEvent(day) {
-        if (day === 1) { dailyEventTextEl.textContent = 'Get your kitchen ready!'; return; }
-        const eventData = DAILY_EVENTS[Math.floor(Math.random() * DAILY_EVENTS.length)];
-        applyEvent(eventData);
-    }
-
-    function applyEvent(eventData) {
-        gameState.eventModifiers = {};
-        const { description, effect } = eventData;
-        dailyEventTextEl.textContent = description;
-        switch (effect.type) {
-            case 'donation_multiplier': gameState.eventModifiers.DONATION_MULTIPLIER = { ...{ veg: 1, protein: 1, carbs: 1 }, [effect.item]: effect.modifier || 2 }; break;
-            case 'guest_patience': gameState.eventModifiers.guest_patience = effect.modifier || 1.25; break;
-            case 'cooking_speed': gameState.eventModifiers.cooking_speed = effect.modifier || 0.75; break;
-            case 'score_bonus': gameState.eventModifiers.score_bonus_item = effect.item; gameState.eventModifiers.score_bonus = effect.modifier || 5; break;
-        }
-    }
-
-    function updateUI() {
-        scoreEl.textContent = gameState.score;
-        dayEl.textContent = gameState.day;
-        highScoreDisplay.textContent = highScore;
-        overwhelmBarEl.style.width = `${gameState.overwhelm}%`;
-        angryGuestsDisplay.textContent = `${gameState.hungryGuestsLeft} / ${CONFIG.MAX_ANGRY_GUESTS}`;
-        Object.keys(storageCounts).forEach(type => { storageCounts[type].textContent = gameState.inventory[type]; });
-        renderRecipes();
-    }
-
-    function renderRecipes() {
-        recipeAreaEl.innerHTML = '<h3 class="font-medium text-center mb-2">Available Recipes</h3>';
-        gameState.knownRecipes.forEach(recipe => {
-            const ingredientsStr = Object.entries(recipe.ingredients)
-                .filter(([, val]) => val > 0)
-                .map(([key, val]) => `${val}${CONFIG.ITEM_TYPES[key].emoji}`)
-                .join(', ');
-            const canCook = Object.keys(recipe.ingredients).every(ing => gameState.inventory[ing] >= recipe.ingredients[ing]) && gameState.cooking.length < CONFIG.MAX_COOKING_SLOTS;
-            const cookTimeSec = Math.round((recipe.cookTime * (gameState.eventModifiers.cooking_speed || 1)) / 1000);
-            const recipeEl = document.createElement('div');
-            recipeEl.className = 'p-3 bg-gray-50 rounded-lg';
-            recipeEl.innerHTML = `<div class="flex flex-col md:flex-row md:justify-between md:items-center gap-1 md:gap-0">
-                <div class="text-left">
-                    <h3 class="font-medium text-sm md:text-base">${recipe.emoji} ${recipe.name}</h3>
-                    <div class="text-xs text-gray-600">Ingredients: ${ingredientsStr}</div>
-                    <div class="text-xs text-gray-600">Cook Time: ${cookTimeSec}s &nbsp;|&nbsp; Servings: ${recipe.servings}</div>
-                </div>
-                <button data-recipe-id="${recipe.id}" class="cook-btn bg-green-500 text-white font-bold py-1 px-3 rounded hover:bg-green-600 transition duration-300 ${!canCook ? 'opacity-50' : ''}" ${!canCook ? 'disabled' : ''}>Cook</button>
-            </div>`;
-            recipeAreaEl.appendChild(recipeEl);
-        });
-    }
-
-    function showStartModal() {
-        modalOverlay.classList.remove('hidden');
-        startModal.classList.remove('hidden');
-        gameOverModal.classList.add('hidden');
-        loadHighScore();
-    }
-
-    function startGame() {
-        initializeGameState();
-        gtag('event', 'game_start');
-        gameState.gameRunning = true;
-        modalOverlay.classList.add('hidden');
-        if (typeof Tone !== 'undefined') {
-             synth = new Tone.Synth().toDestination();
-        }
-        gameLoopInterval = setInterval(gameLoop, 100);
-        startDayCycle();
-        spawnDonation();
-        updateUI();
-    }
-
-    function endGame(reason) {
-        if (!gameState.gameRunning) return;
-        gameState.gameRunning = false;
-        clearInterval(gameLoopInterval);
-        if (gameState.dayTimer) clearInterval(gameState.dayTimer);
-        gameState.guests.forEach(g => clearInterval(g.timer));
-        gameState.cooking.forEach(c => clearInterval(c.timerId));
-        gtag('event', 'game_over', {
-            'reason': reason,
-            'final_score': gameState.score,
-            'day_reached': gameState.day
-        });
-        saveHighScore();
-        finalScoreEl.textContent = gameState.score;
-        gameOverReasonEl.textContent = reason;
-        loadHighScore();
-        modalOverlay.classList.remove('hidden');
-        startModal.classList.add('hidden');
-        gameOverModal.classList.remove('hidden');
-        sortingAreaEl.innerHTML = ''; readyMealsAreaEl.innerHTML = ''; guestAreaEl.innerHTML = ''; recipeAreaEl.innerHTML = ''; cookingSlotsEl.innerHTML = '';
-    }
-
-    function createDonationItem(forcedType = null) {
-        if (sortingAreaEl.children.length >= 9) return;
-        gameState.donationsInSorting++;
-        const typeKeys = Object.keys(CONFIG.ITEM_TYPES);
-        const type = forcedType || typeKeys[Math.floor(Math.random() * typeKeys.length)];
-        const itemInfo = CONFIG.ITEM_TYPES[type];
-        const itemEl = document.createElement('div');
-        itemEl.id = `donation-${gameState.nextDonationId++}`;
-        itemEl.className = `donation-item ${itemInfo.color} font-bold`;
-        itemEl.textContent = itemInfo.emoji;
-        itemEl.dataset.type = type;
-        sortingAreaEl.appendChild(itemEl);
-    }
-
-    function startCooking(recipe) {
-        if (gameState.cooking.length >= CONFIG.MAX_COOKING_SLOTS) return;
-        gtag('event', 'cook_recipe', { recipe_name: recipe.name, day: gameState.day });
-        const cookButton = recipeAreaEl.querySelector(`button[data-recipe-id="${recipe.id}"]`);
-        if(cookButton) {
-            cookButton.disabled = true;
-            cookButton.classList.add('opacity-50');
-        }
-
-        Object.entries(recipe.ingredients).forEach(([ing, amount]) => { gameState.inventory[ing] -= amount; });
-        
-        const mealId = `cooking-${gameState.nextMealId++}`;
-        const cookTime = recipe.cookTime * (gameState.eventModifiers.cooking_speed || 1);
-        
-        const progressEl = document.createElement('div');
-        progressEl.id = mealId; progressEl.className = 'progress-bar h-6 mt-2';
-        progressEl.innerHTML = `<div class="progress-bar-fill bg-green-500 h-full text-white text-sm flex items-center justify-center" style="width: 0%;">${recipe.name}</div>`;
-        cookingSlotsEl.appendChild(progressEl);
-
-        const timerId = setInterval(() => {
-            const cookingMeal = gameState.cooking.find(m => m.id === mealId);
-            if (!cookingMeal || !gameState.gameRunning) { clearInterval(timerId); if (progressEl.parentElement) progressEl.remove(); return; }
-            cookingMeal.timeLeft -= 100;
-            const progress = 100 - (cookingMeal.timeLeft / cookTime) * 100;
-            const pBarFill = progressEl.querySelector('.progress-bar-fill');
-            if (pBarFill) pBarFill.style.width = `${progress}%`;
-            
-            if (cookingMeal.timeLeft <= 0) {
-                clearInterval(timerId); 
-                if (progressEl.parentElement) progressEl.remove();
-                gameState.cooking = gameState.cooking.filter(m => m.id !== mealId);
-                createReadyMeal(recipe);
-                updateUI();
+            function initializeGameState() {
+                gameState = {
+                    score: 0, day: 1, overwhelm: 0, hungryGuestsLeft: 0, coins: 0,
+                    inventory: { veg: 0, protein: 0, carbs: 0 },
+                    totalInventory: { veg: 0, protein: 0, carbs: 0 },
+                    donationsInSorting: 0, guests: [], cooking: [], readyMeals: [], gameRunning: false,
+                    nextGuestId: 0, nextDonationId: 0, nextMealId: 0, selectedMealId: null, selectedDonationId: null,
+                    dayDuration: 60000, dayTimer: null,
+                    knownRecipes: MASTER_RECIPE_LIST.slice(0, 4),
+                    eventModifiers: {},
+                    hasGuestsStarted: false,
+                    upgrades: {
+                        autoSort: { level: 0, maxLevel: 3, cost: 100, costMultiplier: 2 },
+                        fasterCooking: { level: 0, maxLevel: 3, cost: 150, costMultiplier: 2 },
+                        extraSlot: { level: 0, maxLevel: 2, cost: 300, costMultiplier: 2 },
+                        guestPatience: { level: 0, maxLevel: 3, cost: 200, costMultiplier: 2 },
+                        bonusPoints: { level: 0, maxLevel: 3, cost: 250, costMultiplier: 2 }
+                    },
+                    stationLevels: {
+                        sorting: 1, kitchen: 1, serving: 1
+                    },
+                    stats: {
+                        guestsServed: 0, guestsServedToday: 0, mealsPrepared: 0, itemsSorted: 0, totalSatisfaction: 0, perfectServings: 0, recoveredFromHighOverwhelm: false, highestDayReached: 1
+                    },
+                    achievements: ACHIEVEMENTS.map(a => ({ ...a })),
+                    tutorials: TUTORIALS.map(t => ({ ...t })),
+                    autoSortTimer: null
+                };
             }
-        }, 100);
-        
-        gameState.cooking.push({ id: mealId, recipe: recipe, timeLeft: cookTime, timerId: timerId });
-        updateUI();
-    }
 
-    function createReadyMeal(recipe) {
-        const mealId = `meal-${gameState.nextMealId++}`;
-        const newMeal = { id: mealId, recipe: recipe, servingsLeft: recipe.servings };
-        gameState.readyMeals.push(newMeal);
-        const mealEl = document.createElement('div');
-        mealEl.id = mealId; mealEl.className = 'meal bg-blue-200 hover:bg-blue-300';
-        mealEl.innerHTML = `<span>${recipe.emoji} ${recipe.name}</span><span class="font-bold ml-2">x${newMeal.servingsLeft}</span>`;
-        readyMealsAreaEl.appendChild(mealEl);
-        if (!gameState.hasGuestsStarted) {
-            const totalServings = gameState.readyMeals.reduce((total, meal) => total + meal.servingsLeft, 0);
-            if (totalServings >= 5) {
-                gameState.hasGuestsStarted = true;
-                dailyEventTextEl.textContent = 'Guests are starting to arrive!';
-                spawnGuest();
+            const CONFIG = {
+                MAX_OVERWHELM: 100, MAX_ANGRY_GUESTS: 5, OVERWHELM_PER_GUEST_TICK: 0.1, SCORE_PER_GUEST: 10,
+                DONATION_SIZE: 3, MAX_COOKING_SLOTS: 3, COIN_PER_GUEST: 5,
+                ITEM_TYPES: {
+                    veg: { emoji: '🥦', color: 'bg-green-200' },
+                    protein: { emoji: '🍗', color: 'bg-red-200' },
+                    carbs: { emoji: '🍞', color: 'bg-yellow-200' }
+                }
+            };
+
+            let gameLoopInterval = null;
+
+            function loadHighScore() {
+                highScore = parseInt(localStorage.getItem('hopesCornerHighScore') || '0', 10);
+                highScoreDisplay.textContent = highScore;
+                highScoreModalDisplay.textContent = highScore;
             }
-        }
-    }
 
-    recipeAreaEl.addEventListener('click', e => {
-        if (e.target.classList.contains('cook-btn') && !e.target.disabled) {
-            const recipeId = e.target.dataset.recipeId;
-            const recipe = gameState.knownRecipes.find(r => r.id === recipeId);
-            if (recipe) startCooking(recipe);
-        }
-    });
-
-    readyMealsAreaEl.addEventListener('click', e => {
-        const mealEl = e.target.closest('.meal'); if (!mealEl) return;
-        const mealId = mealEl.id;
-        if (gameState.selectedMealId === mealId) {
-            gameState.selectedMealId = null; mealEl.classList.remove('ring-4');
-            instructionTextEl.textContent = '1. Click a ready meal to select it.';
-        } else {
-            const currentlySelected = document.querySelector('.meal.ring-4');
-            if (currentlySelected) currentlySelected.classList.remove('ring-4');
-            gameState.selectedMealId = mealId; mealEl.classList.add('ring-4');
-            instructionTextEl.textContent = '2. Now click a guest to serve!';
-        }
-    });
-
-    guestAreaEl.addEventListener('click', e => {
-        const guestEl = e.target.closest('.guest');
-        if (guestEl && gameState.selectedMealId) serveGuest(guestEl.id);
-    });
-
-    function serveGuest(guestId) {
-        const mealIndex = gameState.readyMeals.findIndex(m => m.id === gameState.selectedMealId);
-        const guestIndex = gameState.guests.findIndex(g => g.id === guestId);
-        if (mealIndex === -1 || guestIndex === -1) return;
-        const meal = gameState.readyMeals[mealIndex];
-        const guest = gameState.guests[guestIndex];
-        let bonus = (gameState.eventModifiers.score_bonus_item === meal.recipe.id) ? gameState.eventModifiers.score_bonus : 0;
-        gtag('event', 'serve_guest', {
-            recipe_name: meal.recipe.name,
-            guest_satisfaction: guest.satisfaction,
-            day: gameState.day
-        });
-        gameState.score += CONFIG.SCORE_PER_GUEST + Math.floor(guest.satisfaction * 5) + bonus;
-        clearInterval(guest.timer);
-        gameState.guests.splice(guestIndex, 1);
-        const guestEl = document.getElementById(guestId); if (guestEl) guestEl.remove();
-        meal.servingsLeft--;
-        const mealEl = document.getElementById(meal.id);
-        if (meal.servingsLeft <= 0) {
-            gameState.readyMeals.splice(mealIndex, 1); if (mealEl) mealEl.remove();
-            gameState.selectedMealId = null;
-            instructionTextEl.textContent = '1. Click a ready meal to select it.';
-        } else {
-            if (mealEl) mealEl.innerHTML = `<span>${meal.recipe.emoji} ${meal.recipe.name}</span><span class="font-bold ml-2">x${meal.servingsLeft}</span>`;
-        }
-        gameState.overwhelm = Math.max(0, gameState.overwhelm - 5);
-        updateUI();
-    }
-
-    function spawnGuest() {
-        if (!gameState.gameRunning) return;
-        const guestId = gameState.nextGuestId++;
-        const id = `guest-${guestId}`;
-        const waitTime = 30000 * (gameState.eventModifiers.guest_patience || 1);
-        const guest = { id: id, satisfaction: 1, timer: null, waitTime: waitTime };
-        const guestEl = document.createElement('div');
-        guestEl.id = id; guestEl.className = 'guest bg-purple-200 p-2 rounded-lg';
-        guestEl.innerHTML = `<div class="flex justify-between items-center text-sm"><span>Guest #${guestId + 1}</span><span class="satisfaction-emoji">😊</span></div><div class="progress-bar h-2 mt-1"><div class="satisfaction-bar progress-bar-fill bg-green-500" style="width: 100%;"></div></div>`;
-        guestAreaEl.appendChild(guestEl);
-        guest.timer = setInterval(() => {
-            const guestToUpdate = gameState.guests.find(g => g.id === id);
-            if (!guestToUpdate || !gameState.gameRunning) { clearInterval(guest.timer); return; }
-            guestToUpdate.satisfaction -= 100 / guest.waitTime;
-            const thisGuestEl = document.getElementById(id);
-            if (thisGuestEl) {
-                const satBar = thisGuestEl.querySelector('.satisfaction-bar');
-                const satEmoji = thisGuestEl.querySelector('.satisfaction-emoji');
-                satBar.style.width = `${guestToUpdate.satisfaction * 100}%`;
-                if (guestToUpdate.satisfaction > 0.7) { satBar.className = 'satisfaction-bar progress-bar-fill bg-green-500'; satEmoji.textContent = '😊'; }
-                else if (guestToUpdate.satisfaction > 0.3) { satBar.className = 'satisfaction-bar progress-bar-fill bg-yellow-500'; satEmoji.textContent = '😐'; }
-                else { satBar.className = 'satisfaction-bar progress-bar-fill bg-red-500'; satEmoji.textContent = '😠'; }
+            function saveHighScore() {
+                if (gameState.score > highScore) {
+                    highScore = gameState.score;
+                    localStorage.setItem('hopesCornerHighScore', highScore);
+                    newHighScoreMsg.classList.remove('hidden');
+                    showAchievementInGameOver('High Score Champion', 'You\'ve set a new personal best!');
+                } else {
+                    newHighScoreMsg.classList.add('hidden');
+                    unlockedAchievementEl.classList.add('hidden');
+                }
+                highScoreDisplay.textContent = highScore;
+                highScoreModalDisplay.textContent = highScore;
             }
-            if (guestToUpdate.satisfaction <= 0) {
-                clearInterval(guest.timer);
-                gameState.hungryGuestsLeft++;
-                gtag('event', 'guest_left_angry', { day: gameState.day });
-                updateUI();
-                const guestElement = document.getElementById(id);
-                if (guestElement) {
-                    guestElement.classList.add('shake');
-                    setTimeout(() => {
-                        if(guestElement.parentElement) guestElement.remove();
-                        gameState.guests = gameState.guests.filter(g => g.id !== id);
-                    }, 500);
+
+            function showAchievementInGameOver(title, description) {
+                unlockedAchievementEl.classList.remove('hidden');
+                achievementTitle.textContent = title;
+                achievementDesc.textContent = description;
+            }
+
+            function gameLoop() {
+                if (!gameState.gameRunning) return;
+                updateOverwhelm();
+
+                if (gameState.overwhelm >= 90 && !gameState.stats.recoveredFromHighOverwhelm) {
+                    gameState.stats.recoveredFromHighOverwhelm = true;
+                    checkAchievements();
+                }
+
+                if (gameState.overwhelm >= CONFIG.MAX_OVERWHELM) endGame("You got overwhelmed!");
+                if (gameState.hungryGuestsLeft >= CONFIG.MAX_ANGRY_GUESTS) endGame("Too many guests left hungry!");
+            }
+
+            function updateOverwhelm() {
+                let satisfactionPenalty = 0;
+                if (gameState.guests && gameState.guests.length > 0) {
+                    gameState.guests.forEach(g => { satisfactionPenalty += (1 - g.satisfaction) * CONFIG.OVERWHELM_PER_GUEST_TICK; });
+                }
+                if (sortingAreaEl.children.length > 8) satisfactionPenalty += 0.2;
+
+                gameState.overwhelm = Math.min(CONFIG.MAX_OVERWHELM, gameState.overwhelm + satisfactionPenalty);
+                gameState.overwhelm = Math.max(0, gameState.overwhelm - 0.05);
+                updateOverwhelmUI();
+            }
+
+            function startDayCycle() {
+                getDailyEvent(gameState.day);
+                gameState.dayTimer = setInterval(() => {
+                    if (!gameState.gameRunning) { clearInterval(gameState.dayTimer); return; }
+                    gameState.day++;
+                    gtag('event', 'day_complete', { 'day_number': gameState.day });
+
+                    gameState.stats.guestsServedToday = 0;
+
+                    if (gameState.day > gameState.stats.highestDayReached) {
+                        gameState.stats.highestDayReached = gameState.day;
+                        checkAchievements();
+                    }
+
+                    getDailyEvent(gameState.day);
+                    if (gameState.day > 1 && gameState.day % 2 === 0) learnNewRecipe();
+                    if (gameState.hasGuestsStarted) spawnGuest();
+                    if (gameState.day > 1) spawnDonation();
+
+                    if (gameState.day === 3) levelUpStation('sorting');
+                    if (gameState.day === 5) levelUpStation('kitchen');
+                    if (gameState.day === 7) levelUpStation('serving');
+
+                    updateDayUI();
+                    updateStatsUI();
+
+                    showNotification(`Day ${gameState.day} has begun!`, 'info');
+                    playSound('day');
+                }, gameState.dayDuration / (1 + gameState.day * 0.15));
+            }
+
+            function levelUpStation(stationName) {
+                gameState.stationLevels[stationName]++;
+                const stationLevelEl = document.getElementById(`${stationName}-level`);
+                if (stationLevelEl) stationLevelEl.textContent = `Level ${gameState.stationLevels[stationName]}`;
+                levelUpTitle.textContent = `Your ${stationName} is now level ${gameState.stationLevels[stationName]}!`;
+
+                switch (stationName) {
+                    case 'sorting': levelUpDesc.textContent = "You can now sort items faster and have reduced overwhelm from unsorted donations."; break;
+                    case 'kitchen':
+                        levelUpDesc.textContent = "You can now cook meals faster and have a larger inventory capacity.";
+                        if (gameState.stationLevels.kitchen === 2) CONFIG.MAX_COOKING_SLOTS = 4;
+                        break;
+                    case 'serving':
+                        levelUpDesc.textContent = "Guests are more patient and give more points when satisfied.";
+                        CONFIG.SCORE_PER_GUEST = 10 + (gameState.stationLevels.serving - 1) * 5;
+                        break;
+                }
+                showModal(levelUpModal);
+                playSound('level-up');
+            }
+
+            function learnNewRecipe() {
+                const unknownRecipes = MASTER_RECIPE_LIST.filter(r => !gameState.knownRecipes.some(kr => kr.id === r.id));
+                if (unknownRecipes.length > 0) {
+                    const newRecipe = unknownRecipes[Math.floor(Math.random() * unknownRecipes.length)];
+                    gameState.knownRecipes.push(newRecipe);
+                    renderRecipes();
+                    gtag('event', 'learn_new_recipe', { recipe_name: newRecipe.name, day: gameState.day });
+                    recipeUnlockEmoji.textContent = newRecipe.emoji;
+                    recipeUnlockName.textContent = newRecipe.name;
+                    recipeUnlockServings.textContent = `${newRecipe.servings} servings`;
+                    recipeUnlockIngredients.innerHTML = '';
+                    Object.entries(newRecipe.ingredients).forEach(([type, amount]) => {
+                        if (amount > 0) {
+                            const ingSpan = document.createElement('span');
+                            ingSpan.className = 'recipe-ingredient';
+                            ingSpan.textContent = `${CONFIG.ITEM_TYPES[type].emoji} x${amount}`;
+                            recipeUnlockIngredients.appendChild(ingSpan);
+                        }
+                    });
+                    recipeUnlockTime.textContent = `${Math.round(newRecipe.cookTime / 1000)}s`;
+                    recipeUnlockBonus.textContent = `+${newRecipe.pointsPerServing} points per serving`;
+                    showModal(recipeUnlockModal);
+                    playSound('recipe');
+                } else {
+                    showNotification("You've learned all available recipes!", 'info');
                 }
             }
-        }, 100);
-        gameState.guests.push(guest);
-        const nextGuestDelay = (Math.random() * 12000 + 8000) / (1 + (gameState.day - 1) * 0.3);
-        setTimeout(() => { if (gameState.gameRunning) spawnGuest(); }, nextGuestDelay);
-    }
-    
-    function spawnDonation() {
-        if (!gameState.gameRunning) return;
-        acceptDonationBtn.disabled = false;
-        acceptDonationBtn.style.opacity = '1';
-        acceptDonationBtn.classList.add('animate-pulse');
-    }
 
-    function playSound(note, len = '16n') {
-        if (synth) {
-            synth.triggerAttackRelease(note, len);
-        }
-    }
-
-    startGameBtn.addEventListener('click', () => {
-        if(typeof Tone !== 'undefined' && Tone.context.state !== 'running') {
-            Tone.start();
-        }
-        startGame();
-    });
-    
-    restartGameBtn.addEventListener('click', () => { gameOverModal.classList.add('hidden'); showStartModal(); });
-    acceptDonationBtn.addEventListener('click', () => {
-        if (acceptDonationBtn.disabled) return;
-        const baseDonationSize = CONFIG.DONATION_SIZE + Math.floor(gameState.day / 3);
-        gtag('event', 'accept_donation', { day: gameState.day, donation_size: baseDonationSize });
-        for (let i = 0; i < baseDonationSize; i++) createDonationItem();
-        const multipliers = gameState.eventModifiers.DONATION_MULTIPLIER || { veg: 1, protein: 1, carbs: 1 };
-        Object.keys(multipliers).forEach(itemType => {
-            if (multipliers[itemType] > 1) {
-                const bonusCount = Math.floor(baseDonationSize * (multipliers[itemType] - 1));
-                for (let i = 0; i < bonusCount; i++) createDonationItem(itemType);
+            function getDailyEvent(day) {
+                if (day === 1) { dailyEventTextEl.textContent = 'Get your kitchen ready!'; return; }
+                const eventData = DAILY_EVENTS[Math.floor(Math.random() * DAILY_EVENTS.length)];
+                applyEvent(eventData);
             }
-        });
-        acceptDonationBtn.disabled = true; acceptDonationBtn.style.opacity = '0.5';
-        acceptDonationBtn.classList.remove('animate-pulse');
-        const nextDonationDelay = (Math.random() * 8000 + 8000) / (1 + (gameState.day - 1) * 0.2);
-        setTimeout(() => { if (gameState.gameRunning) spawnDonation(); }, nextDonationDelay);
-    });
 
-    sortingAreaEl.addEventListener('click', (e) => {
-        const item = e.target.closest('.donation-item');
-        if (!item) return;
+            function applyEvent(eventData) {
+                gameState.eventModifiers = {};
+                const { description, effect, icon } = eventData;
+                dailyEventTextEl.textContent = description;
+                eventEffectsEl.innerHTML = '';
 
-        playSound('C4');
-        if (gameState.selectedDonationId === item.id) {
-            item.classList.remove('selected');
-            gameState.selectedDonationId = null;
-            sortInstructionTextEl.textContent = '1. Click a donation item to select it.';
-        } else {
-            if(gameState.selectedDonationId) {
-                const oldSelected = document.getElementById(gameState.selectedDonationId);
-                if (oldSelected) oldSelected.classList.remove('selected');
+                if (icon) {
+                    const effectBadge = document.createElement('span');
+                    effectBadge.className = 'badge';
+                    effectBadge.style.backgroundColor = 'rgba(132, 204, 22, 0.2)';
+                    effectBadge.style.color = 'var(--primary)';
+                    effectBadge.textContent = icon;
+                    eventEffectsEl.appendChild(effectBadge);
+                }
+
+                switch (effect.type) {
+                    case 'donation_multiplier': gameState.eventModifiers.DONATION_MULTIPLIER = { ...{ veg: 1, protein: 1, carbs: 1 }, [effect.item]: effect.modifier || 2 }; break;
+                    case 'guest_patience': gameState.eventModifiers.guest_patience = effect.modifier || 1.25; break;
+                    case 'cooking_speed': gameState.eventModifiers.cooking_speed = effect.modifier || 0.75; break;
+                    case 'score_bonus': gameState.eventModifiers.score_bonus_item = effect.item; gameState.eventModifiers.score_bonus = effect.modifier || 5; break;
+                    case 'guest_satisfaction': gameState.eventModifiers.guest_satisfaction = effect.modifier || 1.2; break;
+                    case 'coin_bonus': gameState.eventModifiers.coin_bonus = effect.modifier || 2; break;
+                    case 'sorting_bonus': gameState.eventModifiers.sorting_bonus = effect.modifier || 1.5; break;
+                }
+                renderRecipes();
+                showNotification(`Event: ${description}`, 'event');
             }
-            item.classList.add('selected');
-            gameState.selectedDonationId = item.id;
-            sortInstructionTextEl.textContent = '2. Now tap the correct bin to sort!';
-        }
-    });
 
-    document.querySelectorAll('.storage-bin').forEach(bin => {
-        bin.addEventListener('click', () => {
-            if (!gameState.selectedDonationId) return;
+            function updateScoreUI() { scoreEl.textContent = gameState.score; }
+            function updateCoinsUI() { coinsDisplayEl.textContent = gameState.coins; updateUpgradeButtons(); }
+            function updateDayUI() { dayEl.textContent = gameState.day; }
+            function updateAngryGuestsUI() { angryGuestsDisplay.textContent = `${gameState.hungryGuestsLeft} / ${CONFIG.MAX_ANGRY_GUESTS}`; }
+            function updateInventoryUI() { Object.keys(storageCounts).forEach(type => { storageCounts[type].textContent = gameState.inventory[type]; }); }
+            function updateCookingSlotsUI() { cookingSlotsDisplay.textContent = `${gameState.cooking.length}/${CONFIG.MAX_COOKING_SLOTS} Slots`; }
+            function updateStatsUI() {
+                guestsServedToday.textContent = gameState.stats.guestsServedToday;
+                mealsPrepared.textContent = gameState.stats.mealsPrepared;
+                const avgSatisfactionValue = gameState.stats.guestsServed > 0 ? Math.round((gameState.stats.totalSatisfaction / gameState.stats.guestsServed) * 100) : 0;
+                avgSatisfaction.textContent = `${avgSatisfactionValue}%`;
+            }
+            function updateOverwhelmUI() {
+                overwhelmBarEl.style.width = `${gameState.overwhelm}%`;
+                if (gameState.overwhelm > 75) overwhelmBarEl.className = 'progress-bar-fill bg-red-600';
+                else if (gameState.overwhelm > 50) overwhelmBarEl.className = 'progress-bar-fill bg-orange-500';
+                else if (gameState.overwhelm > 25) overwhelmBarEl.className = 'progress-bar-fill bg-yellow-500';
+                else overwhelmBarEl.className = 'progress-bar-fill bg-green-500';
+            }
 
-            const selectedItem = document.getElementById(gameState.selectedDonationId);
-            if (!selectedItem) return;
+            function renderRecipes() {
+                recipeAreaEl.innerHTML = '';
+                gameState.knownRecipes.forEach(recipe => {
+                    const canCook = Object.keys(recipe.ingredients).every(ing => gameState.inventory[ing] >= recipe.ingredients[ing]) && gameState.cooking.length < CONFIG.MAX_COOKING_SLOTS;
+                    const cookingSpeedModifier = (gameState.eventModifiers.cooking_speed || 1) * (1 - (gameState.upgrades.fasterCooking.level * 0.1));
+                    const cookTimeSec = Math.round((recipe.cookTime * cookingSpeedModifier) / 1000);
+                    const recipeCard = document.createElement('div');
+                    recipeCard.className = `recipe-card-new ${!canCook ? 'opacity-50' : ''}`;
+                    recipeCard.innerHTML = `
+                <div class="recipe-banner"></div>
+                <div class="recipe-icon">${recipe.emoji}</div>
+                <div class="recipe-body">
+                    <div class="recipe-heading">
+                        <h3 class="recipe-name">${recipe.name}</h3>
+                        <span class="recipe-servings">${recipe.servings} servings</span>
+                    </div>
+                    <div class="recipe-ingredients">
+                        ${Object.entries(recipe.ingredients).map(([type, amount]) =>
+                        amount > 0 ? `<span class="recipe-ingredient ${gameState.inventory[type] >= amount ? '' : 'opacity-50'}">${CONFIG.ITEM_TYPES[type].emoji} x${amount}</span>` : ''
+                    ).join('')}
+                    </div>
+                    <div class="recipe-stats">
+                        <span>Cook time: ${cookTimeSec}s</span>
+                        <button data-recipe-id="${recipe.id}" class="cook-btn btn-primary py-1 px-3 text-sm ${!canCook ? 'opacity-50 cursor-not-allowed' : ''}" ${!canCook ? 'disabled' : ''}>
+                            ${canCook ? 'Cook' : 'Needed'}
+                        </button>
+                    </div>
+                </div>
+            `;
+                    if (gameState.eventModifiers.score_bonus_item === recipe.id || gameState.eventModifiers.score_bonus_item === 'all') {
+                        const bonusBadge = document.createElement('div');
+                        bonusBadge.className = 'absolute top-0 right-0 m-2 badge badge-accent glow-animation';
+                        bonusBadge.textContent = `+${gameState.eventModifiers.score_bonus} Bonus!`;
+                        recipeCard.appendChild(bonusBadge);
+                    }
+                    recipeAreaEl.appendChild(recipeCard);
+                });
+            }
 
-            if(selectedItem.dataset.type === bin.dataset.type) {
-                playSound('E5', '8n');
-                selectedItem.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
-                selectedItem.style.transform = 'scale(0)';
-                selectedItem.style.opacity = '0';
+            function updateUpgradeButtons() {
+                const upgrades = [
+                    { el: autoSortUpgrade, config: gameState.upgrades.autoSort },
+                    { el: fasterCookingUpgrade, config: gameState.upgrades.fasterCooking },
+                    { el: extraSlotUpgrade, config: gameState.upgrades.extraSlot },
+                    { el: guestPatienceUpgrade, config: gameState.upgrades.guestPatience },
+                    { el: bonusPointsUpgrade, config: gameState.upgrades.bonusPoints }
+                ];
+                upgrades.forEach(({ el, config }) => {
+                    const button = el.querySelector('button');
+                    if (config.level >= config.maxLevel) {
+                        button.textContent = "MAX LEVEL";
+                        button.disabled = true;
+                        button.classList.add('opacity-50', 'cursor-not-allowed');
+                    } else {
+                        const cost = config.cost * Math.pow(config.costMultiplier, config.level);
+                        button.textContent = `${cost} 🪙`;
+                        button.disabled = gameState.coins < cost;
+                        button.classList.toggle('opacity-50', gameState.coins < cost);
+                        button.classList.toggle('cursor-not-allowed', gameState.coins < cost);
+                    }
+                });
+            }
+
+            function showStartModal() {
+                modalOverlay.classList.remove('hidden');
+                startModal.classList.remove('hidden');
+                gameOverModal.classList.add('hidden');
+                achievementModal.classList.add('hidden');
+                levelUpModal.classList.add('hidden');
+                recipeUnlockModal.classList.add('hidden');
+                loadHighScore();
+            }
+
+            function showModal(modalEl) {
+                modalOverlay.classList.remove('hidden');
+                modalEl.classList.remove('hidden');
+                const allModals = document.querySelectorAll('.modal');
+                allModals.forEach(modal => {
+                    if (modal !== modalEl) modal.classList.add('hidden');
+                });
+            }
+
+            function startGame() {
+                initializeGameState();
+                gtag('event', 'game_start');
+                gameState.gameRunning = true;
+                modalOverlay.classList.add('hidden');
+                if (!soundsLoaded) loadSounds();
+                gameLoopInterval = setInterval(gameLoop, 100);
+                startDayCycle();
+                spawnDonation();
+                updateScoreUI(); updateCoinsUI(); updateDayUI(); updateAngryGuestsUI(); updateInventoryUI(); updateCookingSlotsUI(); updateStatsUI();
+                renderRecipes();
+                showTutorial('sorting');
+                setupAutoSort();
+                playSound('start');
+            }
+
+            function setupAutoSort() {
+                if (gameState.autoSortTimer) clearInterval(gameState.autoSortTimer);
+                if (gameState.upgrades.autoSort.level > 0) {
+                    const interval = 10000 / gameState.upgrades.autoSort.level;
+                    gameState.autoSortTimer = setInterval(() => {
+                        if (!gameState.gameRunning) return;
+                        autoSort();
+                    }, interval);
+                }
+            }
+
+            function autoSort() {
+                const donationItems = Array.from(sortingAreaEl.querySelectorAll('.donation-item'));
+                if (donationItems.length > 0) {
+                    const randomItem = donationItems[Math.floor(Math.random() * donationItems.length)];
+                    const type = randomItem.dataset.type;
+                    createParticle(randomItem, '🤖');
+                    setTimeout(() => {
+                        if (!randomItem.parentElement) return;
+                        gameState.inventory[type]++;
+                        gameState.totalInventory[type]++;
+                        gameState.donationsInSorting--;
+                        gameState.stats.itemsSorted++;
+                        updateInventoryUI();
+                        renderRecipes();
+                        checkAchievements();
+                        randomItem.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+                        randomItem.style.transform = 'scale(0)';
+                        randomItem.style.opacity = '0';
+                        setTimeout(() => { if (randomItem.parentElement) randomItem.remove(); }, 300);
+                        playSound('sort');
+                    }, 300);
+                }
+            }
+
+            function endGame(reason) {
+                if (!gameState.gameRunning) return;
+                gameState.gameRunning = false;
+                clearInterval(gameLoopInterval);
+                if (gameState.dayTimer) clearInterval(gameState.dayTimer);
+                if (gameState.autoSortTimer) clearInterval(gameState.autoSortTimer);
+                gameState.guests.forEach(g => clearInterval(g.timer));
+                gameState.cooking.forEach(c => clearInterval(c.timerId));
+                gtag('event', 'game_over', { 'reason': reason, 'final_score': gameState.score, 'day_reached': gameState.day });
+                saveHighScore();
+                finalScoreEl.textContent = gameState.score;
+                finalDaysEl.textContent = gameState.day;
+                finalGuestsEl.textContent = gameState.stats.guestsServed;
+                finalMealsEl.textContent = gameState.stats.mealsPrepared;
+                gameOverReasonEl.textContent = reason;
+                loadHighScore();
+                showModal(gameOverModal);
+                sortingAreaEl.innerHTML = ''; readyMealsAreaEl.innerHTML = ''; guestAreaEl.innerHTML = ''; recipeAreaEl.innerHTML = ''; cookingSlotsEl.innerHTML = '';
+                playSound('game-over');
+            }
+
+            function createDonationItem(forcedType = null) {
+                if (sortingAreaEl.children.length >= 9) return;
+                gameState.donationsInSorting++;
+                const typeKeys = Object.keys(CONFIG.ITEM_TYPES);
+                const type = forcedType || typeKeys[Math.floor(Math.random() * typeKeys.length)];
+                const itemInfo = CONFIG.ITEM_TYPES[type];
+                const itemEl = document.createElement('div');
+                itemEl.id = `donation-${gameState.nextDonationId++}`;
+                const bgColorClass = itemInfo.color;
+                itemEl.className = `donation-item ${bgColorClass} font-bold`;
+                itemEl.textContent = itemInfo.emoji;
+                itemEl.dataset.type = type;
+                sortingAreaEl.appendChild(itemEl);
+                if (gameState.donationsInSorting === 1) showTutorial('sorting');
+            }
+
+            function startCooking(recipe) {
+                if (gameState.cooking.length >= CONFIG.MAX_COOKING_SLOTS) return;
+                gtag('event', 'cook_recipe', { recipe_name: recipe.name, day: gameState.day });
+
+                Object.entries(recipe.ingredients).forEach(([ing, amount]) => { gameState.inventory[ing] -= amount; });
+                updateInventoryUI();
+                renderRecipes();
+
+                const mealId = `cooking-${gameState.nextMealId++}`;
+                const cookingSpeedModifier = (gameState.eventModifiers.cooking_speed || 1) * (1 - (gameState.upgrades.fasterCooking.level * 0.1));
+                const cookTime = recipe.cookTime * cookingSpeedModifier;
+                const progressCard = document.createElement('div');
+                progressCard.id = mealId;
+                progressCard.className = 'bg-white rounded-lg p-3 shadow';
+                progressCard.innerHTML = `
+            <div class="flex justify-between items-center mb-1 text-gray-800">
+                <span class="font-medium text-sm">${recipe.emoji} ${recipe.name}</span>
+                <span class="text-xs cook-time-remaining">${Math.ceil(cookTime / 1000)}s</span>
+            </div>
+            <div class="progress-bar h-3 mt-1">
+                <div class="progress-bar-fill" style="background-color: var(--primary); width: 0%;"></div>
+            </div>`;
+                cookingSlotsEl.appendChild(progressCard);
+
+                const timerId = setInterval(() => {
+                    const cookingMeal = gameState.cooking.find(m => m.id === mealId);
+                    if (!cookingMeal || !gameState.gameRunning) {
+                        clearInterval(timerId);
+                        if (progressCard.parentElement) progressCard.remove();
+                        return;
+                    }
+                    cookingMeal.timeLeft -= 100;
+                    const progress = 100 - (cookingMeal.timeLeft / cookTime) * 100;
+                    const pBarFill = progressCard.querySelector('.progress-bar-fill');
+                    const timeRemaining = progressCard.querySelector('.cook-time-remaining');
+                    if (pBarFill) pBarFill.style.width = `${progress}%`;
+                    if (timeRemaining) timeRemaining.textContent = `${Math.ceil(cookingMeal.timeLeft / 1000)}s`;
+
+                    if (cookingMeal.timeLeft <= 0) {
+                        clearInterval(timerId);
+                        if (progressCard.parentElement) {
+                            progressCard.classList.add('pulse-animation');
+                            setTimeout(() => { if (progressCard.parentElement) progressCard.remove(); }, 500);
+                        }
+                        gameState.cooking = gameState.cooking.filter(m => m.id !== mealId);
+                        createReadyMeal(recipe);
+                        gameState.stats.mealsPrepared++;
+                        checkAchievements();
+                        updateCookingSlotsUI();
+                        updateStatsUI();
+                        playSound('meal-ready');
+                    }
+                }, 100);
+
+                gameState.cooking.push({ id: mealId, recipe: recipe, timeLeft: cookTime, timerId: timerId });
+                updateCookingSlotsUI();
+                playSound('cook');
+                if (gameState.stats.mealsPrepared === 0) showTutorial('cooking');
+            }
+
+            function createReadyMeal(recipe) {
+                const mealId = `meal-${gameState.nextMealId++}`;
+                const newMeal = { id: mealId, recipe: recipe, servingsLeft: recipe.servings };
+                gameState.readyMeals.push(newMeal);
+                const mealEl = document.createElement('div');
+                mealEl.id = mealId;
+                mealEl.className = 'meal';
+                mealEl.style.backgroundColor = 'rgba(132, 204, 22, 0.2)';
+                mealEl.style.borderColor = 'rgba(132, 204, 22, 0.3)';
+                mealEl.innerHTML = `
+            <div class="flex justify-between items-center">
+                <span>${recipe.emoji} ${recipe.name}</span>
+                <span class="servings-count font-bold ml-2 px-2 py-0.5 bg-white rounded-full text-sm" style="color: var(--primary)">x${newMeal.servingsLeft}</span>
+            </div>`;
+                readyMealsAreaEl.appendChild(mealEl);
+
+                if (gameState.eventModifiers.score_bonus_item === recipe.id || gameState.eventModifiers.score_bonus_item === 'all') {
+                    const bonusBadge = document.createElement('div');
+                    bonusBadge.className = 'text-xs mt-1 p-0.5 rounded text-center glow-animation';
+                    bonusBadge.style.backgroundColor = 'rgba(215, 119, 6, 0.2)';
+                    bonusBadge.style.color = 'var(--accent)';
+                    bonusBadge.textContent = `+${gameState.eventModifiers.score_bonus} Bonus Points!`;
+                    mealEl.appendChild(bonusBadge);
+                }
+
+                if (!gameState.hasGuestsStarted) {
+                    const totalServings = gameState.readyMeals.reduce((total, meal) => total + meal.servingsLeft, 0);
+                    if (totalServings >= 5) {
+                        gameState.hasGuestsStarted = true;
+                        dailyEventTextEl.textContent = 'Guests are starting to arrive!';
+                        spawnGuest();
+                        showNotification("Guests have started arriving!", 'info');
+                        showTutorial('serving');
+                    }
+                }
+            }
+
+            recipeAreaEl.addEventListener('click', e => {
+                if (e.target.classList.contains('cook-btn') && !e.target.disabled) {
+                    const recipeId = e.target.dataset.recipeId;
+                    const recipe = gameState.knownRecipes.find(r => r.id === recipeId);
+                    if (recipe) startCooking(recipe);
+                }
+            });
+
+            readyMealsAreaEl.addEventListener('click', e => {
+                const mealEl = e.target.closest('.meal'); if (!mealEl) return;
+                const mealId = mealEl.id;
+                if (gameState.selectedMealId === mealId) {
+                    gameState.selectedMealId = null; mealEl.classList.remove('ring-4');
+                    instructionTextEl.textContent = '1. Click a ready meal to select it.';
+                } else {
+                    const currentlySelected = document.querySelector('.meal.ring-4');
+                    if (currentlySelected) currentlySelected.classList.remove('ring-4');
+                    gameState.selectedMealId = mealId; mealEl.classList.add('ring-4');
+                    instructionTextEl.textContent = '2. Now click a guest to serve!';
+                    playSound('select-meal');
+                }
+            });
+
+            guestAreaEl.addEventListener('click', e => {
+                const guestEl = e.target.closest('.guest');
+                if (guestEl && gameState.selectedMealId) serveGuest(guestEl.id);
+            });
+
+            function serveGuest(guestId) {
+                const mealIndex = gameState.readyMeals.findIndex(m => m.id === gameState.selectedMealId);
+                const guestIndex = gameState.guests.findIndex(g => g.id === guestId);
+                if (mealIndex === -1 || guestIndex === -1) return;
+                const meal = gameState.readyMeals[mealIndex];
+                const guest = gameState.guests[guestIndex];
+                if (!meal || !guest) return;
+
+                let recipeBonus = 0;
+                if (gameState.eventModifiers.score_bonus_item === meal.recipe.id || gameState.eventModifiers.score_bonus_item === 'all') {
+                    recipeBonus = gameState.eventModifiers.score_bonus;
+                }
+
+                let bonusPoints = Math.floor(guest.satisfaction * 5) + recipeBonus;
+                if (gameState.upgrades.bonusPoints.level > 0) bonusPoints += gameState.upgrades.bonusPoints.level * 2;
+
+                const basePoints = CONFIG.SCORE_PER_GUEST + meal.recipe.pointsPerServing;
+                const totalPoints = basePoints + bonusPoints;
+                gtag('event', 'serve_guest', { recipe_name: meal.recipe.name, guest_satisfaction: guest.satisfaction, day: gameState.day });
+                gameState.score += totalPoints;
+
+                let coinAward = CONFIG.COIN_PER_GUEST;
+                if (gameState.eventModifiers.coin_bonus) coinAward *= gameState.eventModifiers.coin_bonus;
+                gameState.coins += coinAward;
+
+                gameState.stats.guestsServed++;
+                gameState.stats.guestsServedToday++;
+                gameState.stats.totalSatisfaction += guest.satisfaction;
+                if (guest.satisfaction >= 0.95) gameState.stats.perfectServings++;
+                checkAchievements();
+
+                const guestEl = document.getElementById(guestId);
+                if (guestEl) {
+                    createScorePopup(guestEl, `+${totalPoints}`);
+                    createCoinPopup(guestEl, `+${coinAward} 🪙`);
+                    if (guest.satisfaction > 0.8) createParticle(guestEl, '❤️');
+                }
+
+                clearInterval(guest.timer);
+                gameState.guests.splice(guestIndex, 1);
+                if (guestEl) {
+                    guestEl.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+                    guestEl.style.transform = 'scale(0)';
+                    guestEl.style.opacity = '0';
+                    setTimeout(() => { if (guestEl.parentElement) guestEl.remove(); }, 300);
+                }
+
+                meal.servingsLeft--;
+                const mealEl = document.getElementById(meal.id);
+                if (meal.servingsLeft <= 0) {
+                    gameState.readyMeals.splice(mealIndex, 1);
+                    if (mealEl) {
+                        mealEl.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+                        mealEl.style.transform = 'scale(0)';
+                        mealEl.style.opacity = '0';
+                        setTimeout(() => { if (mealEl.parentElement) mealEl.remove(); }, 300);
+                    }
+                    gameState.selectedMealId = null;
+                    instructionTextEl.textContent = '1. Click a ready meal to select it.';
+                } else {
+                    if (mealEl) {
+                        const servingsSpan = mealEl.querySelector('.servings-count');
+                        if (servingsSpan) servingsSpan.textContent = `x${meal.servingsLeft}`;
+                    }
+                }
+
+                gameState.overwhelm = Math.max(0, gameState.overwhelm - 5);
+                updateScoreUI();
+                updateCoinsUI();
+                updateStatsUI();
+                playSound('serve');
+                if (gameState.stats.guestsServed === 3) showTutorial('upgrades');
+            }
+
+            function spawnGuest() {
+                if (!gameState.gameRunning) return;
+                const guestId = gameState.nextGuestId++;
+                const id = `guest-${guestId}`;
+                const baseWaitTime = 30000;
+                const patienceModifier = (gameState.eventModifiers.guest_patience || 1) * (1 + (gameState.upgrades.guestPatience.level * 0.15));
+                const waitTime = baseWaitTime * patienceModifier;
+                const guest = { id: id, satisfaction: 1, timer: null, waitTime: waitTime };
+                const guestEl = document.createElement('div');
+                guestEl.id = id;
+                guestEl.className = 'guest';
+                guestEl.style.backgroundColor = 'rgba(147, 51, 234, 0.2)';
+                guestEl.style.borderColor = 'rgba(147, 51, 234, 0.3)';
+                const guestEmoji = ['👨', '👩', '👴', '👵', '👦', '👧', '🧑', '👱‍♂️', '👱‍♀️'][guestId % 9];
+                guestEl.innerHTML = `
+            <div class="flex justify-between items-center text-sm">
+                <span>${guestEmoji} Guest #${guestId + 1}</span>
+                <span class="satisfaction-emoji">😊</span>
+            </div>
+            <div class="progress-bar h-2 mt-1">
+                <div class="satisfaction-bar progress-bar-fill bg-green-500" style="width: 100%;"></div>
+            </div>`;
+                guestAreaEl.appendChild(guestEl);
+
+                guest.timer = setInterval(() => {
+                    const guestToUpdate = gameState.guests.find(g => g.id === id);
+                    if (!guestToUpdate || !gameState.gameRunning) { clearInterval(guest.timer); return; }
+                    guestToUpdate.satisfaction -= 100 / guest.waitTime;
+                    const thisGuestEl = document.getElementById(id);
+                    if (thisGuestEl) {
+                        const satBar = thisGuestEl.querySelector('.satisfaction-bar');
+                        const satEmoji = thisGuestEl.querySelector('.satisfaction-emoji');
+                        satBar.style.width = `${guestToUpdate.satisfaction * 100}%`;
+                        if (guestToUpdate.satisfaction > 0.7) { satBar.className = 'satisfaction-bar progress-bar-fill bg-green-500'; satEmoji.textContent = '😊'; }
+                        else if (guestToUpdate.satisfaction > 0.3) { satBar.className = 'satisfaction-bar progress-bar-fill bg-yellow-500'; satEmoji.textContent = '😐'; }
+                        else {
+                            satBar.className = 'satisfaction-bar progress-bar-fill bg-red-500'; satEmoji.textContent = '😠';
+                            if (guestToUpdate.satisfaction < 0.15 && Math.random() < 0.05) {
+                                thisGuestEl.classList.add('shake');
+                                setTimeout(() => { if (thisGuestEl.parentElement) thisGuestEl.classList.remove('shake'); }, 500);
+                            }
+                        }
+                    }
+                    if (guestToUpdate.satisfaction <= 0) {
+                        clearInterval(guest.timer);
+                        gameState.hungryGuestsLeft++;
+                        updateAngryGuestsUI();
+                        gtag('event', 'guest_left_angry', { day: gameState.day });
+
+                        const guestElement = document.getElementById(id);
+                        if (guestElement) {
+                            guestElement.classList.add('shake');
+                            createParticle(guestElement, '😡');
+                            setTimeout(() => {
+                                if (guestElement.parentElement) guestElement.remove();
+                                gameState.guests = gameState.guests.filter(g => g.id !== id);
+                            }, 500);
+                        }
+
+                        showNotification("A guest left hungry!", 'error');
+                        playSound('guest-angry');
+                    }
+                }, 100);
+
+                gameState.guests.push(guest);
+
+                const baseDelay = 15000 - (gameState.day * 500);
+                const minDelay = 5000;
+                const nextGuestDelay = Math.max(minDelay, baseDelay / (gameState.eventModifiers.guest_arrival_speed || 1));
+
                 setTimeout(() => {
-                    gameState.inventory[bin.dataset.type]++;
-                    selectedItem.remove();
-                    gameState.donationsInSorting--;
-                    gameState.score++;
-                    updateUI();
-                }, 300);
-            } else {
-                playSound('C2', '8n');
-                gameState.overwhelm = Math.min(100, gameState.overwhelm + 5);
-                selectedItem.classList.add('shake');
-                setTimeout(() => selectedItem.classList.remove('shake'), 500);
-                updateUI();
-            }
-            
-            selectedItem.classList.remove('selected');
-            gameState.selectedDonationId = null;
-            sortInstructionTextEl.textContent = '1. Click a donation item to select it.';
-        });
-    });
+                    if (gameState.gameRunning) spawnGuest();
+                }, nextGuestDelay);
 
-    showStartModal();
-});
-</script>
+                playSound('guest-arrive');
+            }
+
+            function spawnDonation() {
+                if (!gameState.gameRunning) return;
+                acceptDonationBtn.disabled = false;
+                acceptDonationBtn.style.opacity = '1';
+                acceptDonationBtn.classList.add('pulse-animation');
+            }
+
+            acceptDonationBtn.addEventListener('click', () => {
+                if (acceptDonationBtn.disabled) return;
+                acceptDonationBtn.disabled = true;
+                acceptDonationBtn.style.opacity = '0.5';
+                acceptDonationBtn.classList.remove('pulse-animation');
+                let donationMultiplier = { veg: 1, protein: 1, carbs: 1 };
+                if (gameState.eventModifiers.DONATION_MULTIPLIER) {
+                    donationMultiplier = gameState.eventModifiers.DONATION_MULTIPLIER;
+                }
+                for (let i = 0; i < CONFIG.DONATION_SIZE; i++) {
+                    let type = null;
+                    if (donationMultiplier.veg > 1 && Math.random() < 0.33) type = 'veg';
+                    else if (donationMultiplier.protein > 1 && Math.random() < 0.33) type = 'protein';
+                    else if (donationMultiplier.carbs > 1 && Math.random() < 0.33) type = 'carbs';
+                    createDonationItem(type);
+                }
+                playSound('donation');
+                setTimeout(() => {
+                    if (gameState.gameRunning) spawnDonation();
+                }, 4000 / (gameState.eventModifiers.sorting_bonus || 1));
+            });
+
+            sortingAreaEl.addEventListener('click', e => {
+                const itemEl = e.target.closest('.donation-item');
+                if (!itemEl) return;
+                if (gameState.selectedDonationId === itemEl.id) {
+                    gameState.selectedDonationId = null;
+                    itemEl.classList.remove('selected');
+                    sortInstructionTextEl.textContent = '1. Click a donation item to select it.';
+                } else {
+                    const prev = document.querySelector('.donation-item.selected');
+                    if (prev) prev.classList.remove('selected');
+                    gameState.selectedDonationId = itemEl.id;
+                    itemEl.classList.add('selected');
+                    sortInstructionTextEl.textContent = '2. Now click a storage bin!';
+                    playSound('select-donation');
+                }
+            });
+
+            Object.values(storageCounts).forEach((el, idx) => {
+                const type = Object.keys(storageCounts)[idx];
+                const binEl = document.getElementById(`${type}-bin`);
+                binEl.addEventListener('click', () => {
+                    if (!gameState.selectedDonationId) return;
+                    const itemEl = document.getElementById(gameState.selectedDonationId);
+                    if (!itemEl) return;
+                    if (itemEl.dataset.type === type) {
+                        gameState.inventory[type]++;
+                        gameState.totalInventory[type]++;
+                        gameState.donationsInSorting--;
+                        gameState.stats.itemsSorted++;
+                        updateInventoryUI();
+                        renderRecipes();
+                        checkAchievements();
+                        createParticle(itemEl, '✅');
+                        playSound('sort');
+                        itemEl.style.transition = 'transform 0.3s, opacity 0.3s';
+                        itemEl.style.transform = 'scale(0)';
+                        itemEl.style.opacity = '0';
+                        setTimeout(() => { if (itemEl.parentElement) itemEl.remove(); }, 300);
+                    } else {
+                        createParticle(itemEl, '❌');
+                        playSound('error');
+                        itemEl.classList.add('shake');
+                        setTimeout(() => itemEl.classList.remove('shake'), 500);
+                        gameState.overwhelm = Math.min(CONFIG.MAX_OVERWHELM, gameState.overwhelm + 5);
+                        updateOverwhelmUI();
+                    }
+                    gameState.selectedDonationId = null;
+                    sortInstructionTextEl.textContent = '1. Click a donation item to select it.';
+                });
+            });
+
+            function loadSounds() {
+                if (soundsLoaded) return;
+                sounds = {
+                    'start': new Howl({ src: ['https://cdn.pixabay.com/audio/2022/10/16/audio_12b6b6b2e2.mp3'], volume: 0.3 }),
+                    'donation': new Howl({ src: ['https://cdn.freesound.org/previews/171/171671_2437358-lq.mp3'], volume: 0.2 }),
+                    'sort': new Howl({ src: ['https://cdn.pixabay.com/audio/2022/10/16/audio_12b6b6b2e2.mp3'], volume: 0.15 }),
+                    'cook': new Howl({ src: ['https://cdn.pixabay.com/audio/2022/03/15/audio_731c5520a7.mp3'], volume: 0.2, loop: true }),
+                    'meal-ready': new Howl({ src: ['https://cdn.pixabay.com/audio/2022/10/13/audio_a124cce02b.mp3'], volume: 0.2 }),
+                    'serve': new Howl({ src: ['https://cdn.pixabay.com/audio/2022/09/23/audio_247a329c35.mp3'], volume: 0.2 }),
+                    'guest-arrive': new Howl({ src: ['https://cdn.pixabay.com/audio/2022/10/16/audio_12b6b6b2e2.mp3'], volume: 0.2 }),
+                    'guest-angry': new Howl({ src: ['https://cdn.pixabay.com/audio/2022/10/13/audio_a124cce02b.mp3'], volume: 0.2 }),
+                    'level-up': new Howl({ src: ['https://cdn.freesound.org/previews/320/320654_5260872-lq.mp3'], volume: 0.2 }),
+                    'recipe': new Howl({ src: ['https://cdn.pixabay.com/audio/2022/10/13/audio_a124cce02b.mp3'], volume: 0.2 }),
+                    'day': new Howl({ src: ['https://cdn.pixabay.com/audio/2022/10/16/audio_12b6b6b2e2.mp3'], volume: 0.2 }),
+                    'error': new Howl({ src: ['https://cdn.pixabay.com/audio/2022/10/13/audio_a124cce02b.mp3'], volume: 0.2 }),
+                    'select-meal': new Howl({ src: ['https://cdn.pixabay.com/audio/2022/10/16/audio_12b6b6b2e2.mp3'], volume: 0.15 }),
+                    'select-donation': new Howl({ src: ['https://cdn.pixabay.com/audio/2022/10/16/audio_12b6b6b2e2.mp3'], volume: 0.15 }),
+                    'game-over': new Howl({ src: ['https://cdn.freesound.org/previews/173/173859_1074082-lq.mp3'], volume: 0.3 })
+                };
+                soundsLoaded = true;
+            }
+            function playSound(name) {
+                if (sounds[name]) {
+                    sounds[name].stop();
+                    sounds[name].play();
+                }
+            }
+
+            function showNotification(msg, type = 'info') {
+                const container = document.getElementById('notification-container');
+                const notif = document.createElement('div');
+                notif.className = 'notification';
+                if (type === 'error') notif.style.borderLeftColor = 'red';
+                if (type === 'event') notif.style.borderLeftColor = 'var(--accent)';
+                notif.textContent = msg;
+                container.appendChild(notif);
+                setTimeout(() => notif.classList.add('active'), 10);
+                setTimeout(() => {
+                    notif.classList.remove('active');
+                    setTimeout(() => { if (notif.parentElement) notif.remove(); }, 500);
+                }, 2500);
+            }
+
+            function createScorePopup(target, text) {
+                const popup = document.createElement('div');
+                popup.textContent = text;
+                popup.style.position = 'absolute';
+                popup.style.left = '50%';
+                popup.style.top = '0';
+                popup.style.transform = 'translate(-50%, -100%)';
+                popup.style.background = 'var(--primary)';
+                popup.style.color = 'white';
+                popup.style.padding = '2px 8px';
+                popup.style.borderRadius = '8px';
+                popup.style.fontWeight = 'bold';
+                popup.style.zIndex = 100;
+                popup.style.pointerEvents = 'none';
+                target.appendChild(popup);
+                setTimeout(() => { popup.style.opacity = 0; }, 800);
+                setTimeout(() => { if (popup.parentElement) popup.remove(); }, 1200);
+            }
+            function createCoinPopup(target, text) {
+                const popup = document.createElement('div');
+                popup.textContent = text;
+                popup.className = 'coin-particle';
+                popup.style.left = '50%';
+                popup.style.top = '0';
+                popup.style.transform = 'translate(-50%, -100%)';
+                target.appendChild(popup);
+                setTimeout(() => { popup.style.opacity = 0; }, 800);
+                setTimeout(() => { if (popup.parentElement) popup.remove(); }, 1200);
+            }
+            function createParticle(target, emoji) {
+                const rect = target.getBoundingClientRect();
+                const particle = document.createElement('div');
+                particle.className = 'heart-particle';
+                particle.textContent = emoji;
+                particle.style.left = `${rect.width / 2}px`;
+                particle.style.top = `0px`;
+                target.appendChild(particle);
+                setTimeout(() => { particle.style.opacity = 0; }, 800);
+                setTimeout(() => { if (particle.parentElement) particle.remove(); }, 1200);
+            }
+
+            function showTutorial(id) {
+                const tut = gameState.tutorials.find(t => t.id === id);
+                if (!tut || tut.shown) return;
+                tut.shown = true;
+                const target = document.querySelector(tut.target);
+                if (!target) return;
+                const tooltip = document.createElement('div');
+                tooltip.className = `tutorial-tooltip ${tut.position}`;
+                tooltip.textContent = tut.message;
+                document.body.appendChild(tooltip);
+                const rect = target.getBoundingClientRect();
+                tooltip.style.position = 'absolute';
+                if (tut.position === 'bottom') {
+                    tooltip.style.top = `${rect.bottom + window.scrollY + 8}px`;
+                    tooltip.style.left = `${rect.left + window.scrollX + rect.width / 2 - 120}px`;
+                } else if (tut.position === 'left') {
+                    tooltip.style.top = `${rect.top + window.scrollY}px`;
+                    tooltip.style.left = `${rect.left + window.scrollX - 260}px`;
+                } else if (tut.position === 'right') {
+                    tooltip.style.top = `${rect.top + window.scrollY}px`;
+                    tooltip.style.left = `${rect.right + window.scrollX + 8}px`;
+                } else if (tut.position === 'top') {
+                    tooltip.style.top = `${rect.top + window.scrollY - 60}px`;
+                    tooltip.style.left = `${rect.left + window.scrollX + rect.width / 2 - 120}px`;
+                }
+                setTimeout(() => { tooltip.style.opacity = 0; }, 3500);
+                setTimeout(() => { if (tooltip.parentElement) tooltip.remove(); }, 4000);
+            }
+
+            function checkAchievements() {
+                gameState.achievements.forEach(a => {
+                    if (!a.unlocked && a.condition(gameState)) {
+                        a.unlocked = true;
+                        gameState.score += a.reward;
+                        updateScoreUI();
+                        showAchievementModal(a);
+                    }
+                });
+            }
+            function showAchievementModal(a) {
+                achievementModalTitle.textContent = a.title;
+                achievementModalDesc.textContent = a.description;
+                achievementModalBonus.textContent = `+${a.reward} points!`;
+                showModal(achievementModal);
+                playSound('level-up');
+            }
+
+            startGameBtn.addEventListener('click', startGame);
+            restartGameBtn.addEventListener('click', startGame);
+            closeAchievementBtn.addEventListener('click', () => { achievementModal.classList.add('hidden'); modalOverlay.classList.add('hidden'); });
+            closeLevelUpBtn.addEventListener('click', () => { levelUpModal.classList.add('hidden'); modalOverlay.classList.add('hidden'); });
+            closeRecipeBtn.addEventListener('click', () => { recipeUnlockModal.classList.add('hidden'); modalOverlay.classList.add('hidden'); });
+
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+                    tab.classList.add('active');
+                    document.getElementById(tab.dataset.tab).classList.add('active');
+                });
+            });
+
+            shareScoreBtn.addEventListener('click', () => {
+                const shareText = `I scored ${gameState.score} in Hope's Corner! Try to beat my score. You can play here: https://karangattu.github.io/hopes-corner-sort-and-serve/`;
+                const copyToClipboard = () => {
+                    const textArea = document.createElement('textarea');
+                    textArea.value = shareText;
+                    textArea.style.position = 'fixed';
+                    textArea.style.top = '0';
+                    textArea.style.left = '0';
+                    document.body.appendChild(textArea);
+                    textArea.focus();
+                    textArea.select();
+                    try {
+                        document.execCommand('copy');
+                        showNotification('Score copied to clipboard!', 'info');
+                    } catch (err) {
+                        showNotification('Failed to copy score.', 'error');
+                    }
+                    document.body.removeChild(textArea);
+                };
+
+                if (navigator.share) {
+                    navigator.share({ title: "Hope's Corner Score", text: shareText })
+                        .catch((error) => {
+                            console.log('Share failed, falling back to clipboard:', error);
+                            copyToClipboard();
+                        });
+                } else {
+                    copyToClipboard();
+                }
+            });
+
+            function purchaseUpgrade(upgradeKey) {
+                const upg = gameState.upgrades[upgradeKey];
+                const cost = upg.cost * Math.pow(upg.costMultiplier, upg.level);
+                if (gameState.coins >= cost && upg.level < upg.maxLevel) {
+                    gameState.coins -= cost;
+                    upg.level++;
+                    if (upgradeKey === 'autoSort') setupAutoSort();
+                    if (upgradeKey === 'extraSlot') CONFIG.MAX_COOKING_SLOTS = 3 + upg.level;
+
+                    updateCoinsUI();
+                    playSound('level-up');
+                }
+            }
+
+            autoSortUpgrade.querySelector('button').addEventListener('click', () => purchaseUpgrade('autoSort'));
+            fasterCookingUpgrade.querySelector('button').addEventListener('click', () => purchaseUpgrade('fasterCooking'));
+            extraSlotUpgrade.querySelector('button').addEventListener('click', () => purchaseUpgrade('extraSlot'));
+            guestPatienceUpgrade.querySelector('button').addEventListener('click', () => purchaseUpgrade('guestPatience'));
+            bonusPointsUpgrade.querySelector('button').addEventListener('click', () => purchaseUpgrade('bonusPoints'));
+
+            showStartModal();
+        });
+    </script>
 </body>
+
 </html>
