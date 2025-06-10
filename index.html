@@ -141,6 +141,16 @@
             color: var(--text-main);
             background: var(--box-bg);
         }
+        
+
+        .donation-item.dragging {
+            position: fixed;
+            z-index: 1000;
+            pointer-events: none;
+            transform: scale(1.1);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+
 
         .donation-item {
             display: flex;
@@ -149,8 +159,7 @@
             font-size: 1.5rem;
         }
 
-        .meal.ring-4,
-        .donation-item.selected {
+        .meal.ring-4 {
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(132, 204, 22, 0.5), 0 4px 6px -1px rgba(0, 0, 0, 0.1);
             transform: scale(1.05);
@@ -436,15 +445,23 @@
             color: white;
         }
 
-        .notification {
+        #notification-container {
             position: fixed;
             top: 1rem;
             right: 1rem;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            align-items: flex-end;
+        }
+        
+        .notification {
+            position: relative;
             background: var(--box-bg);
             padding: 1rem;
             border-radius: 0.5rem;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            z-index: 100;
             opacity: 0;
             transform: translateX(100%);
             transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
@@ -948,8 +965,7 @@
             <div class="p-2 bg-indigo-100 border border-indigo-200 rounded-md mb-2"
                 style="background-color: rgba(132, 204, 22, 0.1); border-color: rgba(132, 204, 22, 0.3);">
                 <h3 class="font-semibold text-center" style="color: var(--primary-dark);">How to Sort:</h3>
-                <p id="sort-instruction-text" class="text-center" style="color: var(--text-main);">1. Click a donation
-                    item to select it.</p>
+                <p id="sort-instruction-text" class="text-center" style="color: var(--text-main);">Drag & drop donations into the correct bins.</p>
             </div>
             <div id="sorting-area" class="flex-grow p-2 rounded-md min-h-[150px] grid grid-cols-3 gap-2"
                 style="background-color: rgba(0, 0, 0, 0.03);"></div>
@@ -1264,6 +1280,7 @@
             const overwhelmBarEl = document.getElementById('overwhelm-bar');
             const angryGuestsDisplay = document.getElementById('angry-guests-display');
             const sortingAreaEl = document.getElementById('sorting-area');
+            const storageBins = document.querySelectorAll('.storage-bin');
             const storageCounts = {
                 veg: document.getElementById('veg-count'), protein: document.getElementById('protein-count'), carbs: document.getElementById('carbs-count'),
             };
@@ -1327,6 +1344,9 @@
             let highScore = 0;
             let soundsLoaded = false;
             let sounds = {};
+            let draggedItem = null;
+            let touchDragItem = null;
+
 
             const MASTER_RECIPE_LIST = [
                 { id: 'recipe-0', name: 'Tacos', emoji: '🌮', ingredients: { protein: 2, veg: 1, carbs: 1 }, cookTime: 8000, servings: 3, pointsPerServing: 3 },
@@ -1387,7 +1407,7 @@
             ];
 
             const TUTORIALS = [
-                { id: 'sorting', message: "Click on a donation item, then click the matching storage bin to sort it", target: '#sorting-area', position: 'bottom', shown: false },
+                { id: 'sorting', message: "Drag and drop a donation item into the matching storage bin to sort it.", target: '#sorting-area', position: 'bottom', shown: false },
                 { id: 'cooking', message: "Use your ingredients to cook meals. Different recipes need different ingredients", target: '#recipe-area', position: 'left', shown: false },
                 { id: 'serving', message: "Click a meal, then click on a guest to serve them. Happy guests give more points!", target: '#ready-meals-area', position: 'right', shown: false },
                 { id: 'upgrades', message: "Use coins to buy upgrades that make your job easier", target: '#sorting-upgrade-area', position: 'top', shown: false }
@@ -1399,7 +1419,7 @@
                     inventory: { veg: 0, protein: 0, carbs: 0 },
                     totalInventory: { veg: 0, protein: 0, carbs: 0 },
                     donationsInSorting: 0, guests: [], cooking: [], readyMeals: [], gameRunning: false,
-                    nextGuestId: 0, nextDonationId: 0, nextMealId: 0, selectedMealId: null, selectedDonationId: null,
+                    nextGuestId: 0, nextDonationId: 0, nextMealId: 0, selectedMealId: null, 
                     dayDuration: 60000, dayTimer: null,
                     knownRecipes: MASTER_RECIPE_LIST.slice(0, 4),
                     eventModifiers: {},
@@ -1782,6 +1802,7 @@
                 const itemInfo = CONFIG.ITEM_TYPES[type];
                 const itemEl = document.createElement('div');
                 itemEl.id = `donation-${gameState.nextDonationId++}`;
+                itemEl.draggable = true;
                 const bgColorClass = itemInfo.color;
                 itemEl.className = `donation-item ${bgColorClass} font-bold`;
                 itemEl.textContent = itemInfo.emoji;
@@ -2094,32 +2115,44 @@
                     if (gameState.gameRunning) spawnDonation();
                 }, 4000 / (gameState.eventModifiers.sorting_bonus || 1));
             });
-
-            sortingAreaEl.addEventListener('click', e => {
-                const itemEl = e.target.closest('.donation-item');
-                if (!itemEl) return;
-                if (gameState.selectedDonationId === itemEl.id) {
-                    gameState.selectedDonationId = null;
-                    itemEl.classList.remove('selected');
-                    sortInstructionTextEl.textContent = '1. Click a donation item to select it.';
-                } else {
-                    const prev = document.querySelector('.donation-item.selected');
-                    if (prev) prev.classList.remove('selected');
-                    gameState.selectedDonationId = itemEl.id;
-                    itemEl.classList.add('selected');
-                    sortInstructionTextEl.textContent = '2. Now click a storage bin!';
-                    playSound('select-donation');
+            
+            sortingAreaEl.addEventListener('dragstart', e => {
+                if (e.target.classList.contains('donation-item')) {
+                    draggedItem = e.target;
+                    setTimeout(() => {
+                        e.target.classList.add('opacity-50');
+                    }, 0);
+                }
+            });
+            
+            sortingAreaEl.addEventListener('dragend', e => {
+                if(draggedItem) {
+                    draggedItem.classList.remove('opacity-50');
+                    draggedItem = null;
                 }
             });
 
-            Object.values(storageCounts).forEach((el, idx) => {
-                const type = Object.keys(storageCounts)[idx];
-                const binEl = document.getElementById(`${type}-bin`);
-                binEl.addEventListener('click', () => {
-                    if (!gameState.selectedDonationId) return;
-                    const itemEl = document.getElementById(gameState.selectedDonationId);
-                    if (!itemEl) return;
-                    if (itemEl.dataset.type === type) {
+            storageBins.forEach(bin => {
+                bin.addEventListener('dragenter', e => {
+                    e.preventDefault();
+                    bin.classList.add('over');
+                });
+
+                bin.addEventListener('dragover', e => {
+                    e.preventDefault(); 
+                });
+
+                bin.addEventListener('dragleave', () => {
+                    bin.classList.remove('over');
+                });
+
+                bin.addEventListener('drop', e => {
+                    e.preventDefault();
+                    bin.classList.remove('over');
+                    if (!draggedItem) return;
+
+                    if (draggedItem.dataset.type === bin.dataset.type) {
+                        const type = draggedItem.dataset.type;
                         gameState.inventory[type]++;
                         gameState.totalInventory[type]++;
                         gameState.donationsInSorting--;
@@ -2127,23 +2160,99 @@
                         updateInventoryUI();
                         renderRecipes();
                         checkAchievements();
-                        createParticle(itemEl, '✅');
+                        createParticle(draggedItem, '✅');
                         playSound('sort');
-                        itemEl.style.transition = 'transform 0.3s, opacity 0.3s';
-                        itemEl.style.transform = 'scale(0)';
-                        itemEl.style.opacity = '0';
-                        setTimeout(() => { if (itemEl.parentElement) itemEl.remove(); }, 300);
+                        draggedItem.remove();
                     } else {
-                        createParticle(itemEl, '❌');
+                        createParticle(draggedItem, '❌');
                         playSound('error');
-                        itemEl.classList.add('shake');
-                        setTimeout(() => itemEl.classList.remove('shake'), 500);
+                        draggedItem.classList.add('shake');
+                        setTimeout(() => draggedItem.classList.remove('shake'), 500);
                         gameState.overwhelm = Math.min(CONFIG.MAX_OVERWHELM, gameState.overwhelm + 5);
                         updateOverwhelmUI();
                     }
-                    gameState.selectedDonationId = null;
-                    sortInstructionTextEl.textContent = '1. Click a donation item to select it.';
+                    draggedItem = null;
                 });
+            });
+
+            // Touch event listeners for mobile drag and drop
+            sortingAreaEl.addEventListener('touchstart', e => {
+                if (e.target.classList.contains('donation-item')) {
+                    e.preventDefault();
+                    draggedItem = e.target;
+                    
+                    // Create a clone for dragging
+                    touchDragItem = draggedItem.cloneNode(true);
+                    touchDragItem.classList.add('dragging');
+                    document.body.appendChild(touchDragItem);
+
+                    // Position the clone
+                    const touch = e.touches[0];
+                    touchDragItem.style.left = `${touch.clientX - touchDragItem.offsetWidth / 2}px`;
+                    touchDragItem.style.top = `${touch.clientY - touchDragItem.offsetHeight / 2}px`;
+
+                    draggedItem.style.opacity = '0.5';
+                }
+            }, { passive: false });
+
+            document.addEventListener('touchmove', e => {
+                if (!touchDragItem) return;
+                e.preventDefault();
+
+                const touch = e.touches[0];
+                touchDragItem.style.left = `${touch.clientX - touchDragItem.offsetWidth / 2}px`;
+                touchDragItem.style.top = `${touch.clientY - touchDragItem.offsetHeight / 2}px`;
+
+                // Highlight bin under touch
+                const elementUnderTouch = document.elementFromPoint(touch.clientX, touch.clientY);
+                storageBins.forEach(bin => {
+                    if (bin === elementUnderTouch || bin.contains(elementUnderTouch)) {
+                        bin.classList.add('over');
+                    } else {
+                        bin.classList.remove('over');
+                    }
+                });
+            }, { passive: false });
+
+
+            document.addEventListener('touchend', e => {
+                if (!touchDragItem || !draggedItem) return;
+
+                const touch = e.changedTouches[0];
+                const dropTarget = document.elementFromPoint(touch.clientX, touch.clientY);
+                const bin = dropTarget ? dropTarget.closest('.storage-bin') : null;
+
+                if (bin) {
+                    if (draggedItem.dataset.type === bin.dataset.type) {
+                        const type = draggedItem.dataset.type;
+                        gameState.inventory[type]++;
+                        gameState.totalInventory[type]++;
+                        gameState.donationsInSorting--;
+                        gameState.stats.itemsSorted++;
+                        updateInventoryUI();
+                        renderRecipes();
+                        checkAchievements();
+                        createParticle(draggedItem, '✅');
+                        playSound('sort');
+                        draggedItem.remove();
+                    } else {
+                        createParticle(draggedItem, '❌');
+                        playSound('error');
+                        draggedItem.classList.add('shake');
+                        setTimeout(() => draggedItem.classList.remove('shake'), 500);
+                        gameState.overwhelm = Math.min(CONFIG.MAX_OVERWHELM, gameState.overwhelm + 5);
+                        updateOverwhelmUI();
+                        draggedItem.style.opacity = '1';
+                    }
+                } else {
+                     draggedItem.style.opacity = '1';
+                }
+                
+
+                document.body.removeChild(touchDragItem);
+                touchDragItem = null;
+                draggedItem = null;
+                storageBins.forEach(b => b.classList.remove('over'));
             });
 
             function loadSounds() {
@@ -2162,7 +2271,6 @@
                     'day': new Howl({ src: ['https://cdn.pixabay.com/audio/2022/10/16/audio_12b6b6b2e2.mp3'], volume: 0.2 }),
                     'error': new Howl({ src: ['https://cdn.freesound.org/previews/457/457431_717697-lq.mp3'], volume: 0.2 }),
                     'select-meal': new Howl({ src: ['https://cdn.pixabay.com/audio/2022/10/16/audio_12b6b6b2e2.mp3'], volume: 0.15 }),
-                    'select-donation': new Howl({ src: ['https://cdn.pixabay.com/audio/2022/10/16/audio_12b6b6b2e2.mp3'], volume: 0.15 }),
                     'game-over': new Howl({ src: ['https://cdn.freesound.org/previews/173/173859_1074082-lq.mp3'], volume: 0.3 })
                 };
                 soundsLoaded = true;
