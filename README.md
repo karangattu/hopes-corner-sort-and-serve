@@ -1,4 +1,4 @@
-# Hope's Corner: The Game
+# Hope's Corner: Pantry to Plate Game
 
 A web-based game inspired by the real Hope's Corner in Mountain View, CA, which provides free nutritious meals and warm showers to anyone in need.
 
@@ -14,7 +14,7 @@ Just open `index.html` in your browser, or [visit Hope's Corner](https://www.hop
 
 - **Cook Meals:** Use stored ingredients to cook available recipes in the kitchen.
 
-- **Serve Guests:** When you have 5 or more meal servings ready, guests will start to arrive. Select a meal, then click a guest to serve them.
+- **Serve Guests:** When you have ***5*** or more meal servings ready, guests will start to arrive. Select a meal, then click a guest to serve them.
 
 - **Buy Upgrades:** Use coins to purchase upgrades for sorting, cooking, and serving to make your job easier.
 
