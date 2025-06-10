@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hope's corner - Sort & Serve Game</title>
+    <title>Hope's corner - Pantry to Plate Game</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -2281,7 +2281,7 @@
             });
 
             shareScoreBtn.addEventListener('click', () => {
-                const shareText = `I scored ${gameState.score} in Hope's Corner! Try to beat my score. You can play here: https://karangattu.github.io/hopes-corner-sort-and-serve/`;
+                const shareText = `I scored ${gameState.score} in Hope's corner - Pantry to Plate! Try to beat my score. You can play here: https://karangattu.github.io/hopes-corner-sort-and-serve/`;
                 const copyToClipboard = () => {
                     const textArea = document.createElement('textarea');
                     textArea.value = shareText;
@@ -2301,7 +2301,7 @@
                 };
 
                 if (navigator.share) {
-                    navigator.share({ title: "Hope's Corner Score", text: shareText })
+                    navigator.share({ title: "Hope's corner - Pantry to Plate Score", text: shareText })
                         .catch((error) => {
                             console.log('Share failed, falling back to clipboard:', error);
                             copyToClipboard();
