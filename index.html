@@ -1186,13 +1186,23 @@
             <p class="text-lg my-4">Your High Score: <span id="high-score-modal" class="font-bold"
                     style="color: var(--accent);">0</span></p>
             <button id="start-game-btn" class="btn-primary">Start Playing</button>
+            <button id="view-leaderboard-btn" class="btn-secondary mt-2">View Leaderboard</button>
+        </div>
+
+        <div id="leaderboard-modal" class="modal hidden">
+            <h2 class="text-3xl font-bold mb-4" style="color: var(--primary);">Top Scores</h2>
+            <div id="leaderboard-loading" class="loader"></div>
+            <ol id="leaderboard-list" class="text-left space-y-2"></ol>
+            <button id="close-leaderboard-btn" class="btn-primary mt-6">Close</button>
         </div>
 
         <div id="game-over-modal" class="modal hidden">
             <h1 id="game-over-title" class="text-3xl md:text-4xl font-bold mb-2 text-red-600">Game Over!</h1>
             <p id="game-over-reason" class="text-lg mb-4" style="color: var(--text-main);"></p>
+            
+            <!-- Game Stats -->
             <div id="game-stats" class="stats-panel mb-6">
-                <div class="stat-row">
+                 <div class="stat-row">
                     <span class="stat-label">Days Completed</span>
                     <span id="final-days" class="stat-value">0</span>
                 </div>
@@ -1209,19 +1219,20 @@
                     <span id="final-score" class="stat-value">0</span>
                 </div>
             </div>
-            <p id="new-high-score-msg" class="text-xl font-semibold hidden mb-4" style="color: var(--primary);">New High
-                Score!</p>
 
-            <div id="unlocked-achievement" class="achievement-badge hidden mb-4">
-                <div class="achievement-icon">🏆</div>
-                <div class="achievement-text">
-                    <h3 id="achievement-title">Achievement Unlocked!</h3>
-                    <p id="achievement-desc"></p>
-                </div>
+            <p id="new-high-score-msg" class="text-xl font-semibold hidden mb-4" style="color: var(--primary);">New High Score!</p>
+            
+            <div id="leaderboard-form" class="mt-4">
+                <p class="mb-2 font-semibold">Enter your name for the leaderboard!</p>
+                <input type="text" id="player-name-input" placeholder="Enter your name" class="w-full p-2 border rounded mb-2 text-center" style="border-color: var(--primary);">
+                <button id="submit-score-btn" class="btn-primary w-full">Submit Score</button>
             </div>
-
-            <button id="restart-game-btn" class="btn-primary">Play Again</button>
-            <button id="share-score-btn" class="btn-secondary mt-2">Share Score</button>
+            
+            <!-- Action buttons, initially hidden -->
+            <div id="game-over-actions" class="hidden mt-4">
+                <button id="restart-game-btn" class="btn-primary">Play Again</button>
+                <button id="share-score-btn" class="btn-secondary mt-2">Share Score</button>
+            </div>
         </div>
 
         <div id="achievement-modal" class="modal hidden">
@@ -1284,6 +1295,8 @@
             const storageCounts = {
                 veg: document.getElementById('veg-count'), protein: document.getElementById('protein-count'), carbs: document.getElementById('carbs-count'),
             };
+            const viewLeaderboardBtn = document.getElementById('view-leaderboard-btn');
+            const closeLeaderboardBtn = document.getElementById('close-leaderboard-btn');
             const recipeAreaEl = document.getElementById('recipe-list');
             const cookingSlotsEl = document.getElementById('cooking-slots');
             const cookingSlotsDisplay = document.getElementById('cooking-slots-display');
@@ -1307,7 +1320,6 @@
             const highScoreModalDisplay = document.getElementById('high-score-modal');
             const dailyEventTextEl = document.getElementById('daily-event-text');
             const eventEffectsEl = document.getElementById('event-effects');
-            const unlockedAchievementEl = document.getElementById('unlocked-achievement');
             const achievementTitle = document.getElementById('achievement-title');
             const achievementDesc = document.getElementById('achievement-desc');
             const shareScoreBtn = document.getElementById('share-score-btn');
@@ -1339,6 +1351,12 @@
             const extraSlotUpgrade = document.getElementById('extra-slot-upgrade');
             const guestPatienceUpgrade = document.getElementById('guest-patience-upgrade');
             const bonusPointsUpgrade = document.getElementById('bonus-points-upgrade');
+            const submitScoreBtn = document.getElementById('submit-score-btn');
+            const playerNameInput = document.getElementById('player-name-input');
+            const leaderboardForm = document.getElementById('leaderboard-form');
+            const gameOverActions = document.getElementById('game-over-actions');
+
+            const LEADERBOARD_URL = 'https://script.google.com/macros/s/AKfycbx4H6kiFXVlkeTjpiAlc71G7kxUWeVx8fHOrPuifw74dXAutvbOc5VJzbrB2cT3NLYPqA/exec';
 
             let gameState = {};
             let highScore = 0;
@@ -1346,7 +1364,6 @@
             let sounds = {};
             let draggedItem = null;
             let touchDragItem = null;
-
 
             const MASTER_RECIPE_LIST = [
                 { id: 'recipe-0', name: 'Tacos', emoji: '🌮', ingredients: { protein: 2, veg: 1, carbs: 1 }, cookTime: 8000, servings: 3, pointsPerServing: 3 },
@@ -1366,8 +1383,9 @@
                 { id: 'recipe-14', name: 'Lasagna', emoji: '🍝', ingredients: { protein: 2, veg: 1, carbs: 2 }, cookTime: 18000, servings: 6, pointsPerServing: 5 },
                 { id: 'recipe-15', name: 'Turkey Sandwiches', emoji: '🥪', ingredients: { protein: 1, veg: 1, carbs: 2 }, cookTime: 6000, servings: 4, pointsPerServing: 3 }
             ];
+            
 
-            const DAILY_EVENTS = [
+             const DAILY_EVENTS = [
                 { description: "Second Harvest of Silicon Valley have donated a lot of fresh veggies!", effect: { type: 'donation_multiplier', item: 'veg', modifier: 2 }, icon: '🥦' },
                 { description: "The kitchen's oven is running extra hot today! Cooking is faster.", effect: { type: 'cooking_speed', modifier: 0.8 }, icon: '🔥' },
                 { description: "It's a chilly day, everyone is craving something warm. Guests are more patient.", effect: { type: 'guest_patience', modifier: 1.25 }, icon: '❄️' },
@@ -1412,7 +1430,106 @@
                 { id: 'serving', message: "Click a meal, then click on a guest to serve them. Happy guests give more points!", target: '#ready-meals-area', position: 'right', shown: false },
                 { id: 'upgrades', message: "Use coins to buy upgrades that make your job easier", target: '#sorting-upgrade-area', position: 'top', shown: false }
             ];
+             const CONFIG = {
+                MAX_OVERWHELM: 100, MAX_ANGRY_GUESTS: 5, OVERWHELM_PER_GUEST_TICK: 0.1, SCORE_PER_GUEST: 10,
+                DONATION_SIZE: 3, MAX_COOKING_SLOTS: 3, COIN_PER_GUEST: 5,
+                ITEM_TYPES: {
+                    veg: { emoji: '🥦', color: 'bg-green-200' },
+                    protein: { emoji: '🍗', color: 'bg-red-200' },
+                    carbs: { emoji: '🍞', color: 'bg-yellow-200' }
+                }
+            };
 
+            let gameLoopInterval = null;
+
+
+            function showLeaderboard() {
+                const leaderboardModal = document.getElementById('leaderboard-modal');
+                const leaderboardList = document.getElementById('leaderboard-list');
+                const leaderboardLoading = document.getElementById('leaderboard-loading');
+
+                showModal(leaderboardModal);
+                leaderboardLoading.classList.remove('hidden');
+                leaderboardList.innerHTML = '';
+
+                fetch(LEADERBOARD_URL)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Network response was not ok: ${response.statusText}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        leaderboardLoading.classList.add('hidden');
+                        if (data.success) {
+                            if (data.data.length === 0) {
+                                leaderboardList.innerHTML = '<li>No scores yet. Be the first!</li>';
+                            } else {
+                                data.data.forEach((entry, index) => {
+                                    const li = document.createElement('li');
+                                    li.className = 'flex justify-between items-center p-2 rounded-md';
+                                    li.style.backgroundColor = index % 2 === 0 ? 'rgba(0,0,0,0.05)' : 'transparent';
+                                    li.innerHTML = `
+                                        <span class="font-bold text-lg">${index + 1}. ${entry.playerName}</span>
+                                        <span class="text-xl font-bold" style="color: var(--accent);">${entry.score}</span>
+                                    `;
+                                    leaderboardList.appendChild(li);
+                                });
+                            }
+                        } else {
+                            leaderboardList.innerHTML = '<li>Error loading leaderboard data.</li>';
+                            console.error('Leaderboard API error:', data.error);
+                        }
+                    })
+                    .catch(error => {
+                        leaderboardLoading.classList.add('hidden');
+                        leaderboardList.innerHTML = `<li>Could not connect to the leaderboard. <br>Please ensure the Google Apps Script is deployed correctly.</li>`;
+                        console.error('Fetch error:', error);
+                    });
+            }
+
+            function handleScoreSubmit() {
+                const playerName = playerNameInput.value.trim() || 'Anonymous';
+                submitScoreBtn.disabled = true;
+                submitScoreBtn.textContent = 'Submitting...';
+
+                const scoreData = {
+                    playerName: playerName,
+                    score: gameState.score,
+                };
+                
+                const url = LEADERBOARD_URL;
+
+                const formData = new FormData();
+                formData.append('playerName', scoreData.playerName);
+                formData.append('score', scoreData.score);
+                
+                fetch(url, {
+                    method: 'POST',
+                    body: JSON.stringify(scoreData),
+                    headers: {
+                        "Content-Type": "text/plain;charset=utf-8",
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showNotification('Your score has been submitted!', 'info');
+                    } else {
+                         showNotification(`Submission failed: ${data.error}`, 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error submitting score:', error);
+                    showNotification('Could not submit score. Check console for details.', 'error');
+                })
+                .finally(() => {
+                    leaderboardForm.classList.add('hidden');
+                    gameOverActions.classList.remove('hidden');
+                });
+            }
+
+            
             function initializeGameState() {
                 gameState = {
                     score: 0, day: 1, overwhelm: 0, hungryGuestsLeft: 0, coins: 0,
@@ -1443,19 +1560,42 @@
                 };
             }
 
-            const CONFIG = {
-                MAX_OVERWHELM: 100, MAX_ANGRY_GUESTS: 5, OVERWHELM_PER_GUEST_TICK: 0.1, SCORE_PER_GUEST: 10,
-                DONATION_SIZE: 3, MAX_COOKING_SLOTS: 3, COIN_PER_GUEST: 5,
-                ITEM_TYPES: {
-                    veg: { emoji: '🥦', color: 'bg-green-200' },
-                    protein: { emoji: '🍗', color: 'bg-red-200' },
-                    carbs: { emoji: '🍞', color: 'bg-yellow-200' }
-                }
-            };
+            function endGame(reason) {
+                if (!gameState.gameRunning) return;
+                gameState.gameRunning = false;
+                clearInterval(gameLoopInterval);
+                if (gameState.dayTimer) clearInterval(gameState.dayTimer);
+                if (gameState.autoSortTimer) clearInterval(gameState.autoSortTimer);
+                gameState.guests.forEach(g => clearInterval(g.timer));
+                gameState.cooking.forEach(c => clearInterval(c.timerId));
+                gtag('event', 'game_over', { 'reason': reason, 'final_score': gameState.score, 'day_reached': gameState.day });
+                
+                saveHighScore();
+                
+                finalScoreEl.textContent = gameState.score;
+                finalDaysEl.textContent = gameState.day;
+                finalGuestsEl.textContent = gameState.stats.guestsServed;
+                finalMealsEl.textContent = gameState.stats.mealsPrepared;
+                gameOverReasonEl.textContent = reason;
 
-            let gameLoopInterval = null;
+                leaderboardForm.classList.remove('hidden');
+                gameOverActions.classList.add('hidden');
+                submitScoreBtn.disabled = false;
+                submitScoreBtn.textContent = 'Submit Score';
+                playerNameInput.value = '';
 
-            function loadHighScore() {
+                showModal(gameOverModal);
+                
+                sortingAreaEl.innerHTML = ''; 
+                readyMealsAreaEl.innerHTML = ''; 
+                guestAreaEl.innerHTML = ''; 
+                recipeAreaEl.innerHTML = ''; 
+                cookingSlotsEl.innerHTML = '';
+                
+                playSound('game-over');
+            }
+
+              function loadHighScore() {
                 highScore = parseInt(localStorage.getItem('hopesCornerHighScore') || '0', 10);
                 highScoreDisplay.textContent = highScore;
                 highScoreModalDisplay.textContent = highScore;
@@ -1466,19 +1606,11 @@
                     highScore = gameState.score;
                     localStorage.setItem('hopesCornerHighScore', highScore);
                     newHighScoreMsg.classList.remove('hidden');
-                    showAchievementInGameOver('High Score Champion', 'You\'ve set a new personal best!');
                 } else {
                     newHighScoreMsg.classList.add('hidden');
-                    unlockedAchievementEl.classList.add('hidden');
                 }
                 highScoreDisplay.textContent = highScore;
                 highScoreModalDisplay.textContent = highScore;
-            }
-
-            function showAchievementInGameOver(title, description) {
-                unlockedAchievementEl.classList.remove('hidden');
-                achievementTitle.textContent = title;
-                achievementDesc.textContent = description;
             }
 
             function gameLoop() {
@@ -1710,10 +1842,11 @@
                 achievementModal.classList.add('hidden');
                 levelUpModal.classList.add('hidden');
                 recipeUnlockModal.classList.add('hidden');
+                document.getElementById('leaderboard-modal').classList.add('hidden');
                 loadHighScore();
             }
-
-            function showModal(modalEl) {
+            
+             function showModal(modalEl) {
                 modalOverlay.classList.remove('hidden');
                 modalEl.classList.remove('hidden');
                 const allModals = document.querySelectorAll('.modal');
@@ -1737,8 +1870,7 @@
                 setupAutoSort();
                 playSound('start');
             }
-
-            function setupAutoSort() {
+             function setupAutoSort() {
                 if (gameState.autoSortTimer) clearInterval(gameState.autoSortTimer);
                 if (gameState.upgrades.autoSort.level > 0) {
                     const interval = 10000 / gameState.upgrades.autoSort.level;
@@ -1772,28 +1904,7 @@
                     }, 300);
                 }
             }
-
-            function endGame(reason) {
-                if (!gameState.gameRunning) return;
-                gameState.gameRunning = false;
-                clearInterval(gameLoopInterval);
-                if (gameState.dayTimer) clearInterval(gameState.dayTimer);
-                if (gameState.autoSortTimer) clearInterval(gameState.autoSortTimer);
-                gameState.guests.forEach(g => clearInterval(g.timer));
-                gameState.cooking.forEach(c => clearInterval(c.timerId));
-                gtag('event', 'game_over', { 'reason': reason, 'final_score': gameState.score, 'day_reached': gameState.day });
-                saveHighScore();
-                finalScoreEl.textContent = gameState.score;
-                finalDaysEl.textContent = gameState.day;
-                finalGuestsEl.textContent = gameState.stats.guestsServed;
-                finalMealsEl.textContent = gameState.stats.mealsPrepared;
-                gameOverReasonEl.textContent = reason;
-                loadHighScore();
-                showModal(gameOverModal);
-                sortingAreaEl.innerHTML = ''; readyMealsAreaEl.innerHTML = ''; guestAreaEl.innerHTML = ''; recipeAreaEl.innerHTML = ''; cookingSlotsEl.innerHTML = '';
-                playSound('game-over');
-            }
-
+            
             function createDonationItem(forcedType = null) {
                 if (sortingAreaEl.children.length >= 9) return;
                 gameState.donationsInSorting++;
@@ -1907,36 +2018,7 @@
                     }
                 }
             }
-
-            recipeAreaEl.addEventListener('click', e => {
-                if (e.target.classList.contains('cook-btn') && !e.target.disabled) {
-                    const recipeId = e.target.dataset.recipeId;
-                    const recipe = gameState.knownRecipes.find(r => r.id === recipeId);
-                    if (recipe) startCooking(recipe);
-                }
-            });
-
-            readyMealsAreaEl.addEventListener('click', e => {
-                const mealEl = e.target.closest('.meal'); if (!mealEl) return;
-                const mealId = mealEl.id;
-                if (gameState.selectedMealId === mealId) {
-                    gameState.selectedMealId = null; mealEl.classList.remove('ring-4');
-                    instructionTextEl.textContent = '1. Click a ready meal to select it.';
-                } else {
-                    const currentlySelected = document.querySelector('.meal.ring-4');
-                    if (currentlySelected) currentlySelected.classList.remove('ring-4');
-                    gameState.selectedMealId = mealId; mealEl.classList.add('ring-4');
-                    instructionTextEl.textContent = '2. Now click a guest to serve!';
-                    playSound('select-meal');
-                }
-            });
-
-            guestAreaEl.addEventListener('click', e => {
-                const guestEl = e.target.closest('.guest');
-                if (guestEl && gameState.selectedMealId) serveGuest(guestEl.id);
-            });
-
-            function serveGuest(guestId) {
+             function serveGuest(guestId) {
                 const mealIndex = gameState.readyMeals.findIndex(m => m.id === gameState.selectedMealId);
                 const guestIndex = gameState.guests.findIndex(g => g.id === guestId);
                 if (mealIndex === -1 || guestIndex === -1) return;
@@ -2009,8 +2091,7 @@
                 playSound('serve');
                 if (gameState.stats.guestsServed === 3) showTutorial('upgrades');
             }
-
-            function spawnGuest() {
+             function spawnGuest() {
                 if (!gameState.gameRunning) return;
                 const guestId = gameState.nextGuestId++;
                 const id = `guest-${guestId}`;
@@ -2094,7 +2175,44 @@
                 acceptDonationBtn.classList.add('pulse-animation');
             }
 
-            acceptDonationBtn.addEventListener('click', () => {
+            
+            viewLeaderboardBtn.addEventListener('click', showLeaderboard);
+            closeLeaderboardBtn.addEventListener('click', () => {
+                document.getElementById('leaderboard-modal').classList.add('hidden');
+                showStartModal();
+            });
+            submitScoreBtn.addEventListener('click', handleScoreSubmit);
+            
+
+             recipeAreaEl.addEventListener('click', e => {
+                if (e.target.classList.contains('cook-btn') && !e.target.disabled) {
+                    const recipeId = e.target.dataset.recipeId;
+                    const recipe = gameState.knownRecipes.find(r => r.id === recipeId);
+                    if (recipe) startCooking(recipe);
+                }
+            });
+
+             readyMealsAreaEl.addEventListener('click', e => {
+                const mealEl = e.target.closest('.meal'); if (!mealEl) return;
+                const mealId = mealEl.id;
+                if (gameState.selectedMealId === mealId) {
+                    gameState.selectedMealId = null; mealEl.classList.remove('ring-4');
+                    instructionTextEl.textContent = '1. Click a ready meal to select it.';
+                } else {
+                    const currentlySelected = document.querySelector('.meal.ring-4');
+                    if (currentlySelected) currentlySelected.classList.remove('ring-4');
+                    gameState.selectedMealId = mealId; mealEl.classList.add('ring-4');
+                    instructionTextEl.textContent = '2. Now click a guest to serve!';
+                    playSound('select-meal');
+                }
+            });
+
+            guestAreaEl.addEventListener('click', e => {
+                const guestEl = e.target.closest('.guest');
+                if (guestEl && gameState.selectedMealId) serveGuest(guestEl.id);
+            });
+
+             acceptDonationBtn.addEventListener('click', () => {
                 if (acceptDonationBtn.disabled) return;
                 acceptDonationBtn.disabled = true;
                 acceptDonationBtn.style.opacity = '0.5';
@@ -2175,18 +2293,15 @@
                 });
             });
 
-            // Touch event listeners for mobile drag and drop
             sortingAreaEl.addEventListener('touchstart', e => {
                 if (e.target.classList.contains('donation-item')) {
                     e.preventDefault();
                     draggedItem = e.target;
                     
-                    // Create a clone for dragging
                     touchDragItem = draggedItem.cloneNode(true);
                     touchDragItem.classList.add('dragging');
                     document.body.appendChild(touchDragItem);
 
-                    // Position the clone
                     const touch = e.touches[0];
                     touchDragItem.style.left = `${touch.clientX - touchDragItem.offsetWidth / 2}px`;
                     touchDragItem.style.top = `${touch.clientY - touchDragItem.offsetHeight / 2}px`;
@@ -2203,7 +2318,6 @@
                 touchDragItem.style.left = `${touch.clientX - touchDragItem.offsetWidth / 2}px`;
                 touchDragItem.style.top = `${touch.clientY - touchDragItem.offsetHeight / 2}px`;
 
-                // Highlight bin under touch
                 const elementUnderTouch = document.elementFromPoint(touch.clientX, touch.clientY);
                 storageBins.forEach(bin => {
                     if (bin === elementUnderTouch || bin.contains(elementUnderTouch)) {
