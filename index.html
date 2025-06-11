@@ -1452,40 +1452,45 @@
                 leaderboardLoading.classList.remove('hidden');
                 leaderboardList.innerHTML = '';
 
-                fetch(LEADERBOARD_URL)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`Network response was not ok: ${response.statusText}`);
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        leaderboardLoading.classList.add('hidden');
-                        if (data.success) {
-                            if (data.data.length === 0) {
-                                leaderboardList.innerHTML = '<li>No scores yet. Be the first!</li>';
-                            } else {
-                                data.data.forEach((entry, index) => {
-                                    const li = document.createElement('li');
-                                    li.className = 'flex justify-between items-center p-2 rounded-md';
-                                    li.style.backgroundColor = index % 2 === 0 ? 'rgba(0,0,0,0.05)' : 'transparent';
-                                    li.innerHTML = `
-                                        <span class="font-bold text-lg">${index + 1}. ${entry.playerName}</span>
-                                        <span class="text-xl font-bold" style="color: var(--accent);">${entry.score}</span>
-                                    `;
-                                    leaderboardList.appendChild(li);
-                                });
-                            }
+                // Use JSONP approach for CORS compatibility
+                const script = document.createElement('script');
+                const callbackName = 'leaderboardCallback_' + Date.now();
+                
+                window[callbackName] = function(data) {
+                    leaderboardLoading.classList.add('hidden');
+                    document.head.removeChild(script);
+                    delete window[callbackName];
+                    
+                    if (data && data.success) {
+                        if (data.data.length === 0) {
+                            leaderboardList.innerHTML = '<li>No scores yet. Be the first!</li>';
                         } else {
-                            leaderboardList.innerHTML = '<li>Error loading leaderboard data.</li>';
-                            console.error('Leaderboard API error:', data.error);
+                            data.data.forEach((entry, index) => {
+                                const li = document.createElement('li');
+                                li.className = 'flex justify-between items-center p-2 rounded-md';
+                                li.style.backgroundColor = index % 2 === 0 ? 'rgba(0,0,0,0.05)' : 'transparent';
+                                li.innerHTML = `
+                                    <span class="font-bold text-lg">${index + 1}. ${entry.playerName}</span>
+                                    <span class="text-xl font-bold" style="color: var(--accent);">${entry.score}</span>
+                                `;
+                                leaderboardList.appendChild(li);
+                            });
                         }
-                    })
-                    .catch(error => {
-                        leaderboardLoading.classList.add('hidden');
-                        leaderboardList.innerHTML = `<li>Could not connect to the leaderboard. <br>Please ensure the Google Apps Script is deployed correctly.</li>`;
-                        console.error('Fetch error:', error);
-                    });
+                    } else {
+                        leaderboardList.innerHTML = '<li>Error loading leaderboard data.</li>';
+                        console.error('Leaderboard API error:', data ? data.error : 'No data received');
+                    }
+                };
+
+                script.onerror = function() {
+                    leaderboardLoading.classList.add('hidden');
+                    leaderboardList.innerHTML = `<li>Could not connect to the leaderboard. <br>Please check your internet connection.</li>`;
+                    document.head.removeChild(script);
+                    delete window[callbackName];
+                };
+
+                script.src = `${LEADERBOARD_URL}?callback=${callbackName}&action=get`;
+                document.head.appendChild(script);
             }
 
             function handleScoreSubmit() {
@@ -1497,33 +1502,62 @@
                     playerName: playerName,
                     score: gameState.score,
                 };
-                
-                const url = LEADERBOARD_URL;
 
-                const formData = new FormData();
-                formData.append('playerName', scoreData.playerName);
-                formData.append('score', scoreData.score);
-                
-                fetch(url, {
-                    method: 'POST',
-                    body: JSON.stringify(scoreData),
-                    headers: {
-                        "Content-Type": "text/plain;charset=utf-8",
-                    },
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
+                // Try multiple approaches for better compatibility
+                const trySubmitScore = async () => {
+                    try {
+                        // First try: Standard fetch with CORS mode
+                        const response = await fetch(LEADERBOARD_URL, {
+                            method: 'POST',
+                            mode: 'no-cors', // This prevents CORS errors but limits response access
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(scoreData)
+                        });
+                        
+                        // Since we're using no-cors, we can't read the response
+                        // But if we get here without an error, the request was sent
                         showNotification('Your score has been submitted!', 'info');
-                    } else {
-                         showNotification(`Submission failed: ${data.error}`, 'error');
+                        
+                    } catch (error) {
+                        console.error('Error submitting score:', error);
+                        
+                        // Fallback: Try using JSONP for submission
+                        const script = document.createElement('script');
+                        const callbackName = 'submitCallback_' + Date.now();
+                        
+                        window[callbackName] = function(data) {
+                            document.head.removeChild(script);
+                            delete window[callbackName];
+                            
+                            if (data && data.success) {
+                                showNotification('Your score has been submitted!', 'info');
+                            } else {
+                                showNotification(`Submission failed: ${data ? data.error : 'Unknown error'}`, 'error');
+                            }
+                        };
+
+                        script.onerror = function() {
+                            document.head.removeChild(script);
+                            delete window[callbackName];
+                            showNotification('Could not submit score. Please try again later.', 'error');
+                        };
+
+                        const params = new URLSearchParams({
+                            callback: callbackName,
+                            action: 'submit',
+                            playerName: scoreData.playerName,
+                            score: scoreData.score
+                        });
+
+                        script.src = `${LEADERBOARD_URL}?${params.toString()}`;
+                        document.head.appendChild(script);
+                        return;
                     }
-                })
-                .catch(error => {
-                    console.error('Error submitting score:', error);
-                    showNotification('Could not submit score. Check console for details.', 'error');
-                })
-                .finally(() => {
+                };
+
+                trySubmitScore().finally(() => {
                     leaderboardForm.classList.add('hidden');
                     gameOverActions.classList.remove('hidden');
                 });
