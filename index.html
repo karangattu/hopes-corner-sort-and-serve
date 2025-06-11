@@ -1452,24 +1452,30 @@
                 leaderboardLoading.classList.remove('hidden');
                 leaderboardList.innerHTML = '';
 
-                // First, try using a simple fetch request
-                fetch(LEADERBOARD_URL + '?action=get', {
-                    method: 'GET',
-                    mode: 'cors'
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then(data => {
+                // Create a timeout for the entire operation
+                const timeoutId = setTimeout(() => {
                     leaderboardLoading.classList.add('hidden');
+                    leaderboardList.innerHTML = `
+                        <li class="text-center text-red-600">
+                            Connection timeout. Please try again later.<br>
+                            <button onclick="location.reload()" class="mt-2 btn-secondary text-xs">Retry</button>
+                        </li>`;
+                }, 10000); // 10 second timeout
+
+                // Try JSONP first since it's more reliable for cross-origin requests
+                const script = document.createElement('script');
+                const callbackName = 'leaderboardCallback_' + Date.now();
+                
+                window[callbackName] = function(data) {
+                    clearTimeout(timeoutId);
+                    leaderboardLoading.classList.add('hidden');
+                    document.head.removeChild(script);
+                    delete window[callbackName];
                     
                     if (data && data.success) {
                         if (data.data && data.data.length === 0) {
                             leaderboardList.innerHTML = '<li class="text-center text-gray-600">No scores yet. Be the first!</li>';
-                        } else if (data.data) {
+                        } else if (data.data && Array.isArray(data.data)) {
                             data.data.forEach((entry, index) => {
                                 const li = document.createElement('li');
                                 li.className = 'flex justify-between items-center p-2 rounded-md';
@@ -1484,61 +1490,46 @@
                             leaderboardList.innerHTML = '<li class="text-center text-red-600">Invalid data format received from server.</li>';
                         }
                     } else {
-                        leaderboardList.innerHTML = '<li class="text-center text-red-600">Server returned an error. Please try again.</li>';
-                        console.error('Leaderboard API error:', data ? data.error : 'No data received');
+                        leaderboardList.innerHTML = '<li class="text-center text-red-600">Error loading leaderboard data.</li>';
+                        console.error('Leaderboard JSONP error:', data ? data.error : 'No data received');
                     }
-                })
-                .catch(error => {
-                    console.error('Fetch failed, trying JSONP approach:', error);
-                    
-                    // Fallback to JSONP approach
-                    const script = document.createElement('script');
-                    const callbackName = 'leaderboardCallback_' + Date.now();
-                    
-                    window[callbackName] = function(data) {
-                        leaderboardLoading.classList.add('hidden');
-                        document.head.removeChild(script);
-                        delete window[callbackName];
-                        
-                        if (data && data.success) {
-                            if (data.data && data.data.length === 0) {
-                                leaderboardList.innerHTML = '<li class="text-center text-gray-600">No scores yet. Be the first!</li>';
-                            } else if (data.data) {
-                                data.data.forEach((entry, index) => {
-                                    const li = document.createElement('li');
-                                    li.className = 'flex justify-between items-center p-2 rounded-md';
-                                    li.style.backgroundColor = index % 2 === 0 ? 'rgba(0,0,0,0.05)' : 'transparent';
-                                    li.innerHTML = `
-                                        <span class="font-bold text-lg">${index + 1}. ${entry.playerName || 'Anonymous'}</span>
-                                        <span class="text-xl font-bold" style="color: var(--accent);">${entry.score || 0}</span>
-                                    `;
-                                    leaderboardList.appendChild(li);
-                                });
-                            } else {
-                                leaderboardList.innerHTML = '<li class="text-center text-red-600">Invalid data format received from server.</li>';
-                            }
-                        } else {
-                            leaderboardList.innerHTML = '<li class="text-center text-red-600">Error loading leaderboard data.</li>';
-                            console.error('Leaderboard JSONP error:', data ? data.error : 'No data received');
-                        }
-                    };
+                };
 
-                    script.onerror = function() {
+                script.onerror = function() {
+                    clearTimeout(timeoutId);
+                    console.log('JSONP failed, trying fetch as fallback');
+                    document.head.removeChild(script);
+                    delete window[callbackName];
+                    
+                    // Fallback to fetch
+                    fetch(LEADERBOARD_URL + '?action=get&_t=' + Date.now(), {
+                        method: 'GET',
+                        mode: 'no-cors'
+                    })
+                    .then(() => {
+                        leaderboardLoading.classList.add('hidden');
+                        // Since we can't read the response in no-cors mode, show a generic message
+                        leaderboardList.innerHTML = `
+                            <li class="text-center text-gray-600">
+                                Leaderboard request sent, but response cannot be read due to CORS.<br>
+                                <span class="text-sm">This is a browser security limitation.</span>
+                            </li>`;
+                    })
+                    .catch(fetchError => {
+                        console.error('Fetch also failed:', fetchError);
                         leaderboardLoading.classList.add('hidden');
                         leaderboardList.innerHTML = `
                             <li class="text-center text-red-600">
                                 Could not connect to the leaderboard.<br>
-                                <span class="text-sm text-gray-500">This might be due to network issues or server maintenance.</span><br>
+                                <span class="text-sm text-gray-500">Please check your internet connection.</span><br>
                                 <button onclick="location.reload()" class="mt-2 btn-secondary text-xs">Retry</button>
                             </li>`;
-                        document.head.removeChild(script);
-                        delete window[callbackName];
-                        console.error('Script loading failed for leaderboard');
-                    };
+                    });
+                };
 
-                    script.src = `${LEADERBOARD_URL}?callback=${callbackName}&action=get&_t=${Date.now()}`;
-                    document.head.appendChild(script);
-                });
+                // Add cache buster and proper parameters
+                script.src = `${LEADERBOARD_URL}?callback=${callbackName}&action=get&_t=${Date.now()}`;
+                document.head.appendChild(script);
             }
 
             function handleScoreSubmit() {
@@ -1551,34 +1542,26 @@
                     score: gameState.score,
                 };
 
-                // Try standard fetch first
-                fetch(LEADERBOARD_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        action: 'submit',
-                        ...scoreData
-                    })
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then(data => {
+                // Use JSONP for score submission as well
+                const script = document.createElement('script');
+                const callbackName = 'submitCallback_' + Date.now();
+                
+                window[callbackName] = function(data) {
+                    document.head.removeChild(script);
+                    delete window[callbackName];
+                    
                     if (data && data.success) {
                         showNotification('Your score has been submitted successfully!', 'info');
                     } else {
-                        throw new Error(data ? data.error : 'Unknown error from server');
+                        showNotification(`Submission failed: ${data ? data.error : 'Unknown error'}`, 'error');
                     }
-                })
-                .catch(error => {
-                    console.error('Standard POST failed, trying no-cors mode:', error);
+                };
+
+                script.onerror = function() {
+                    document.head.removeChild(script);
+                    delete window[callbackName];
                     
-                    // Fallback to no-cors mode
+                    // Fallback to no-cors fetch
                     fetch(LEADERBOARD_URL, {
                         method: 'POST',
                         mode: 'no-cors',
@@ -1591,54 +1574,38 @@
                         })
                     })
                     .then(() => {
-                        // no-cors mode doesn't allow reading response, so we assume success
-                        showNotification('Your score has been submitted!', 'info');
+                        showNotification('Score submission attempted (response unreadable due to CORS)', 'info');
                     })
-                    .catch(noCorError => {
-                        console.error('No-cors POST failed, trying JSONP:', noCorError);
-                        
-                        // Final fallback: JSONP for submission
-                        const script = document.createElement('script');
-                        const callbackName = 'submitCallback_' + Date.now();
-                        
-                        window[callbackName] = function(data) {
-                            document.head.removeChild(script);
-                            delete window[callbackName];
-                            
-                            if (data && data.success) {
-                                showNotification('Your score has been submitted!', 'info');
-                            } else {
-                                showNotification(`Submission failed: ${data ? data.error : 'Unknown error'}`, 'error');
-                            }
-                        };
-
-                        script.onerror = function() {
-                            document.head.removeChild(script);
-                            delete window[callbackName];
-                            showNotification('Could not submit score. Please check your connection and try again.', 'error');
-                        };
-
-                        const params = new URLSearchParams({
-                            callback: callbackName,
-                            action: 'submit',
-                            playerName: scoreData.playerName,
-                            score: scoreData.score,
-                            _t: Date.now() // Cache buster
-                        });
-
-                        script.src = `${LEADERBOARD_URL}?${params.toString()}`;
-                        document.head.appendChild(script);
+                    .catch(error => {
+                        console.error('All submission methods failed:', error);
+                        showNotification('Could not submit score. Please try again later.', 'error');
                     });
-                })
-                .finally(() => {
+                };
+
+                // Create the submission URL with parameters
+                const params = new URLSearchParams({
+                    callback: callbackName,
+                    action: 'submit',
+                    playerName: scoreData.playerName,
+                    score: scoreData.score,
+                    _t: Date.now()
+                });
+
+                script.src = `${LEADERBOARD_URL}?${params.toString()}`;
+                document.head.appendChild(script);
+
+                // Always hide the form and show actions after attempting submission
+                setTimeout(() => {
                     leaderboardForm.classList.add('hidden');
                     gameOverActions.classList.remove('hidden');
                     submitScoreBtn.disabled = false;
                     submitScoreBtn.textContent = 'Submit Score';
-                });
+                }, 3000);
             }
 
             
+            // ...existing code up to gameState initialization...
+
             function initializeGameState() {
                 gameState = {
                     score: 0, day: 1, overwhelm: 0, hungryGuestsLeft: 0, coins: 0,
@@ -1704,7 +1671,7 @@
                 playSound('game-over');
             }
 
-              function loadHighScore() {
+            function loadHighScore() {
                 highScore = parseInt(localStorage.getItem('hopesCornerHighScore') || '0', 10);
                 highScoreDisplay.textContent = highScore;
                 highScoreModalDisplay.textContent = highScore;
@@ -1785,7 +1752,9 @@
                 levelUpTitle.textContent = `Your ${stationName} is now level ${gameState.stationLevels[stationName]}!`;
 
                 switch (stationName) {
-                    case 'sorting': levelUpDesc.textContent = "You can now sort items faster and have reduced overwhelm from unsorted donations."; break;
+                    case 'sorting': 
+                        levelUpDesc.textContent = "You can now sort items faster and have reduced overwhelm from unsorted donations."; 
+                        break;
                     case 'kitchen':
                         levelUpDesc.textContent = "You can now cook meals faster and have a larger inventory capacity.";
                         if (gameState.stationLevels.kitchen === 2) CONFIG.MAX_COOKING_SLOTS = 4;
@@ -1828,7 +1797,10 @@
             }
 
             function getDailyEvent(day) {
-                if (day === 1) { dailyEventTextEl.textContent = 'Get your kitchen ready!'; return; }
+                if (day === 1) { 
+                    dailyEventTextEl.textContent = 'Get your kitchen ready!'; 
+                    return; 
+                }
                 const eventData = DAILY_EVENTS[Math.floor(Math.random() * DAILY_EVENTS.length)];
                 applyEvent(eventData);
             }
@@ -1849,13 +1821,28 @@
                 }
 
                 switch (effect.type) {
-                    case 'donation_multiplier': gameState.eventModifiers.DONATION_MULTIPLIER = { ...{ veg: 1, protein: 1, carbs: 1 }, [effect.item]: effect.modifier || 2 }; break;
-                    case 'guest_patience': gameState.eventModifiers.guest_patience = effect.modifier || 1.25; break;
-                    case 'cooking_speed': gameState.eventModifiers.cooking_speed = effect.modifier || 0.75; break;
-                    case 'score_bonus': gameState.eventModifiers.score_bonus_item = effect.item; gameState.eventModifiers.score_bonus = effect.modifier || 5; break;
-                    case 'guest_satisfaction': gameState.eventModifiers.guest_satisfaction = effect.modifier || 1.2; break;
-                    case 'coin_bonus': gameState.eventModifiers.coin_bonus = effect.modifier || 2; break;
-                    case 'sorting_bonus': gameState.eventModifiers.sorting_bonus = effect.modifier || 1.5; break;
+                    case 'donation_multiplier': 
+                        gameState.eventModifiers.DONATION_MULTIPLIER = { ...{ veg: 1, protein: 1, carbs: 1 }, [effect.item]: effect.modifier || 2 }; 
+                        break;
+                    case 'guest_patience': 
+                        gameState.eventModifiers.guest_patience = effect.modifier || 1.25; 
+                        break;
+                    case 'cooking_speed': 
+                        gameState.eventModifiers.cooking_speed = effect.modifier || 0.75; 
+                        break;
+                    case 'score_bonus': 
+                        gameState.eventModifiers.score_bonus_item = effect.item; 
+                        gameState.eventModifiers.score_bonus = effect.modifier || 5; 
+                        break;
+                    case 'guest_satisfaction': 
+                        gameState.eventModifiers.guest_satisfaction = effect.modifier || 1.2; 
+                        break;
+                    case 'coin_bonus': 
+                        gameState.eventModifiers.coin_bonus = effect.modifier || 2; 
+                        break;
+                    case 'sorting_bonus': 
+                        gameState.eventModifiers.sorting_bonus = effect.modifier || 1.5; 
+                        break;
                 }
                 renderRecipes();
                 showNotification(`Event: ${description}`, 'event');
@@ -1955,7 +1942,7 @@
                 loadHighScore();
             }
             
-             function showModal(modalEl) {
+            function showModal(modalEl) {
                 modalOverlay.classList.remove('hidden');
                 modalEl.classList.remove('hidden');
                 const allModals = document.querySelectorAll('.modal');
@@ -1979,7 +1966,8 @@
                 setupAutoSort();
                 playSound('start');
             }
-             function setupAutoSort() {
+            
+            function setupAutoSort() {
                 if (gameState.autoSortTimer) clearInterval(gameState.autoSortTimer);
                 if (gameState.upgrades.autoSort.level > 0) {
                     const interval = 10000 / gameState.upgrades.autoSort.level;
@@ -2127,7 +2115,8 @@
                     }
                 }
             }
-             function serveGuest(guestId) {
+            
+            function serveGuest(guestId) {
                 const mealIndex = gameState.readyMeals.findIndex(m => m.id === gameState.selectedMealId);
                 const guestIndex = gameState.guests.findIndex(g => g.id === guestId);
                 if (mealIndex === -1 || guestIndex === -1) return;
@@ -2200,7 +2189,8 @@
                 playSound('serve');
                 if (gameState.stats.guestsServed === 3) showTutorial('upgrades');
             }
-             function spawnGuest() {
+            
+            function spawnGuest() {
                 if (!gameState.gameRunning) return;
                 const guestId = gameState.nextGuestId++;
                 const id = `guest-${guestId}`;
@@ -2233,10 +2223,15 @@
                         const satBar = thisGuestEl.querySelector('.satisfaction-bar');
                         const satEmoji = thisGuestEl.querySelector('.satisfaction-emoji');
                         satBar.style.width = `${guestToUpdate.satisfaction * 100}%`;
-                        if (guestToUpdate.satisfaction > 0.7) { satBar.className = 'satisfaction-bar progress-bar-fill bg-green-500'; satEmoji.textContent = '😊'; }
-                        else if (guestToUpdate.satisfaction > 0.3) { satBar.className = 'satisfaction-bar progress-bar-fill bg-yellow-500'; satEmoji.textContent = '😐'; }
-                        else {
-                            satBar.className = 'satisfaction-bar progress-bar-fill bg-red-500'; satEmoji.textContent = '😠';
+                        if (guestToUpdate.satisfaction > 0.7) { 
+                            satBar.className = 'satisfaction-bar progress-bar-fill bg-green-500'; 
+                            satEmoji.textContent = '😊'; 
+                        } else if (guestToUpdate.satisfaction > 0.3) { 
+                            satBar.className = 'satisfaction-bar progress-bar-fill bg-yellow-500'; 
+                            satEmoji.textContent = '😐'; 
+                        } else {
+                            satBar.className = 'satisfaction-bar progress-bar-fill bg-red-500'; 
+                            satEmoji.textContent = '😠';
                             if (guestToUpdate.satisfaction < 0.15 && Math.random() < 0.05) {
                                 thisGuestEl.classList.add('shake');
                                 setTimeout(() => { if (thisGuestEl.parentElement) thisGuestEl.classList.remove('shake'); }, 500);
@@ -2284,16 +2279,14 @@
                 acceptDonationBtn.classList.add('pulse-animation');
             }
 
-            
             viewLeaderboardBtn.addEventListener('click', showLeaderboard);
             closeLeaderboardBtn.addEventListener('click', () => {
                 document.getElementById('leaderboard-modal').classList.add('hidden');
                 showStartModal();
             });
             submitScoreBtn.addEventListener('click', handleScoreSubmit);
-            
 
-             recipeAreaEl.addEventListener('click', e => {
+            recipeAreaEl.addEventListener('click', e => {
                 if (e.target.classList.contains('cook-btn') && !e.target.disabled) {
                     const recipeId = e.target.dataset.recipeId;
                     const recipe = gameState.knownRecipes.find(r => r.id === recipeId);
@@ -2301,16 +2294,19 @@
                 }
             });
 
-             readyMealsAreaEl.addEventListener('click', e => {
-                const mealEl = e.target.closest('.meal'); if (!mealEl) return;
+            readyMealsAreaEl.addEventListener('click', e => {
+                const mealEl = e.target.closest('.meal'); 
+                if (!mealEl) return;
                 const mealId = mealEl.id;
                 if (gameState.selectedMealId === mealId) {
-                    gameState.selectedMealId = null; mealEl.classList.remove('ring-4');
+                    gameState.selectedMealId = null; 
+                    mealEl.classList.remove('ring-4');
                     instructionTextEl.textContent = '1. Click a ready meal to select it.';
                 } else {
                     const currentlySelected = document.querySelector('.meal.ring-4');
                     if (currentlySelected) currentlySelected.classList.remove('ring-4');
-                    gameState.selectedMealId = mealId; mealEl.classList.add('ring-4');
+                    gameState.selectedMealId = mealId; 
+                    mealEl.classList.add('ring-4');
                     instructionTextEl.textContent = '2. Now click a guest to serve!';
                     playSound('select-meal');
                 }
@@ -2321,7 +2317,7 @@
                 if (guestEl && gameState.selectedMealId) serveGuest(guestEl.id);
             });
 
-             acceptDonationBtn.addEventListener('click', () => {
+            acceptDonationBtn.addEventListener('click', () => {
                 if (acceptDonationBtn.disabled) return;
                 acceptDonationBtn.disabled = true;
                 acceptDonationBtn.style.opacity = '0.5';
