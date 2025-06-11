@@ -1452,7 +1452,6 @@
                 leaderboardLoading.classList.remove('hidden');
                 leaderboardList.innerHTML = '';
 
-                // Create a timeout for the entire operation
                 const timeoutId = setTimeout(() => {
                     leaderboardLoading.classList.add('hidden');
                     leaderboardList.innerHTML = `
@@ -1460,9 +1459,8 @@
                             Connection timeout. Please try again later.<br>
                             <button onclick="location.reload()" class="mt-2 btn-secondary text-xs">Retry</button>
                         </li>`;
-                }, 10000); // 10 second timeout
+                }, 10000);
 
-                // Try JSONP first since it's more reliable for cross-origin requests
                 const script = document.createElement('script');
                 const callbackName = 'leaderboardCallback_' + Date.now();
                 
@@ -1501,14 +1499,12 @@
                     document.head.removeChild(script);
                     delete window[callbackName];
                     
-                    // Fallback to fetch
                     fetch(LEADERBOARD_URL + '?action=get&_t=' + Date.now(), {
                         method: 'GET',
                         mode: 'no-cors'
                     })
                     .then(() => {
                         leaderboardLoading.classList.add('hidden');
-                        // Since we can't read the response in no-cors mode, show a generic message
                         leaderboardList.innerHTML = `
                             <li class="text-center text-gray-600">
                                 Leaderboard request sent, but response cannot be read due to CORS.<br>
@@ -1527,7 +1523,6 @@
                     });
                 };
 
-                // Add cache buster and proper parameters
                 script.src = `${LEADERBOARD_URL}?callback=${callbackName}&action=get&_t=${Date.now()}`;
                 document.head.appendChild(script);
             }
@@ -1542,7 +1537,6 @@
                     score: gameState.score,
                 };
 
-                // Use JSONP for score submission as well
                 const script = document.createElement('script');
                 const callbackName = 'submitCallback_' + Date.now();
                 
@@ -1561,7 +1555,6 @@
                     document.head.removeChild(script);
                     delete window[callbackName];
                     
-                    // Fallback to no-cors fetch
                     fetch(LEADERBOARD_URL, {
                         method: 'POST',
                         mode: 'no-cors',
@@ -1582,7 +1575,6 @@
                     });
                 };
 
-                // Create the submission URL with parameters
                 const params = new URLSearchParams({
                     callback: callbackName,
                     action: 'submit',
@@ -1594,7 +1586,6 @@
                 script.src = `${LEADERBOARD_URL}?${params.toString()}`;
                 document.head.appendChild(script);
 
-                // Always hide the form and show actions after attempting submission
                 setTimeout(() => {
                     leaderboardForm.classList.add('hidden');
                     gameOverActions.classList.remove('hidden');
@@ -1604,7 +1595,6 @@
             }
 
             
-            // ...existing code up to gameState initialization...
 
             function initializeGameState() {
                 gameState = {
