@@ -5,8 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hope's corner - Pantry to Plate Game</title>
-        <link rel="icon" type="image/png" href="https://images.squarespace-cdn.com/content/5622cd82e4b0501d40689558/2aedb400-89b8-4f93-856f-cd2c7d5385e4/Hopes_Corner_Logo_Green.png?format=1500w&content-type=image%2Fpng">
-    <meta name="description" content="Help Hope's Corner feed the community by managing the pantry and preparing meals.">
+    <link rel="icon" type="image/png"
+        href="https://images.squarespace-cdn.com/content/5622cd82e4b0501d40689558/2aedb400-89b8-4f93-856f-cd2c7d5385e4/Hopes_Corner_Logo_Green.png?format=1500w&content-type=image%2Fpng">
+    <meta name="description"
+        content="Help Hope's Corner feed the community by managing the pantry and preparing meals.">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -71,10 +73,11 @@
         }
 
         @media (min-width: 1024px) {
-            .header > div {
+            .header>div {
                 min-width: 0;
             }
-            .header > .flex-1 {
+
+            .header>.flex-1 {
                 min-width: 260px;
                 max-width: 600px;
             }
@@ -141,14 +144,14 @@
             color: var(--text-main);
             background: var(--box-bg);
         }
-        
+
 
         .donation-item.dragging {
             position: fixed;
             z-index: 1000;
             pointer-events: none;
             transform: scale(1.1);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
         }
 
 
@@ -455,7 +458,7 @@
             gap: 0.5rem;
             align-items: flex-end;
         }
-        
+
         .notification {
             position: relative;
             background: var(--box-bg);
@@ -905,7 +908,8 @@
 
     <div id="game-container" class="game-container p-2 md:p-4">
         <header class="header flex-wrap justify-center lg:justify-between">
-            <div class="flex items-center gap-3 flex-shrink-0 w-full lg:w-auto justify-center lg:justify-start mb-4 lg:mb-0">
+            <div
+                class="flex items-center gap-3 flex-shrink-0 w-full lg:w-auto justify-center lg:justify-start mb-4 lg:mb-0">
                 <img src="https://images.squarespace-cdn.com/content/5622cd82e4b0501d40689558/2aedb400-89b8-4f93-856f-cd2c7d5385e4/Hopes_Corner_Logo_Green.png?format=1500w&content-type=image%2Fpng"
                     alt="Hope's Corner Official Logo" class="h-10 md:h-12"
                     onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgNTAiPjxwYXRoIGQ9Ik0xMCAxMEgzMFYzMEgxMFoiIGZpbGw9IiM4NGNjMTYiLz48dGV4dCB4PSI0MCIgeT0iMzAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiBmaWxsPSIjODRjYzE2Ij5Ib3BlJ3MgQ29ybmVyPC90ZXh0Pjwvc3ZnPg=='">
@@ -918,7 +922,8 @@
                     The day is just beginning...</p>
                 <div id="event-effects" class="flex justify-center gap-2 mt-1"></div>
             </div>
-            <div class="flex items-center justify-center lg:justify-end flex-wrap gap-x-4 gap-y-2 w-full lg:w-auto flex-shrink-0">
+            <div
+                class="flex items-center justify-center lg:justify-end flex-wrap gap-x-4 gap-y-2 w-full lg:w-auto flex-shrink-0">
                 <div class="text-center">
                     <span class="text-xs md:text-sm" style="color: var(--text-light);">Coins</span>
                     <p id="coins-display" class="text-lg md:text-2xl font-semibold" style="color: var(--accent);">0</p>
@@ -965,7 +970,8 @@
             <div class="p-2 bg-indigo-100 border border-indigo-200 rounded-md mb-2"
                 style="background-color: rgba(132, 204, 22, 0.1); border-color: rgba(132, 204, 22, 0.3);">
                 <h3 class="font-semibold text-center" style="color: var(--primary-dark);">How to Sort:</h3>
-                <p id="sort-instruction-text" class="text-center" style="color: var(--text-main);">Drag & drop donations into the correct bins.</p>
+                <p id="sort-instruction-text" class="text-center" style="color: var(--text-main);">Drag & drop donations
+                    into the correct bins.</p>
             </div>
             <div id="sorting-area" class="flex-grow p-2 rounded-md min-h-[150px] grid grid-cols-3 gap-2"
                 style="background-color: rgba(0, 0, 0, 0.03);"></div>
@@ -1139,7 +1145,8 @@
                     <li>Earn coins to purchase upgrades</li>
                 </ul>
                 <p class="font-semibold mt-2" style="color: var(--text-main);"><strong>Key Tip:</strong> Guests will
-                    arrive once you have 5 meal servings ready. If 5 guests leave angry, the game is over!</p>
+                    arrive once you have 5 meal servings ready <u>or if you collect too many ingredients in storage</u>.
+                    If 5 guests leave angry, the game is over!</p>
             </div>
 
             <div id="features" class="tab-content">
@@ -1199,10 +1206,10 @@
         <div id="game-over-modal" class="modal hidden">
             <h1 id="game-over-title" class="text-3xl md:text-4xl font-bold mb-2 text-red-600">Game Over!</h1>
             <p id="game-over-reason" class="text-lg mb-4" style="color: var(--text-main);"></p>
-            
+
             <!-- Game Stats -->
             <div id="game-stats" class="stats-panel mb-6">
-                 <div class="stat-row">
+                <div class="stat-row">
                     <span class="stat-label">Days Completed</span>
                     <span id="final-days" class="stat-value">0</span>
                 </div>
@@ -1220,14 +1227,16 @@
                 </div>
             </div>
 
-            <p id="new-high-score-msg" class="text-xl font-semibold hidden mb-4" style="color: var(--primary);">New High Score!</p>
-            
+            <p id="new-high-score-msg" class="text-xl font-semibold hidden mb-4" style="color: var(--primary);">New High
+                Score!</p>
+
             <div id="leaderboard-form" class="mt-4">
                 <p class="mb-2 font-semibold">Enter your name for the leaderboard!</p>
-                <input type="text" id="player-name-input" placeholder="Enter your name" class="w-full p-2 border rounded mb-2 text-center" style="border-color: var(--primary);">
+                <input type="text" id="player-name-input" placeholder="Enter your name"
+                    class="w-full p-2 border rounded mb-2 text-center" style="border-color: var(--primary);">
                 <button id="submit-score-btn" class="btn-primary w-full">Submit Score</button>
             </div>
-            
+
             <!-- Action buttons, initially hidden -->
             <div id="game-over-actions" class="hidden mt-4">
                 <button id="restart-game-btn" class="btn-primary">Play Again</button>
@@ -1383,9 +1392,9 @@
                 { id: 'recipe-14', name: 'Lasagna', emoji: '🍝', ingredients: { protein: 2, veg: 1, carbs: 2 }, cookTime: 18000, servings: 6, pointsPerServing: 5 },
                 { id: 'recipe-15', name: 'Turkey Sandwiches', emoji: '🥪', ingredients: { protein: 1, veg: 1, carbs: 2 }, cookTime: 6000, servings: 4, pointsPerServing: 3 }
             ];
-            
 
-             const DAILY_EVENTS = [
+
+            const DAILY_EVENTS = [
                 { description: "Second Harvest of Silicon Valley have donated a lot of fresh veggies!", effect: { type: 'donation_multiplier', item: 'veg', modifier: 2 }, icon: '🥦' },
                 { description: "The kitchen's oven is running extra hot today! Cooking is faster.", effect: { type: 'cooking_speed', modifier: 0.8 }, icon: '🔥' },
                 { description: "It's a chilly day, everyone is craving something warm. Guests are more patient.", effect: { type: 'guest_patience', modifier: 1.25 }, icon: '❄️' },
@@ -1430,7 +1439,7 @@
                 { id: 'serving', message: "Click a meal, then click on a guest to serve them. Happy guests give more points!", target: '#ready-meals-area', position: 'right', shown: false },
                 { id: 'upgrades', message: "Use coins to buy upgrades that make your job easier", target: '#sorting-upgrade-area', position: 'top', shown: false }
             ];
-             const CONFIG = {
+            const CONFIG = {
                 MAX_OVERWHELM: 100, MAX_ANGRY_GUESTS: 5, OVERWHELM_PER_GUEST_TICK: 0.1, SCORE_PER_GUEST: 10,
                 DONATION_SIZE: 3, MAX_COOKING_SLOTS: 3, COIN_PER_GUEST: 5,
                 ITEM_TYPES: {
@@ -1463,13 +1472,13 @@
 
                 const script = document.createElement('script');
                 const callbackName = 'leaderboardCallback_' + Date.now();
-                
-                window[callbackName] = function(data) {
+
+                window[callbackName] = function (data) {
                     clearTimeout(timeoutId);
                     leaderboardLoading.classList.add('hidden');
                     document.head.removeChild(script);
                     delete window[callbackName];
-                    
+
                     if (data && data.success) {
                         if (data.data && data.data.length === 0) {
                             leaderboardList.innerHTML = '<li class="text-center text-gray-600">No scores yet. Be the first!</li>';
@@ -1493,34 +1502,34 @@
                     }
                 };
 
-                script.onerror = function() {
+                script.onerror = function () {
                     clearTimeout(timeoutId);
                     console.log('JSONP failed, trying fetch as fallback');
                     document.head.removeChild(script);
                     delete window[callbackName];
-                    
+
                     fetch(LEADERBOARD_URL + '?action=get&_t=' + Date.now(), {
                         method: 'GET',
                         mode: 'no-cors'
                     })
-                    .then(() => {
-                        leaderboardLoading.classList.add('hidden');
-                        leaderboardList.innerHTML = `
+                        .then(() => {
+                            leaderboardLoading.classList.add('hidden');
+                            leaderboardList.innerHTML = `
                             <li class="text-center text-gray-600">
                                 Leaderboard request sent, but response cannot be read due to CORS.<br>
                                 <span class="text-sm">This is a browser security limitation.</span>
                             </li>`;
-                    })
-                    .catch(fetchError => {
-                        console.error('Fetch also failed:', fetchError);
-                        leaderboardLoading.classList.add('hidden');
-                        leaderboardList.innerHTML = `
+                        })
+                        .catch(fetchError => {
+                            console.error('Fetch also failed:', fetchError);
+                            leaderboardLoading.classList.add('hidden');
+                            leaderboardList.innerHTML = `
                             <li class="text-center text-red-600">
                                 Could not connect to the leaderboard.<br>
                                 <span class="text-sm text-gray-500">Please check your internet connection.</span><br>
                                 <button onclick="location.reload()" class="mt-2 btn-secondary text-xs">Retry</button>
                             </li>`;
-                    });
+                        });
                 };
 
                 script.src = `${LEADERBOARD_URL}?callback=${callbackName}&action=get&_t=${Date.now()}`;
@@ -1539,11 +1548,11 @@
 
                 const script = document.createElement('script');
                 const callbackName = 'submitCallback_' + Date.now();
-                
-                window[callbackName] = function(data) {
+
+                window[callbackName] = function (data) {
                     document.head.removeChild(script);
                     delete window[callbackName];
-                    
+
                     if (data && data.success) {
                         showNotification('Your score has been submitted successfully!', 'info');
                     } else {
@@ -1551,10 +1560,10 @@
                     }
                 };
 
-                script.onerror = function() {
+                script.onerror = function () {
                     document.head.removeChild(script);
                     delete window[callbackName];
-                    
+
                     fetch(LEADERBOARD_URL, {
                         method: 'POST',
                         mode: 'no-cors',
@@ -1566,13 +1575,13 @@
                             ...scoreData
                         })
                     })
-                    .then(() => {
-                        showNotification('Score submission attempted (response unreadable due to CORS)', 'info');
-                    })
-                    .catch(error => {
-                        console.error('All submission methods failed:', error);
-                        showNotification('Could not submit score. Please try again later.', 'error');
-                    });
+                        .then(() => {
+                            showNotification('Score submission attempted (response unreadable due to CORS)', 'info');
+                        })
+                        .catch(error => {
+                            console.error('All submission methods failed:', error);
+                            showNotification('Could not submit score. Please try again later.', 'error');
+                        });
                 };
 
                 const params = new URLSearchParams({
@@ -1594,7 +1603,7 @@
                 }, 3000);
             }
 
-            
+
 
             function initializeGameState() {
                 gameState = {
@@ -1602,7 +1611,7 @@
                     inventory: { veg: 0, protein: 0, carbs: 0 },
                     totalInventory: { veg: 0, protein: 0, carbs: 0 },
                     donationsInSorting: 0, guests: [], cooking: [], readyMeals: [], gameRunning: false,
-                    nextGuestId: 0, nextDonationId: 0, nextMealId: 0, selectedMealId: null, 
+                    nextGuestId: 0, nextDonationId: 0, nextMealId: 0, selectedMealId: null,
                     dayDuration: 60000, dayTimer: null,
                     knownRecipes: MASTER_RECIPE_LIST.slice(0, 4),
                     eventModifiers: {},
@@ -1635,9 +1644,9 @@
                 gameState.guests.forEach(g => clearInterval(g.timer));
                 gameState.cooking.forEach(c => clearInterval(c.timerId));
                 gtag('event', 'game_over', { 'reason': reason, 'final_score': gameState.score, 'day_reached': gameState.day });
-                
+
                 saveHighScore();
-                
+
                 finalScoreEl.textContent = gameState.score;
                 finalDaysEl.textContent = gameState.day;
                 finalGuestsEl.textContent = gameState.stats.guestsServed;
@@ -1651,13 +1660,13 @@
                 playerNameInput.value = '';
 
                 showModal(gameOverModal);
-                
-                sortingAreaEl.innerHTML = ''; 
-                readyMealsAreaEl.innerHTML = ''; 
-                guestAreaEl.innerHTML = ''; 
-                recipeAreaEl.innerHTML = ''; 
+
+                sortingAreaEl.innerHTML = '';
+                readyMealsAreaEl.innerHTML = '';
+                guestAreaEl.innerHTML = '';
+                recipeAreaEl.innerHTML = '';
                 cookingSlotsEl.innerHTML = '';
-                
+
                 playSound('game-over');
             }
 
@@ -1742,8 +1751,8 @@
                 levelUpTitle.textContent = `Your ${stationName} is now level ${gameState.stationLevels[stationName]}!`;
 
                 switch (stationName) {
-                    case 'sorting': 
-                        levelUpDesc.textContent = "You can now sort items faster and have reduced overwhelm from unsorted donations."; 
+                    case 'sorting':
+                        levelUpDesc.textContent = "You can now sort items faster and have reduced overwhelm from unsorted donations.";
                         break;
                     case 'kitchen':
                         levelUpDesc.textContent = "You can now cook meals faster and have a larger inventory capacity.";
@@ -1787,9 +1796,9 @@
             }
 
             function getDailyEvent(day) {
-                if (day === 1) { 
-                    dailyEventTextEl.textContent = 'Get your kitchen ready!'; 
-                    return; 
+                if (day === 1) {
+                    dailyEventTextEl.textContent = 'Get your kitchen ready!';
+                    return;
                 }
                 const eventData = DAILY_EVENTS[Math.floor(Math.random() * DAILY_EVENTS.length)];
                 applyEvent(eventData);
@@ -1811,27 +1820,27 @@
                 }
 
                 switch (effect.type) {
-                    case 'donation_multiplier': 
-                        gameState.eventModifiers.DONATION_MULTIPLIER = { ...{ veg: 1, protein: 1, carbs: 1 }, [effect.item]: effect.modifier || 2 }; 
+                    case 'donation_multiplier':
+                        gameState.eventModifiers.DONATION_MULTIPLIER = { ...{ veg: 1, protein: 1, carbs: 1 }, [effect.item]: effect.modifier || 2 };
                         break;
-                    case 'guest_patience': 
-                        gameState.eventModifiers.guest_patience = effect.modifier || 1.25; 
+                    case 'guest_patience':
+                        gameState.eventModifiers.guest_patience = effect.modifier || 1.25;
                         break;
-                    case 'cooking_speed': 
-                        gameState.eventModifiers.cooking_speed = effect.modifier || 0.75; 
+                    case 'cooking_speed':
+                        gameState.eventModifiers.cooking_speed = effect.modifier || 0.75;
                         break;
-                    case 'score_bonus': 
-                        gameState.eventModifiers.score_bonus_item = effect.item; 
-                        gameState.eventModifiers.score_bonus = effect.modifier || 5; 
+                    case 'score_bonus':
+                        gameState.eventModifiers.score_bonus_item = effect.item;
+                        gameState.eventModifiers.score_bonus = effect.modifier || 5;
                         break;
-                    case 'guest_satisfaction': 
-                        gameState.eventModifiers.guest_satisfaction = effect.modifier || 1.2; 
+                    case 'guest_satisfaction':
+                        gameState.eventModifiers.guest_satisfaction = effect.modifier || 1.2;
                         break;
-                    case 'coin_bonus': 
-                        gameState.eventModifiers.coin_bonus = effect.modifier || 2; 
+                    case 'coin_bonus':
+                        gameState.eventModifiers.coin_bonus = effect.modifier || 2;
                         break;
-                    case 'sorting_bonus': 
-                        gameState.eventModifiers.sorting_bonus = effect.modifier || 1.5; 
+                    case 'sorting_bonus':
+                        gameState.eventModifiers.sorting_bonus = effect.modifier || 1.5;
                         break;
                 }
                 renderRecipes();
@@ -1931,7 +1940,7 @@
                 document.getElementById('leaderboard-modal').classList.add('hidden');
                 loadHighScore();
             }
-            
+
             function showModal(modalEl) {
                 modalOverlay.classList.remove('hidden');
                 modalEl.classList.remove('hidden');
@@ -1956,7 +1965,7 @@
                 setupAutoSort();
                 playSound('start');
             }
-            
+
             function setupAutoSort() {
                 if (gameState.autoSortTimer) clearInterval(gameState.autoSortTimer);
                 if (gameState.upgrades.autoSort.level > 0) {
@@ -1991,7 +2000,7 @@
                     }, 300);
                 }
             }
-            
+
             function createDonationItem(forcedType = null) {
                 if (sortingAreaEl.children.length >= 9) return;
                 gameState.donationsInSorting++;
@@ -2105,7 +2114,7 @@
                     }
                 }
             }
-            
+
             function serveGuest(guestId) {
                 const mealIndex = gameState.readyMeals.findIndex(m => m.id === gameState.selectedMealId);
                 const guestIndex = gameState.guests.findIndex(g => g.id === guestId);
@@ -2179,7 +2188,7 @@
                 playSound('serve');
                 if (gameState.stats.guestsServed === 3) showTutorial('upgrades');
             }
-            
+
             function spawnGuest() {
                 if (!gameState.gameRunning) return;
                 const guestId = gameState.nextGuestId++;
@@ -2213,14 +2222,14 @@
                         const satBar = thisGuestEl.querySelector('.satisfaction-bar');
                         const satEmoji = thisGuestEl.querySelector('.satisfaction-emoji');
                         satBar.style.width = `${guestToUpdate.satisfaction * 100}%`;
-                        if (guestToUpdate.satisfaction > 0.7) { 
-                            satBar.className = 'satisfaction-bar progress-bar-fill bg-green-500'; 
-                            satEmoji.textContent = '😊'; 
-                        } else if (guestToUpdate.satisfaction > 0.3) { 
-                            satBar.className = 'satisfaction-bar progress-bar-fill bg-yellow-500'; 
-                            satEmoji.textContent = '😐'; 
+                        if (guestToUpdate.satisfaction > 0.7) {
+                            satBar.className = 'satisfaction-bar progress-bar-fill bg-green-500';
+                            satEmoji.textContent = '😊';
+                        } else if (guestToUpdate.satisfaction > 0.3) {
+                            satBar.className = 'satisfaction-bar progress-bar-fill bg-yellow-500';
+                            satEmoji.textContent = '😐';
                         } else {
-                            satBar.className = 'satisfaction-bar progress-bar-fill bg-red-500'; 
+                            satBar.className = 'satisfaction-bar progress-bar-fill bg-red-500';
                             satEmoji.textContent = '😠';
                             if (guestToUpdate.satisfaction < 0.15 && Math.random() < 0.05) {
                                 thisGuestEl.classList.add('shake');
@@ -2285,17 +2294,17 @@
             });
 
             readyMealsAreaEl.addEventListener('click', e => {
-                const mealEl = e.target.closest('.meal'); 
+                const mealEl = e.target.closest('.meal');
                 if (!mealEl) return;
                 const mealId = mealEl.id;
                 if (gameState.selectedMealId === mealId) {
-                    gameState.selectedMealId = null; 
+                    gameState.selectedMealId = null;
                     mealEl.classList.remove('ring-4');
                     instructionTextEl.textContent = '1. Click a ready meal to select it.';
                 } else {
                     const currentlySelected = document.querySelector('.meal.ring-4');
                     if (currentlySelected) currentlySelected.classList.remove('ring-4');
-                    gameState.selectedMealId = mealId; 
+                    gameState.selectedMealId = mealId;
                     mealEl.classList.add('ring-4');
                     instructionTextEl.textContent = '2. Now click a guest to serve!';
                     playSound('select-meal');
@@ -2324,7 +2333,7 @@
                     createDonationItem(type);
                 }
                 const totalInventoryCount = gameState.inventory.veg + gameState.inventory.protein + gameState.inventory.carbs;
-                if (!gameState.hasGuestsStarted && totalInventoryCount >= 15) {
+                if (!gameState.hasGuestsStarted && totalInventoryCount >= 20) {
                     gameState.hasGuestsStarted = true;
                     dailyEventTextEl.textContent = 'Guests are starting to arrive!';
                     spawnGuest();
@@ -2336,7 +2345,7 @@
                     if (gameState.gameRunning) spawnDonation();
                 }, 4000 / (gameState.eventModifiers.sorting_bonus || 1));
             });
-            
+
             sortingAreaEl.addEventListener('dragstart', e => {
                 if (e.target.classList.contains('donation-item')) {
                     draggedItem = e.target;
@@ -2345,9 +2354,9 @@
                     }, 0);
                 }
             });
-            
+
             sortingAreaEl.addEventListener('dragend', e => {
-                if(draggedItem) {
+                if (draggedItem) {
                     draggedItem.classList.remove('opacity-50');
                     draggedItem = null;
                 }
@@ -2360,7 +2369,7 @@
                 });
 
                 bin.addEventListener('dragover', e => {
-                    e.preventDefault(); 
+                    e.preventDefault();
                 });
 
                 bin.addEventListener('dragleave', () => {
@@ -2400,7 +2409,7 @@
                 if (e.target.classList.contains('donation-item')) {
                     e.preventDefault();
                     draggedItem = e.target;
-                    
+
                     touchDragItem = draggedItem.cloneNode(true);
                     touchDragItem.classList.add('dragging');
                     document.body.appendChild(touchDragItem);
@@ -2462,9 +2471,9 @@
                         draggedItem.style.opacity = '1';
                     }
                 } else {
-                     draggedItem.style.opacity = '1';
+                    draggedItem.style.opacity = '1';
                 }
-                
+
 
                 document.body.removeChild(touchDragItem);
                 touchDragItem = null;
