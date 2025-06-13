@@ -1474,7 +1474,7 @@
                         if (data.data && data.data.length === 0) {
                             leaderboardList.innerHTML = '<li class="text-center text-gray-600">No scores yet. Be the first!</li>';
                         } else if (data.data && Array.isArray(data.data)) {
-                            data.data.forEach((entry, index) => {
+                            data.data.slice(0, 5).forEach((entry, index) => {
                                 const li = document.createElement('li');
                                 li.className = 'flex justify-between items-center p-2 rounded-md';
                                 li.style.backgroundColor = index % 2 === 0 ? 'rgba(0,0,0,0.05)' : 'transparent';
