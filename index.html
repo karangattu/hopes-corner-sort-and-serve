@@ -2323,6 +2323,14 @@
                     else if (donationMultiplier.carbs > 1 && Math.random() < 0.33) type = 'carbs';
                     createDonationItem(type);
                 }
+                const totalInventoryCount = gameState.inventory.veg + gameState.inventory.protein + gameState.inventory.carbs;
+                if (!gameState.hasGuestsStarted && totalInventoryCount >= 15) {
+                    gameState.hasGuestsStarted = true;
+                    dailyEventTextEl.textContent = 'Guests are starting to arrive!';
+                    spawnGuest();
+                    showNotification("Guests have started arriving!", 'info');
+                    showTutorial('serving');
+                }
                 playSound('donation');
                 setTimeout(() => {
                     if (gameState.gameRunning) spawnDonation();
