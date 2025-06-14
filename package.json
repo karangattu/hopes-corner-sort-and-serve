@@ -1,0 +1,12 @@
+{
+  "name": "hopes-corner-sort-and-serve",
+  "version": "1.0.0",
+  "description": "A web game for sorting and serving.",
+  "scripts": {
+    "test": "playwright test --headed"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.44.0",
+    "serve": "^15.0.0"
+  }
+}
