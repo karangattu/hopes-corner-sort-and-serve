@@ -61,15 +61,11 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
 
-      # Wait a bit to ensure deployment is live (optional, but recommended)
-      - name: Wait for deployment
-        run: sleep 8
-
       - name: Run Playwright tests against deployed site
         # env:
         #   BASE_URL: ${{ steps.deployment.outputs.page_url }}
         run: |
-          npx playwright test --project=chromium
+          npm run test
 
       - name: Upload Playwright test results
         if: always()

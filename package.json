@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "A web game for sorting and serving.",
   "scripts": {
-    "test": "playwright test --headed"
+    "test": "playwright test"
   },
   "devDependencies": {
     "@playwright/test": "^1.53.0"
