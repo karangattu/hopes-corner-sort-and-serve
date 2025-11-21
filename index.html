@@ -70,7 +70,7 @@
             </div>
         </header>
 
-        <div id="donations-station" class="station">
+        <div id="donations-station" class="station active">
             <div class="station-header">
                 <h2 class="text-xl font-semibold" style="color: var(--text-main);">
                     <span class="station-icon">📦</span> Donations & Sorting
@@ -86,11 +86,29 @@
             <div class="p-2 bg-indigo-100 border border-indigo-200 rounded-md mb-2"
                 style="background-color: rgba(132, 204, 22, 0.1); border-color: rgba(132, 204, 22, 0.3);">
                 <h3 class="font-semibold text-center" style="color: var(--primary-dark);">How to Sort:</h3>
-                <p id="sort-instruction-text" class="text-center" style="color: var(--text-main);">Drag & drop donations
-                    into the correct bins.</p>
+                <p id="sort-instruction-text" class="text-center" style="color: var(--text-main);">Tap a donation to select it, then tap the matching bin</p>
             </div>
             <div id="sorting-area" class="flex-grow p-2 rounded-md min-h-[150px] grid grid-cols-3 gap-2"
                 style="background-color: rgba(0, 0, 0, 0.03);"></div>
+
+            <h3 class="font-semibold mt-4 mb-2 text-center" style="color: var(--primary-dark);">Storage Bins</h3>
+            <div class="grid grid-cols-3 gap-2 md:gap-4 mb-4">
+                <div id="veg-bin" class="storage-bin p-2 rounded-lg text-center" data-type="veg">
+                    <div class="icon">🥕</div>
+                    <span class="text-xs font-semibold" style="color: var(--text-main)">Veggies</span>
+                    <strong id="veg-count" class="block text-xl font-bold" style="color: var(--primary)">0</strong>
+                </div>
+                <div id="protein-bin" class="storage-bin p-2 rounded-lg text-center" data-type="protein">
+                    <div class="icon">🍗</div>
+                    <span class="text-xs font-semibold" style="color: var(--text-main)">Protein</span>
+                    <strong id="protein-count" class="block text-xl font-bold" style="color: var(--primary)">0</strong>
+                </div>
+                <div id="carbs-bin" class="storage-bin p-2 rounded-lg text-center" data-type="carbs">
+                    <div class="icon">🍞</div>
+                    <span class="text-xs font-semibold" style="color: var(--text-main)">Carbs</span>
+                    <strong id="carbs-count" class="block text-xl font-bold" style="color: var(--primary)">0</strong>
+                </div>
+            </div>
 
             <div id="sorting-upgrade-area" class="mt-4 p-3 border-t-2 border-gray-200">
                 <h3 class="font-semibold mb-2" style="color: var(--text-main);">Sorting Upgrades</h3>
@@ -136,6 +154,7 @@
             </div>
             <div id="recipe-area" class="flex-grow space-y-4 border-t-2 pt-4">
                 <h3 class="font-medium text-center mb-2">Available Recipes</h3>
+                <div class="swipe-indicator">← Swipe to see more recipes →</div>
                 <div id="recipe-list" class="space-y-2"></div>
             </div>
 
@@ -220,6 +239,22 @@
                 </div>
             </div>
         </div>
+
+        <!-- Mobile Bottom Navigation -->
+        <nav class="mobile-nav">
+            <button class="mobile-nav-btn active" data-station="donations-station">
+                <span class="icon">📦</span>
+                <span>Sort</span>
+            </button>
+            <button class="mobile-nav-btn" data-station="kitchen-station">
+                <span class="icon">🍳</span>
+                <span>Cook</span>
+            </button>
+            <button class="mobile-nav-btn" data-station="serving-station">
+                <span class="icon">🍽️</span>
+                <span>Serve</span>
+            </button>
+        </nav>
     </div>
 
     <div id="modal-overlay" class="hidden">
@@ -1603,13 +1638,25 @@
                 if (!IS_MOBILE()) return;
                 if (e.target.classList.contains('donation-item')) {
                     if (selectedDonationForSort === e.target) {
-                        selectedDonationForSort.classList.remove('ring-4');
+                        selectedDonationForSort.classList.remove('selected');
                         selectedDonationForSort = null;
+                        // Remove highlight from all bins
+                        storageBins.forEach(b => b.classList.remove('can-drop'));
                     } else {
-                        if (selectedDonationForSort) selectedDonationForSort.classList.remove('ring-4');
+                        if (selectedDonationForSort) selectedDonationForSort.classList.remove('selected');
                         selectedDonationForSort = e.target;
-                        selectedDonationForSort.classList.add('ring-4');
+                        selectedDonationForSort.classList.add('selected');
                         playSound('select-meal');
+                        
+                        // Highlight matching bin
+                        const itemType = selectedDonationForSort.dataset.type;
+                        storageBins.forEach(b => {
+                            if (b.dataset.type === itemType) {
+                                b.classList.add('can-drop');
+                            } else {
+                                b.classList.remove('can-drop');
+                            }
+                        });
                     }
                 }
             });
@@ -1630,6 +1677,8 @@
                         playSound('sort');
                         selectedDonationForSort.remove();
                         selectedDonationForSort = null;
+                        // Clear all bin highlights
+                        storageBins.forEach(b => b.classList.remove('can-drop'));
                     } else {
                         createParticle(bin, '❌');
                         playSound('error');
@@ -1637,8 +1686,10 @@
                         setTimeout(() => bin.classList.remove('shake'), 500);
                         gameState.overwhelm = Math.min(CONFIG.MAX_OVERWHELM, gameState.overwhelm + 5);
                         updateOverwhelmUI();
-                        selectedDonationForSort.classList.remove('ring-4');
+                        selectedDonationForSort.classList.remove('selected');
                         selectedDonationForSort = null;
+                        // Clear all bin highlights
+                        storageBins.forEach(b => b.classList.remove('can-drop'));
                     }
                 });
             });
@@ -1838,6 +1889,63 @@
             extraSlotUpgrade.querySelector('button').addEventListener('click', () => purchaseUpgrade('extraSlot'));
             guestPatienceUpgrade.querySelector('button').addEventListener('click', () => purchaseUpgrade('guestPatience'));
             bonusPointsUpgrade.querySelector('button').addEventListener('click', () => purchaseUpgrade('bonusPoints'));
+
+            // Mobile Navigation
+            const mobileNavBtns = document.querySelectorAll('.mobile-nav-btn');
+            const stations = document.querySelectorAll('.station');
+
+            mobileNavBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const targetStation = btn.dataset.station;
+                    
+                    // Update active states
+                    mobileNavBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    // Show target station, hide others
+                    stations.forEach(station => {
+                        if (station.id === targetStation) {
+                            station.classList.add('active');
+                            station.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        } else {
+                            station.classList.remove('active');
+                        }
+                    });
+                });
+            });
+
+            // Enhanced touch feedback for mobile
+            if (IS_MOBILE()) {
+                // Add visual feedback when selecting donations
+                sortingAreaEl.addEventListener('touchstart', (e) => {
+                    if (e.target.classList.contains('donation-item')) {
+                        e.target.style.transform = 'scale(1.05)';
+                    }
+                });
+                
+                sortingAreaEl.addEventListener('touchend', (e) => {
+                    if (e.target.classList.contains('donation-item')) {
+                        setTimeout(() => {
+                            if (!e.target.classList.contains('selected')) {
+                                e.target.style.transform = '';
+                            }
+                        }, 100);
+                    }
+                });
+
+                // Add visual feedback for storage bins
+                storageBins.forEach(bin => {
+                    bin.addEventListener('touchstart', () => {
+                        if (selectedDonationForSort) {
+                            bin.classList.add('can-drop');
+                        }
+                    });
+                    
+                    bin.addEventListener('touchend', () => {
+                        bin.classList.remove('can-drop');
+                    });
+                });
+            }
 
             showStartModal();
         });
