@@ -118,28 +118,30 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 0.125rem;
-    background: rgba(255, 255, 255, 0.15);
+    gap: 0.25rem;
+    background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(5px);
     padding: 0.5rem 0.25rem;
     border-radius: 0.5rem;
     min-height: 60px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
 
   .header > div:last-child > div > span {
-    font-size: 0.625rem;
+    font-size: 0.65rem;
     white-space: nowrap;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.8);
+    font-weight: 700;
+    color: var(--primary-dark);
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.3px;
+    opacity: 0.8;
   }
 
   .header > div:last-child > div > strong,
   .header > div:last-child > div > p {
-    font-size: 1rem;
+    font-size: 1.125rem;
     font-weight: 800;
-    color: white;
+    color: var(--primary);
     margin: 0;
   }
 
@@ -150,7 +152,23 @@ body {
 
   .header > div:last-child .progress-bar-container .progress-bar {
     height: 6px;
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 3px;
+  }
+
+  .header > div:last-child .progress-bar-container .progress-bar-fill {
+    border-radius: 3px;
+  }
+
+  /* Special styling for angry guests stat */
+  .header > div:last-child > div:last-child strong {
+    color: #dc2626;
+  }
+
+  /* Accent color for coins and high score */
+  .header > div:last-child > div:nth-child(1) strong,
+  .header > div:last-child > div:nth-child(2) strong {
+    color: var(--accent);
   }
 
   body {
