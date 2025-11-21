@@ -61,16 +61,14 @@ body {
     left: 0;
     right: 0;
     z-index: 100;
-    padding: 0.5rem;
-    flex-direction: row;
-    gap: 0.5rem;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.95) 100%);
-    backdrop-filter: blur(10px);
-    border-bottom: 2px solid rgba(132, 204, 22, 0.2);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    justify-content: space-between;
-    align-items: center;
-    height: 60px;
+    padding: 0.75rem 1rem;
+    flex-direction: column;
+    gap: 0.75rem;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    justify-content: center;
+    align-items: stretch;
+    min-height: auto;
     transition: transform 0.3s ease;
   }
 
@@ -80,25 +78,27 @@ body {
   }
 
   .header > div {
-    width: auto;
+    width: 100%;
   }
 
   .header > div:first-child {
     display: flex;
-    justify-content: flex-start;
+    justify-content: center;
     align-items: center;
     gap: 0.5rem;
-    flex: 0 0 auto;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   }
 
   .header > div:first-child img {
-    height: 32px;
-    width: 32px;
+    height: 28px;
+    width: 28px;
   }
 
   .header > div:first-child h1 {
     font-size: 1.125rem;
     margin: 0;
+    color: white !important;
   }
 
   .header > div:nth-child(2) {
@@ -106,39 +106,60 @@ body {
   }
 
   .header > div:last-child {
-    display: flex;
-    gap: 0.75rem;
-    justify-content: flex-end;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+    justify-content: center;
     align-items: center;
-    flex: 1;
   }
 
   .header > div:last-child > div {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 0.125rem;
-    min-width: 0;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(5px);
+    padding: 0.5rem 0.25rem;
+    border-radius: 0.5rem;
+    min-height: 60px;
   }
 
   .header > div:last-child > div > span {
     font-size: 0.625rem;
     white-space: nowrap;
     font-weight: 600;
+    color: rgba(255, 255, 255, 0.8);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
 
-  .header > div:last-child > div > strong {
-    font-size: 0.875rem;
+  .header > div:last-child > div > strong,
+  .header > div:last-child > div > p {
+    font-size: 1rem;
     font-weight: 800;
+    color: white;
+    margin: 0;
   }
 
   .header > div:last-child .progress-bar-container {
-    display: none;
+    width: 100%;
+    margin-top: 0.25rem;
+  }
+
+  .header > div:last-child .progress-bar-container .progress-bar {
+    height: 6px;
+    background: rgba(0, 0, 0, 0.2);
   }
 
   body {
     padding-top: 0;
     padding-bottom: 80px;
+  }
+
+  .header::after {
+    display: none;
   }
 }
 
