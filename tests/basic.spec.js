@@ -89,7 +89,7 @@ test.describe("Verify Game look and feel", () => {
     await expect(page.locator("#kitchen-station")).toMatchAriaSnapshot(`
         - heading "🍳 Storage & Kitchen" [level=2]
         - text: Level 1
-        - heading "🥦 Veggies" [level=3]
+        - heading "🥬 Veggies" [level=3]
         - paragraph: "0"
         - heading "🍗 Protein" [level=3]
         - paragraph: "0"
@@ -100,7 +100,7 @@ test.describe("Verify Game look and feel", () => {
         - heading "Available Recipes" [level=3]
         - text: 🌮
         - heading "Tacos" [level=3]
-        - text: "/3 servings 🍗 x2 🥦 x1 🍞 x1 Cook time: \\\\d+[hmsp]+/"
+        - text: "/3 servings 🍗 x2 🥬 x1 🍞 x1 Cook time: \\\\d+[hmsp]+/"
         - button "Needed" [disabled]
         - text: 🍗
         - heading "Fried Chicken" [level=3]
@@ -108,11 +108,11 @@ test.describe("Verify Game look and feel", () => {
         - button "Needed" [disabled]
         - text: 🥧
         - heading "Shepherd's Pie" [level=3]
-        - text: "/5 servings 🍗 x2 🥦 x2 🍞 x1 Cook time: \\\\d+[hmsp]+/"
+        - text: "/5 servings 🍗 x2 🥬 x2 🍞 x1 Cook time: \\\\d+[hmsp]+/"
         - button "Needed" [disabled]
         - text: 🍜
         - heading "Chicken Noodle Soup" [level=3]
-        - text: "/4 servings 🍗 x1 🥦 x1 🍞 x2 Cook time: \\\\d+[hmsp]+/"
+        - text: "/4 servings 🍗 x1 🥬 x1 🍞 x2 Cook time: \\\\d+[hmsp]+/"
         - button "Needed" [disabled]
         - heading "Kitchen Upgrades" [level=3]
         - text: /⚡ Faster Cooking Reduces cooking time by \\d+%/
