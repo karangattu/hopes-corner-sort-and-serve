@@ -1603,7 +1603,7 @@
 
             sortingAreaEl.addEventListener('touchstart', e => {
                 if (e.target.classList.contains('donation-item')) {
-                    e.preventDefault();
+                    e.preventDefault(); // Prevent scrolling while dragging
                     draggedItem = e.target;
 
                     touchDragItem = draggedItem.cloneNode(true);
@@ -1611,22 +1611,34 @@
                     document.body.appendChild(touchDragItem);
 
                     const touch = e.touches[0];
+                    // Offset the dragged item above the finger so it's visible
+                    const offsetY = 60;
                     touchDragItem.style.left = `${touch.clientX - touchDragItem.offsetWidth / 2}px`;
-                    touchDragItem.style.top = `${touch.clientY - touchDragItem.offsetHeight / 2}px`;
+                    touchDragItem.style.top = `${touch.clientY - touchDragItem.offsetHeight / 2 - offsetY}px`;
 
-                    draggedItem.style.opacity = '0.5';
+                    draggedItem.style.opacity = '0.3';
+                    playSound('select-meal'); // Reuse a sound for feedback
                 }
             }, { passive: false });
 
             document.addEventListener('touchmove', e => {
                 if (!touchDragItem) return;
-                e.preventDefault();
+                e.preventDefault(); // Prevent scrolling
 
                 const touch = e.touches[0];
+                const offsetY = 60;
                 touchDragItem.style.left = `${touch.clientX - touchDragItem.offsetWidth / 2}px`;
-                touchDragItem.style.top = `${touch.clientY - touchDragItem.offsetHeight / 2}px`;
+                touchDragItem.style.top = `${touch.clientY - touchDragItem.offsetHeight / 2 - offsetY}px`;
 
-                const elementUnderTouch = document.elementFromPoint(touch.clientX, touch.clientY);
+                // Check for drop target at the visual position of the item
+                const checkX = touch.clientX;
+                const checkY = touch.clientY - offsetY;
+
+                // Hide the drag item temporarily to check what's underneath
+                touchDragItem.style.visibility = 'hidden';
+                const elementUnderTouch = document.elementFromPoint(checkX, checkY);
+                touchDragItem.style.visibility = 'visible';
+
                 storageBins.forEach(bin => {
                     if (bin === elementUnderTouch || bin.contains(elementUnderTouch)) {
                         bin.classList.add('over');
@@ -1641,7 +1653,14 @@
                 if (!touchDragItem || !draggedItem) return;
 
                 const touch = e.changedTouches[0];
-                const dropTarget = document.elementFromPoint(touch.clientX, touch.clientY);
+                const offsetY = 60;
+                const checkX = touch.clientX;
+                const checkY = touch.clientY - offsetY;
+
+                touchDragItem.style.visibility = 'hidden';
+                const dropTarget = document.elementFromPoint(checkX, checkY);
+                touchDragItem.style.visibility = 'visible';
+
                 const bin = dropTarget ? dropTarget.closest('.storage-bin') : null;
 
                 if (bin) {
@@ -1654,19 +1673,22 @@
                         updateInventoryUI();
                         renderRecipes();
                         checkAchievements();
-                        createParticle(draggedItem, '✅');
+                        createParticle(bin, '✅'); // Show particle on bin
                         playSound('sort');
                         draggedItem.remove();
                     } else {
-                        createParticle(draggedItem, '❌');
+                        createParticle(bin, '❌');
                         playSound('error');
-                        draggedItem.classList.add('shake');
-                        setTimeout(() => draggedItem.classList.remove('shake'), 500);
+                        // Visual feedback for wrong bin
+                        bin.classList.add('shake');
+                        setTimeout(() => bin.classList.remove('shake'), 500);
+
                         gameState.overwhelm = Math.min(CONFIG.MAX_OVERWHELM, gameState.overwhelm + 5);
                         updateOverwhelmUI();
                         draggedItem.style.opacity = '1';
                     }
                 } else {
+                    // Return to original position animation could go here
                     draggedItem.style.opacity = '1';
                 }
 
