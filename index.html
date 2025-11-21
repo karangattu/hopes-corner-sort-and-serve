@@ -325,7 +325,6 @@
             <h1 id="game-over-title" class="text-3xl md:text-4xl font-bold mb-2 text-red-600">Game Over!</h1>
             <p id="game-over-reason" class="text-lg mb-4" style="color: var(--text-main);"></p>
 
-            <!-- Game Stats -->
             <div id="game-stats" class="stats-panel mb-6">
                 <div class="stat-row">
                     <span class="stat-label">Days Completed</span>
@@ -494,13 +493,14 @@
             const gameOverActions = document.getElementById('game-over-actions');
 
             const LEADERBOARD_URL = 'https://script.google.com/macros/s/AKfycbwnMUjRyj38DnD0cjTJh3SqUlrDRXSsjwItopXlAnSjRNJ0dmcdqWB4EfvW1JZfxCaU6A/exec';
+            const IS_MOBILE = () => window.innerWidth < 1024;
 
             let gameState = {};
             let highScore = 0;
             let soundsLoaded = false;
             let sounds = {};
             let draggedItem = null;
-            let touchDragItem = null;
+            let selectedDonationForSort = null;
 
             const MASTER_RECIPE_LIST = [
                 { id: 'recipe-0', name: 'Tacos', emoji: '🌮', ingredients: { protein: 2, veg: 1, carbs: 1 }, cookTime: 8000, servings: 3, pointsPerServing: 3 },
@@ -579,8 +579,6 @@
 
             let gameLoopInterval = null;
 
-
-            // Expose retry function globally
             window.retryLeaderboard = function () {
                 showLeaderboard();
             };
@@ -615,7 +613,6 @@
                 leaderboardLoading.classList.remove('hidden');
                 leaderboardList.innerHTML = '';
 
-                // Try Fetch first (CORS)
                 try {
                     const controller = new AbortController();
                     const timeoutId = setTimeout(() => controller.abort(), 10000);
@@ -708,7 +705,6 @@
                     _t: Date.now()
                 });
 
-                // Try Fetch first (CORS)
                 try {
                     const controller = new AbortController();
                     const timeoutId = setTimeout(() => controller.abort(), 10000);
@@ -775,12 +771,6 @@
                     clearTimeout(timeoutId);
                     try { document.head.removeChild(script); } catch (e) { }
                     delete window[callbackName];
-
-                    // Final fallback attempt with no-cors fetch (blind submit)
-                    // This is a last resort if JSONP is blocked but maybe a blind GET works?
-                    // Unlikely to be useful if JSONP failed due to network, but maybe due to MIME type.
-                    // But we can't know if it succeeded.
-                    // Better to just show error.
 
                     submitScoreBtn.disabled = false;
                     submitScoreBtn.textContent = 'Submit Score';
@@ -1152,6 +1142,11 @@
                 gameState.gameRunning = true;
                 modalOverlay.classList.add('hidden');
                 if (!soundsLoaded) loadSounds();
+                if (IS_MOBILE()) {
+                    sortInstructionTextEl.textContent = 'Tap a donation to select it, then tap the correct bin to sort it.';
+                } else {
+                    sortInstructionTextEl.textContent = 'Drag & drop donations into the correct bins.';
+                }
                 gameLoopInterval = setInterval(gameLoop, 100);
                 startDayCycle();
                 spawnDonation();
@@ -1543,6 +1538,7 @@
             });
 
             sortingAreaEl.addEventListener('dragstart', e => {
+                if (IS_MOBILE()) return;
                 if (e.target.classList.contains('donation-item')) {
                     draggedItem = e.target;
                     setTimeout(() => {
@@ -1560,19 +1556,23 @@
 
             storageBins.forEach(bin => {
                 bin.addEventListener('dragenter', e => {
+                    if (IS_MOBILE()) return;
                     e.preventDefault();
                     bin.classList.add('over');
                 });
 
                 bin.addEventListener('dragover', e => {
+                    if (IS_MOBILE()) return;
                     e.preventDefault();
                 });
 
                 bin.addEventListener('dragleave', () => {
+                    if (IS_MOBILE()) return;
                     bin.classList.remove('over');
                 });
 
                 bin.addEventListener('drop', e => {
+                    if (IS_MOBILE()) return;
                     e.preventDefault();
                     bin.classList.remove('over');
                     if (!draggedItem) return;
@@ -1601,71 +1601,26 @@
                 });
             });
 
-            sortingAreaEl.addEventListener('touchstart', e => {
+            sortingAreaEl.addEventListener('click', e => {
+                if (!IS_MOBILE()) return;
                 if (e.target.classList.contains('donation-item')) {
-                    e.preventDefault(); // Prevent scrolling while dragging
-                    draggedItem = e.target;
-
-                    touchDragItem = draggedItem.cloneNode(true);
-                    touchDragItem.classList.add('dragging');
-                    document.body.appendChild(touchDragItem);
-
-                    const touch = e.touches[0];
-                    // Offset the dragged item above the finger so it's visible
-                    const offsetY = 60;
-                    touchDragItem.style.left = `${touch.clientX - touchDragItem.offsetWidth / 2}px`;
-                    touchDragItem.style.top = `${touch.clientY - touchDragItem.offsetHeight / 2 - offsetY}px`;
-
-                    draggedItem.style.opacity = '0.3';
-                    playSound('select-meal'); // Reuse a sound for feedback
-                }
-            }, { passive: false });
-
-            document.addEventListener('touchmove', e => {
-                if (!touchDragItem) return;
-                e.preventDefault(); // Prevent scrolling
-
-                const touch = e.touches[0];
-                const offsetY = 60;
-                touchDragItem.style.left = `${touch.clientX - touchDragItem.offsetWidth / 2}px`;
-                touchDragItem.style.top = `${touch.clientY - touchDragItem.offsetHeight / 2 - offsetY}px`;
-
-                // Check for drop target at the visual position of the item
-                const checkX = touch.clientX;
-                const checkY = touch.clientY - offsetY;
-
-                // Hide the drag item temporarily to check what's underneath
-                touchDragItem.style.visibility = 'hidden';
-                const elementUnderTouch = document.elementFromPoint(checkX, checkY);
-                touchDragItem.style.visibility = 'visible';
-
-                storageBins.forEach(bin => {
-                    if (bin === elementUnderTouch || bin.contains(elementUnderTouch)) {
-                        bin.classList.add('over');
+                    if (selectedDonationForSort === e.target) {
+                        selectedDonationForSort.classList.remove('ring-4');
+                        selectedDonationForSort = null;
                     } else {
-                        bin.classList.remove('over');
+                        if (selectedDonationForSort) selectedDonationForSort.classList.remove('ring-4');
+                        selectedDonationForSort = e.target;
+                        selectedDonationForSort.classList.add('ring-4');
+                        playSound('select-meal');
                     }
-                });
-            }, { passive: false });
+                }
+            });
 
-
-            document.addEventListener('touchend', e => {
-                if (!touchDragItem || !draggedItem) return;
-
-                const touch = e.changedTouches[0];
-                const offsetY = 60;
-                const checkX = touch.clientX;
-                const checkY = touch.clientY - offsetY;
-
-                touchDragItem.style.visibility = 'hidden';
-                const dropTarget = document.elementFromPoint(checkX, checkY);
-                touchDragItem.style.visibility = 'visible';
-
-                const bin = dropTarget ? dropTarget.closest('.storage-bin') : null;
-
-                if (bin) {
-                    if (draggedItem.dataset.type === bin.dataset.type) {
-                        const type = draggedItem.dataset.type;
+            storageBins.forEach(bin => {
+                bin.addEventListener('click', e => {
+                    if (!IS_MOBILE() || !selectedDonationForSort) return;
+                    if (selectedDonationForSort.dataset.type === bin.dataset.type) {
+                        const type = selectedDonationForSort.dataset.type;
                         gameState.inventory[type]++;
                         gameState.totalInventory[type]++;
                         gameState.donationsInSorting--;
@@ -1673,30 +1628,21 @@
                         updateInventoryUI();
                         renderRecipes();
                         checkAchievements();
-                        createParticle(bin, '✅'); // Show particle on bin
+                        createParticle(selectedDonationForSort, '✅');
                         playSound('sort');
-                        draggedItem.remove();
+                        selectedDonationForSort.remove();
+                        selectedDonationForSort = null;
                     } else {
                         createParticle(bin, '❌');
                         playSound('error');
-                        // Visual feedback for wrong bin
                         bin.classList.add('shake');
                         setTimeout(() => bin.classList.remove('shake'), 500);
-
                         gameState.overwhelm = Math.min(CONFIG.MAX_OVERWHELM, gameState.overwhelm + 5);
                         updateOverwhelmUI();
-                        draggedItem.style.opacity = '1';
+                        selectedDonationForSort.classList.remove('ring-4');
+                        selectedDonationForSort = null;
                     }
-                } else {
-                    // Return to original position animation could go here
-                    draggedItem.style.opacity = '1';
-                }
-
-
-                document.body.removeChild(touchDragItem);
-                touchDragItem = null;
-                draggedItem = null;
-                storageBins.forEach(b => b.classList.remove('over'));
+                });
             });
 
             function loadSounds() {

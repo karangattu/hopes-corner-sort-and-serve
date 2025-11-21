@@ -52,11 +52,11 @@ body {
 }
 
 @media (min-width: 1024px) {
-  .header > div {
+  .header>div {
     min-width: 0;
   }
 
-  .header > .flex-1 {
+  .header>.flex-1 {
     min-width: 260px;
     max-width: 600px;
   }
@@ -141,7 +141,7 @@ body {
   align-items: center;
   justify-content: center;
   font-size: 1.5rem;
-  touch-action: none; /* Prevent default touch actions like scrolling on the item itself */
+  touch-action: none;
 }
 
 .meal.ring-4 {
@@ -178,16 +178,14 @@ body {
 }
 
 .progress-bar-fill {
-  background: linear-gradient(
-    45deg,
-    rgba(255, 255, 255, 0.15) 25%,
-    transparent 25%,
-    transparent 50%,
-    rgba(255, 255, 255, 0.15) 50%,
-    rgba(255, 255, 255, 0.15) 75%,
-    transparent 75%,
-    transparent
-  );
+  background: linear-gradient(45deg,
+      rgba(255, 255, 255, 0.15) 25%,
+      transparent 25%,
+      transparent 50%,
+      rgba(255, 255, 255, 0.15) 50%,
+      rgba(255, 255, 255, 0.15) 75%,
+      transparent 75%,
+      transparent);
   background-size: 1rem 1rem;
   height: 100%;
   transition: width 0.3s ease;
@@ -236,11 +234,9 @@ body {
 }
 
 .btn-primary {
-  background: linear-gradient(
-    135deg,
-    var(--primary) 0%,
-    var(--primary-dark) 100%
-  );
+  background: linear-gradient(135deg,
+      var(--primary) 0%,
+      var(--primary-dark) 100%);
   color: white;
   font-weight: bold;
   padding: 0.75rem 1.5rem;
@@ -324,6 +320,7 @@ body {
 }
 
 @keyframes shake {
+
   0%,
   100% {
     transform: translateX(0);
@@ -360,6 +357,7 @@ body {
 }
 
 @keyframes float {
+
   0%,
   100% {
     transform: translateY(0px);
@@ -385,6 +383,7 @@ body {
 }
 
 @keyframes glow {
+
   0%,
   100% {
     box-shadow: 0 0 5px rgba(251, 191, 36, 0.6);
@@ -518,11 +517,9 @@ body {
   border-radius: 0.5rem;
   padding: 1rem;
   margin-bottom: 0.5rem;
-  background: linear-gradient(
-    135deg,
-    rgba(132, 204, 22, 0.1) 0%,
-    rgba(132, 204, 22, 0.05) 100%
-  );
+  background: linear-gradient(135deg,
+      rgba(132, 204, 22, 0.1) 0%,
+      rgba(132, 204, 22, 0.05) 100%);
   border: 1px solid rgba(132, 204, 22, 0.2);
   transition: all 0.3s ease;
 }
@@ -901,4 +898,102 @@ body {
   align-items: center;
   font-size: 0.8rem;
   color: var(--text-light);
+}
+
+@media (max-width: 1023px) {
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    padding: 0.5rem;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(5px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .header>div {
+    flex-shrink: 0;
+    margin-right: 1rem;
+  }
+
+  #recipe-list {
+    display: flex;
+    overflow-x: auto;
+    gap: 0.75rem;
+    padding: 0.5rem 0.25rem;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .recipe-card-new {
+    min-width: 220px;
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    margin-bottom: 0 !important;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .station {
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .station-header h2 {
+    font-size: 1.25rem;
+  }
+
+  .cook-btn {
+    padding: 0.75rem 1.5rem;
+    width: 100%;
+    margin-top: 0.5rem;
+    font-size: 1rem;
+  }
+
+  #accept-donation-btn {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1.1rem;
+    margin-top: 0.5rem;
+  }
+
+  #serving-station>div.flex {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  #ready-meals-area,
+  #guest-area {
+    width: 100% !important;
+    min-height: auto;
+  }
+
+  #ready-meals-area {
+    display: flex;
+    overflow-x: auto;
+    gap: 0.5rem;
+    padding-bottom: 0.5rem;
+    min-height: 80px;
+    flex-wrap: nowrap;
+  }
+
+  .meal {
+    min-width: 160px;
+    flex-shrink: 0;
+  }
+
+  #guest-area {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 0.5rem;
+  }
+
+  #instruction-text,
+  #sort-instruction-text {
+    font-size: 0.75rem;
+    opacity: 0.8;
+  }
 }
