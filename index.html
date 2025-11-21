@@ -362,8 +362,9 @@
 
             <div class="mt-8 text-center text-base text-gray-700">
                 <p>
-                    Interested in helping with these tasks in real life? 
-                    <a href="https://www.hopes-corner.org/information-volunteers" target="_blank" class="font-semibold underline text-indigo-700 hover:text-indigo-900">
+                    Interested in helping with these tasks in real life?
+                    <a href="https://www.hopes-corner.org/information-volunteers" target="_blank"
+                        class="font-semibold underline text-indigo-700 hover:text-indigo-900">
                         Sign up here
                     </a>
                     and learn more about different volunteer opportunities!
@@ -579,6 +580,11 @@
             let gameLoopInterval = null;
 
 
+            // Expose retry function globally so it can be called from the error message HTML
+            window.retryLeaderboard = function () {
+                showLeaderboard();
+            };
+
             function showLeaderboard() {
                 const leaderboardModal = document.getElementById('leaderboard-modal');
                 const leaderboardList = document.getElementById('leaderboard-list');
@@ -589,13 +595,16 @@
                 leaderboardList.innerHTML = '';
 
                 const timeoutId = setTimeout(() => {
-                    leaderboardLoading.classList.add('hidden');
-                    leaderboardList.innerHTML = `
-                        <li class="text-center text-red-600">
-                            Connection timeout. Please try again later.<br>
-                            <button onclick="location.reload()" class="mt-2 btn-secondary text-xs">Retry</button>
-                        </li>`;
-                }, 10000);
+                    // Only show timeout message if we haven't received data yet
+                    if (!leaderboardList.hasChildNodes() || leaderboardList.innerHTML === '') {
+                        leaderboardLoading.classList.add('hidden');
+                        leaderboardList.innerHTML = `
+                            <li class="text-center text-red-600">
+                                Connection timeout. The server might be sleeping.<br>
+                                <button onclick="window.retryLeaderboard()" class="mt-2 btn-secondary text-xs">Retry</button>
+                            </li>`;
+                    }
+                }, 15000); // Increased timeout to 15s
 
                 const script = document.createElement('script');
                 const callbackName = 'leaderboardCallback_' + Date.now();
@@ -603,13 +612,18 @@
                 window[callbackName] = function (data) {
                     clearTimeout(timeoutId);
                     leaderboardLoading.classList.add('hidden');
-                    document.head.removeChild(script);
+                    try {
+                        document.head.removeChild(script);
+                    } catch (e) {
+                        // Script might have been removed already
+                    }
                     delete window[callbackName];
 
                     if (data && data.success) {
                         if (data.data && data.data.length === 0) {
                             leaderboardList.innerHTML = '<li class="text-center text-gray-600">No scores yet. Be the first!</li>';
                         } else if (data.data && Array.isArray(data.data)) {
+                            leaderboardList.innerHTML = '';
                             data.data.slice(0, 5).forEach((entry, index) => {
                                 const li = document.createElement('li');
                                 li.className = 'flex justify-between items-center p-2 rounded-md';
@@ -632,7 +646,9 @@
                 script.onerror = function () {
                     clearTimeout(timeoutId);
                     console.log('JSONP failed, trying fetch as fallback');
-                    document.head.removeChild(script);
+                    try {
+                        document.head.removeChild(script);
+                    } catch (e) { }
                     delete window[callbackName];
 
                     fetch(LEADERBOARD_URL + '?action=get&_t=' + Date.now(), {
@@ -644,7 +660,8 @@
                             leaderboardList.innerHTML = `
                             <li class="text-center text-gray-600">
                                 Leaderboard request sent, but response cannot be read due to CORS.<br>
-                                <span class="text-sm">This is a browser security limitation.</span>
+                                <span class="text-sm">This is a browser security limitation.</span><br>
+                                <button onclick="window.retryLeaderboard()" class="mt-2 btn-secondary text-xs">Retry</button>
                             </li>`;
                         })
                         .catch(fetchError => {
@@ -654,7 +671,7 @@
                             <li class="text-center text-red-600">
                                 Could not connect to the leaderboard.<br>
                                 <span class="text-sm text-gray-500">Please check your internet connection.</span><br>
-                                <button onclick="location.reload()" class="mt-2 btn-secondary text-xs">Retry</button>
+                                <button onclick="window.retryLeaderboard()" class="mt-2 btn-secondary text-xs">Retry</button>
                             </li>`;
                         });
                 };
@@ -673,22 +690,42 @@
                     score: gameState.score,
                 };
 
+                const timeoutId = setTimeout(() => {
+                    submitScoreBtn.disabled = false;
+                    submitScoreBtn.textContent = 'Submit Score';
+                    showNotification('Submission timed out. Please try again.', 'error');
+                }, 15000);
+
                 const script = document.createElement('script');
                 const callbackName = 'submitCallback_' + Date.now();
 
                 window[callbackName] = function (data) {
-                    document.head.removeChild(script);
+                    clearTimeout(timeoutId);
+                    try {
+                        document.head.removeChild(script);
+                    } catch (e) { }
                     delete window[callbackName];
 
                     if (data && data.success) {
                         showNotification('Your score has been submitted successfully!', 'info');
+                        setTimeout(() => {
+                            leaderboardForm.classList.add('hidden');
+                            gameOverActions.classList.remove('hidden');
+                            submitScoreBtn.disabled = false;
+                            submitScoreBtn.textContent = 'Submit Score';
+                        }, 1000); // Reduced delay for better UX
                     } else {
+                        submitScoreBtn.disabled = false;
+                        submitScoreBtn.textContent = 'Submit Score';
                         showNotification(`Submission failed: ${data ? data.error : 'Unknown error'}`, 'error');
                     }
                 };
 
                 script.onerror = function () {
-                    document.head.removeChild(script);
+                    clearTimeout(timeoutId);
+                    try {
+                        document.head.removeChild(script);
+                    } catch (e) { }
                     delete window[callbackName];
 
                     fetch(LEADERBOARD_URL, {
@@ -704,9 +741,17 @@
                     })
                         .then(() => {
                             showNotification('Score submission attempted (response unreadable due to CORS)', 'info');
+                            setTimeout(() => {
+                                leaderboardForm.classList.add('hidden');
+                                gameOverActions.classList.remove('hidden');
+                                submitScoreBtn.disabled = false;
+                                submitScoreBtn.textContent = 'Submit Score';
+                            }, 1000);
                         })
                         .catch(error => {
                             console.error('All submission methods failed:', error);
+                            submitScoreBtn.disabled = false;
+                            submitScoreBtn.textContent = 'Submit Score';
                             showNotification('Could not submit score. Please try again later.', 'error');
                         });
                 };
@@ -721,13 +766,6 @@
 
                 script.src = `${LEADERBOARD_URL}?${params.toString()}`;
                 document.head.appendChild(script);
-
-                setTimeout(() => {
-                    leaderboardForm.classList.add('hidden');
-                    gameOverActions.classList.remove('hidden');
-                    submitScoreBtn.disabled = false;
-                    submitScoreBtn.textContent = 'Submit Score';
-                }, 3000);
             }
 
 
