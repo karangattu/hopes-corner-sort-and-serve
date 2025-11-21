@@ -93,6 +93,7 @@ body {
   .header > div:first-child img {
     height: 28px;
     width: 28px;
+    filter: brightness(0) invert(1);
   }
 
   .header > div:first-child h1 {
@@ -160,7 +161,20 @@ body {
     border-radius: 3px;
   }
 
-  /* Special styling for angry guests stat */
+  /* Standardize all vegetable emojis to be consistent */
+  .donation-item[data-type="veg"]::before,
+  #veg-bin .icon::before {
+    content: '🥬';
+    display: none;
+  }
+
+  .storage-bin[data-type="veg"] .icon {
+    font-size: 2.5rem;
+  }
+
+  .storage-bin[data-type="veg"] .icon::after {
+    content: '🥬';
+  }
   .header > div:last-child > div:last-child strong {
     color: #dc2626;
   }
