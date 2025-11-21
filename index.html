@@ -1157,6 +1157,7 @@
                 levelUpModal.classList.add('hidden');
                 recipeUnlockModal.classList.add('hidden');
                 document.getElementById('leaderboard-modal').classList.add('hidden');
+                document.body.classList.add('modal-open');
                 loadHighScore();
             }
 
@@ -1167,6 +1168,7 @@
                 allModals.forEach(modal => {
                     if (modal !== modalEl) modal.classList.add('hidden');
                 });
+                document.body.classList.add('modal-open');
             }
 
             function startGame() {
@@ -1174,6 +1176,7 @@
                 gtag('event', 'game_start');
                 gameState.gameRunning = true;
                 modalOverlay.classList.add('hidden');
+                document.body.classList.remove('modal-open');
                 if (!soundsLoaded) loadSounds();
                 if (IS_MOBILE()) {
                     sortInstructionTextEl.textContent = 'Tap a donation to select it, then tap the correct bin to sort it.';
@@ -1505,6 +1508,7 @@
             viewLeaderboardBtn.addEventListener('click', showLeaderboard);
             closeLeaderboardBtn.addEventListener('click', () => {
                 document.getElementById('leaderboard-modal').classList.add('hidden');
+                document.body.classList.remove('modal-open');
                 showStartModal();
             });
             submitScoreBtn.addEventListener('click', handleScoreSubmit);
@@ -1826,9 +1830,21 @@
 
             startGameBtn.addEventListener('click', startGame);
             restartGameBtn.addEventListener('click', startGame);
-            closeAchievementBtn.addEventListener('click', () => { achievementModal.classList.add('hidden'); modalOverlay.classList.add('hidden'); });
-            closeLevelUpBtn.addEventListener('click', () => { levelUpModal.classList.add('hidden'); modalOverlay.classList.add('hidden'); });
-            closeRecipeBtn.addEventListener('click', () => { recipeUnlockModal.classList.add('hidden'); modalOverlay.classList.add('hidden'); });
+            closeAchievementBtn.addEventListener('click', () => { 
+                achievementModal.classList.add('hidden'); 
+                modalOverlay.classList.add('hidden'); 
+                document.body.classList.remove('modal-open');
+            });
+            closeLevelUpBtn.addEventListener('click', () => { 
+                levelUpModal.classList.add('hidden'); 
+                modalOverlay.classList.add('hidden'); 
+                document.body.classList.remove('modal-open');
+            });
+            closeRecipeBtn.addEventListener('click', () => { 
+                recipeUnlockModal.classList.add('hidden'); 
+                modalOverlay.classList.add('hidden'); 
+                document.body.classList.remove('modal-open');
+            });
 
             document.querySelectorAll('.tab').forEach(tab => {
                 tab.addEventListener('click', () => {
