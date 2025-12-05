@@ -246,91 +246,50 @@
     <div id="modal-overlay" class="hidden">
         <div id="start-modal" class="modal">
             <img src="https://images.squarespace-cdn.com/content/5622cd82e4b0501d40689558/2aedb400-89b8-4f93-856f-cd2c7d5385e4/Hopes_Corner_Logo_Green.png?format=1500w&content-type=image%2Fpng"
-                alt="Hope's Corner Official Logo" class="h-16 mx-auto mb-4"
+                alt="Hope's Corner Official Logo" class="h-16 mx-auto mb-3"
                 onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgNTAiPjxwYXRoIGQ9Ik0xMCAxMEgzMFYzMEgxMFoiIGZpbGw9IiM4NGNjMTYiLz48dGV4dCB4PSI0MCIgeT0iMzAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiBmaWxsPSIjODRjYzE2Ij5Ib3BlJ3MgQ29ybmVyPC90ZXh0Pjwvc3ZnPg=='">
-            <h1 class="text-3xl md:text-4xl font-bold mb-2" style="color: var(--primary);">Pantry to Plate game!
-            </h1>
-            <div class="badge-container">
-                <span class="badge"
-                    style="background: linear-gradient(90deg, #6d28d9, #4f46e5); color: white;">COMMUNITY IMPACT</span>
-                <span class="badge" style="background-color: var(--accent); color: white;">EDUCATIONAL</span>
+            <h1 class="text-3xl md:text-4xl font-bold mb-1" style="color: var(--primary);">Pantry to Plate</h1>
+            <p class="text-lg mb-3" style="color: var(--text-light);">Experience what it's like to run a community food pantry!</p>
+            
+            <button id="start-game-btn" class="btn-primary text-xl px-8 py-3">▶ Play Now</button>
+            
+            <div class="my-4 p-4 rounded-lg" style="background: linear-gradient(135deg, rgba(132, 204, 22, 0.1) 0%, rgba(63, 98, 18, 0.1) 100%); border: 1px solid rgba(132, 204, 22, 0.3);">
+                <h2 class="text-lg font-bold mb-2" style="color: var(--primary-dark);">🎯 How to Play</h2>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-center">
+                    <div class="p-2">
+                        <div class="text-2xl mb-1">📦</div>
+                        <p class="text-xs font-semibold" style="color: var(--text-main);">Accept Donations</p>
+                    </div>
+                    <div class="p-2">
+                        <div class="text-2xl mb-1">🗂️</div>
+                        <p class="text-xs font-semibold" style="color: var(--text-main);">Sort Food Items</p>
+                    </div>
+                    <div class="p-2">
+                        <div class="text-2xl mb-1">🍳</div>
+                        <p class="text-xs font-semibold" style="color: var(--text-main);">Cook Meals</p>
+                    </div>
+                    <div class="p-2">
+                        <div class="text-2xl mb-1">🍽️</div>
+                        <p class="text-xs font-semibold" style="color: var(--text-main);">Serve Guests</p>
+                    </div>
+                </div>
+                <p class="text-sm mt-2 font-medium" style="color: var(--accent);">⚠️ Don't let 5 guests leave angry!</p>
             </div>
-            <div class="border-y-2 border-gray-200 my-4 py-4">
-                <p class="text-gray-700 max-w-lg mx-auto" style="color: var(--text-main);">This game is inspired by the
-                    real Hope's Corner in Mountain View, CA, which provides free nutritious meals and warm showers to
-                    anyone in need.</p>
-                <p class="mt-2">
-                    <a href="https://www.hopes-corner.org/" target="_blank" class="font-semibold hover:underline"
-                        style="color: var(--primary);">Visit their website to learn more or get involved!</a>
+
+            <div class="flex justify-center gap-3 mb-4">
+                <p class="text-base">Your High Score: <span id="high-score-modal" class="font-bold" style="color: var(--accent);">0</span></p>
+            </div>
+            
+            <button id="view-leaderboard-btn" class="btn-secondary">🏆 View Leaderboard</button>
+            
+            <div class="mt-4 pt-4 border-t border-gray-200">
+                <p class="text-sm" style="color: var(--text-light);">Inspired by <strong style="color: var(--primary);">Hope's Corner</strong> in Mountain View, CA</p>
+                <p class="text-sm mt-1">
+                    <a href="https://www.hopes-corner.org/" target="_blank" class="font-semibold hover:underline" style="color: var(--primary);">🌐 Learn more about their mission</a>
+                    <span class="mx-2">|</span>
+                    <a href="https://www.hopes-corner.org/information-volunteers" target="_blank" class="font-semibold hover:underline" style="color: #6d28d9;">💜 Volunteer with them!</a>
                 </p>
             </div>
-
-            <div class="tabs">
-                <div class="tab active" data-tab="how-to-play">How To Play</div>
-                <div class="tab" data-tab="features">Features</div>
-                <div class="tab" data-tab="achievements">Achievements</div>
-            </div>
-
-            <div id="how-to-play" class="tab-content active">
-                <p class="mb-2" style="color: var(--text-main);"><strong>Your mission:</strong> Accept donations, sort
-                    food, cook meals, and serve guests. Don't get overwhelmed!</p>
-                <ul class="list-disc pl-5 mb-4 text-left" style="color: var(--text-main);">
-                    <li>Click "Accept Donation" to receive food items</li>
-                    <li>Sort items into the correct storage bins</li>
-                    <li>Use stored ingredients to cook meals</li>
-                    <li>Serve prepared meals to waiting guests</li>
-                    <li>Earn coins to purchase upgrades</li>
-                </ul>
-                <p class="font-semibold mt-2" style="color: var(--text-main);"><strong>Key Tip:</strong> Guests will
-                    arrive once you have 5 meal servings ready <u>or if you collect too many ingredients in storage</u>.
-                    If 5 guests leave angry, the game is over!</p>
-            </div>
-
-            <div id="features" class="tab-content">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <div class="card">
-                        <h3 class="font-bold mb-1" style="color: var(--primary);">⚡ Upgrades System</h3>
-                        <p style="color: var(--text-main);">Use coins to purchase upgrades for your stations</p>
-                    </div>
-                    <div class="card">
-                        <h3 class="font-bold mb-1" style="color: var(--primary);">🏆 Achievements</h3>
-                        <p style="color: var(--text-main);">Complete tasks to unlock special achievements</p>
-                    </div>
-                    <div class="card">
-                        <h3 class="font-bold mb-1" style="color: var(--primary);">📊 Daily Statistics</h3>
-                        <p style="color: var(--text-main);">Track your performance and improve each day</p>
-                    </div>
-                </div>
-            </div>
-
-            <div id="achievements" class="tab-content">
-                <div class="achievement-badge">
-                    <div class="achievement-icon">🌟</div>
-                    <div class="achievement-text">
-                        <h3>First Day Survivor</h3>
-                        <p>Complete your first day serving the community</p>
-                    </div>
-                </div>
-                <div class="achievement-badge">
-                    <div class="achievement-icon">👨‍🍳</div>
-                    <div class="achievement-text">
-                        <h3>Master Chef</h3>
-                        <p>Cook 50 meals for the community</p>
-                    </div>
-                </div>
-                <div class="achievement-badge">
-                    <div class="achievement-icon">💯</div>
-                    <div class="achievement-text">
-                        <h3>Perfect Service</h3>
-                        <p>Serve 10 guests with 100% satisfaction</p>
-                    </div>
-                </div>
-            </div>
-
-            <p class="text-lg my-4">Your High Score: <span id="high-score-modal" class="font-bold"
-                    style="color: var(--accent);">0</span></p>
-            <button id="start-game-btn" class="btn-primary">Start Playing</button>
-            <button id="view-leaderboard-btn" class="btn-secondary mt-2">View Leaderboard</button>
         </div>
 
         <div id="leaderboard-modal" class="modal hidden">
@@ -342,9 +301,9 @@
 
         <div id="game-over-modal" class="modal hidden">
             <h1 id="game-over-title" class="text-3xl md:text-4xl font-bold mb-2 text-red-600">Game Over!</h1>
-            <p id="game-over-reason" class="text-lg mb-4" style="color: var(--text-main);"></p>
+            <p id="game-over-reason" class="text-lg mb-3" style="color: var(--text-main);"></p>
 
-            <div id="game-stats" class="stats-panel mb-6">
+            <div id="game-stats" class="stats-panel mb-4">
                 <div class="stat-row">
                     <span class="stat-label">Days Completed</span>
                     <span id="final-days" class="stat-value">0</span>
@@ -363,30 +322,51 @@
                 </div>
             </div>
 
-            <p id="new-high-score-msg" class="text-xl font-semibold hidden mb-4" style="color: var(--primary);">New High
-                Score!</p>
+            <p id="new-high-score-msg" class="text-xl font-semibold hidden mb-3" style="color: var(--primary);">🎉 New High Score!</p>
 
-            <div id="leaderboard-form" class="mt-4">
-                <p class="mb-2 font-semibold">Enter your name for the leaderboard!</p>
-                <input type="text" id="player-name-input" placeholder="Enter your name"
-                    class="w-full p-2 border rounded mb-2 text-center" style="border-color: var(--primary);">
+            <!-- Hope's Corner Impact Section -->
+            <div class="mb-4 p-4 rounded-lg text-left" style="background: linear-gradient(135deg, rgba(109, 40, 217, 0.1) 0%, rgba(79, 70, 229, 0.1) 100%); border: 2px solid rgba(109, 40, 217, 0.3);">
+                <h3 class="text-lg font-bold mb-2 text-center" style="color: #6d28d9;">💜 Make a Real Impact!</h3>
+                <p class="text-sm mb-3" style="color: var(--text-main);">You just experienced a glimpse of what volunteers at <strong>Hope's Corner</strong> do every week! Since 2015, they've been serving hot meals and providing essential services to those in need in Mountain View, CA.</p>
+                <div class="grid grid-cols-3 gap-2 text-center mb-3">
+                    <div class="p-2 rounded" style="background: rgba(255,255,255,0.7);">
+                        <div class="text-xl font-bold" style="color: var(--primary);">500+</div>
+                        <div class="text-xs" style="color: var(--text-light);">Guests per week</div>
+                    </div>
+                    <div class="p-2 rounded" style="background: rgba(255,255,255,0.7);">
+                        <div class="text-xl font-bold" style="color: var(--primary);">4</div>
+                        <div class="text-xs" style="color: var(--text-light);">Days a week</div>
+                    </div>
+                    <div class="p-2 rounded" style="background: rgba(255,255,255,0.7);">
+                        <div class="text-xl font-bold" style="color: var(--primary);">10+</div>
+                        <div class="text-xs" style="color: var(--text-light);">Years serving</div>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <a href="https://www.hopes-corner.org/information-volunteers" target="_blank" 
+                       class="inline-block px-4 py-2 rounded-lg font-bold text-white transition-all hover:scale-105"
+                       style="background: linear-gradient(90deg, #6d28d9, #4f46e5);">
+                        🙋 Become a Volunteer
+                    </a>
+                </div>
+            </div>
+
+            <div id="leaderboard-form" class="mt-3 p-3 rounded-lg" style="background: rgba(132, 204, 22, 0.1); border: 1px solid rgba(132, 204, 22, 0.3);">
+                <p class="mb-2 font-semibold" style="color: var(--primary-dark);">🏆 Enter your name for the leaderboard!</p>
+                <input type="text" id="player-name-input" placeholder="Your name"
+                    class="w-full p-2 border-2 rounded-lg mb-2 text-center font-medium" style="border-color: var(--primary);">
                 <button id="submit-score-btn" class="btn-primary w-full">Submit Score</button>
             </div>
 
             <div id="game-over-actions" class="hidden mt-4">
-                <button id="restart-game-btn" class="btn-primary">Play Again</button>
-                <button id="share-score-btn" class="btn-secondary mt-2">Share Score</button>
+                <button id="restart-game-btn" class="btn-primary">🔄 Play Again</button>
+                <button id="share-score-btn" class="btn-secondary mt-2">📤 Share Score</button>
             </div>
 
-            <div class="mt-8 text-center text-base text-gray-700">
-                <p>
-                    Interested in helping with these tasks in real life?
-                    <a href="https://www.hopes-corner.org/information-volunteers" target="_blank"
-                        class="font-semibold underline text-indigo-700 hover:text-indigo-900">
-                        Sign up here
-                    </a>
-                    and learn more about different volunteer opportunities!
-                </p>
+            <div class="mt-4 pt-3 border-t border-gray-200 text-center">
+                <a href="https://www.hopes-corner.org/" target="_blank" class="text-sm font-semibold hover:underline" style="color: var(--primary);">
+                    🌐 Visit Hope's Corner Website
+                </a>
             </div>
         </div>
 
