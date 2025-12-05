@@ -22,29 +22,11 @@ Navigate to the [game](https://karangattu.github.io/hopes-corner-sort-and-serve/
 
 - **Don't Get Overwhelmed:** If the overwhelm bar fills up or too many guests leave angry, the game ends.
 
-## Features
-
-- Realistic food sorting and meal preparation.
-
-- Random daily events that affect gameplay (e.g. bonus ingredients, faster cooking, more patient guests, etc).
-
-- Upgrades system for sorting, kitchen, and serving stations.
-
-- Achievements with bonus points for special milestones.
-
-- New recipes unlock as you progress.
-
-- High score tracking (stored in your browser).
-
-- Sound effects using [Howler.js](https://howlerjs.com/).
-
-- Share your score with friends (Web Share API or clipboard).
 
 ## Development
 
 - No build step required. All code is in `index.html`.
 
-- Uses [Tailwind CSS CDN](https://cdn.tailwindcss.com/) and [Howler.js](https://howlerjs.com/) for sound.
 
 ## License
 
@@ -54,4 +36,3 @@ MIT License. See [LICENSE](LICENSE).
 
 **Inspired by the real [Hope's Corner](https://www.hopes-corner.org/).**
 
-Game by Karan.
