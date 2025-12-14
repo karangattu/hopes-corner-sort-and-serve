@@ -252,7 +252,7 @@
             <p class="text-lg mb-3" style="color: var(--text-light);">Experience what it's like to volunteer at Hope's Corner!</p>
             
             <button id="start-game-btn" class="btn-primary text-xl px-8 py-3">▶ Play Now</button>
-            <p class="text-sm mt-2 font-medium" style="color: var(--accent);">🔊 For the best experience, please enable sound on your device.</p>
+            <p id="sound-tip" class="text-base md:text-lg font-semibold mt-2 inline-flex items-center gap-2 px-3 py-2 rounded-md bg-yellow-50 border border-yellow-200 text-yellow-800 shadow-sm" role="note" aria-live="polite">🔊 For the best experience, please enable sound on your device.</p>
             
             <div class="my-4 p-4 rounded-lg" style="background: linear-gradient(135deg, rgba(132, 204, 22, 0.1) 0%, rgba(63, 98, 18, 0.1) 100%); border: 1px solid rgba(132, 204, 22, 0.3);">
                 <h2 class="text-lg font-bold mb-2" style="color: var(--primary-dark);">🎯 How to Play</h2>
@@ -416,6 +416,25 @@
             </div>
             <button id="close-recipe-btn" class="btn-primary">Let's Cook!</button>
         </div>
+        
+        <div id="quick-tour-modal" class="modal hidden">
+            <div class="text-center p-4 md:p-6">
+                <div id="tour-emoji" class="text-5xl md:text-6xl mb-3">📦</div>
+                <h2 id="tour-title" class="text-xl md:text-2xl font-bold mb-2" style="color: var(--primary);">Quick Tour</h2>
+                <p id="tour-desc" class="text-sm md:text-base mb-4" style="color: var(--text-main);">This quick tour will highlight the main gameplay areas: Sort, Cook, Serve, and Upgrades.</p>
+                <div class="flex gap-2 items-center justify-center flex-col md:flex-row">
+                    <button id="tour-prev" class="btn-secondary px-4 py-3 w-full md:w-auto">◀ Prev</button>
+                    <button id="tour-next" class="btn-primary px-4 py-3 w-full md:w-auto">Next ▶</button>
+                    <button id="tour-skip" class="btn-secondary px-4 py-3 w-full md:w-auto">Skip</button>
+                </div>
+                <div class="mt-3 text-sm text-center">
+                    <label class="inline-flex items-center gap-2" style="color: var(--text-main);">
+                        <input type="checkbox" id="dont-show-tour" />
+                        <span>Don't show this again</span>
+                    </label>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div id="notification-container"></div>
@@ -567,6 +586,12 @@
                 { id: 'cooking', message: "Use your ingredients to cook meals. Different recipes need different ingredients", target: '#recipe-area', position: 'left', shown: false },
                 { id: 'serving', message: "Click a meal, then click on a guest to serve them. Happy guests give more points!", target: '#ready-meals-area', position: 'right', shown: false },
                 { id: 'upgrades', message: "Use coins to buy upgrades that make your job easier", target: '#sorting-upgrade-area', position: 'top', shown: false }
+            ];
+            const TOUR_STEPS = [
+                { emoji: '📦', title: 'Accept & Sort Donations', desc: 'Accept incoming donations and sort them into the correct storage bins so your kitchen has the ingredients to cook.' },
+                { emoji: '🍳', title: 'Cook Meals', desc: 'Use sorted ingredients to cook meals. Different recipes use different ingredients and take varied times.' },
+                { emoji: '🍽️', title: 'Serve Guests', desc: 'Serve ready meals to guests. Happy guests give more points and coins.' },
+                { emoji: '⚙️', title: 'Buy Upgrades', desc: 'Spend coins to buy upgrades like faster cooking, extra slots, and auto-sort to scale up your operation.' }
             ];
             const CONFIG = {
                 MAX_OVERWHELM: 100, MAX_ANGRY_GUESTS: 5, OVERWHELM_PER_GUEST_TICK: 0.1, SCORE_PER_GUEST: 10,
@@ -1159,7 +1184,51 @@
                 showTutorial('sorting');
                 setupAutoSort();
                 playSound('start');
+                // After starting, show a quick tour if the user hasn\'t opted out
+                setTimeout(() => {
+                    if (!localStorage.getItem('hopesCornerHideTour')) showQuickTour();
+                }, 250);
             }
+
+            function renderQuickTourStep(index) {
+                const step = TOUR_STEPS[index];
+                document.getElementById('tour-emoji').textContent = step.emoji;
+                document.getElementById('tour-title').textContent = step.title;
+                document.getElementById('tour-desc').textContent = step.desc;
+                document.getElementById('tour-prev').disabled = (index === 0);
+                document.getElementById('tour-next').textContent = (index === TOUR_STEPS.length - 1) ? 'Done' : 'Next ▶';
+                document.getElementById('quick-tour-modal').dataset.step = index;
+            }
+
+            function showQuickTour() {
+                const modal = document.getElementById('quick-tour-modal');
+                showModal(modal);
+                renderQuickTourStep(0);
+            }
+
+            function closeQuickTour(savePreference = false) {
+                document.getElementById('quick-tour-modal').classList.add('hidden');
+                modalOverlay.classList.add('hidden');
+                document.body.classList.remove('modal-open');
+                if (savePreference && document.getElementById('dont-show-tour').checked) {
+                    localStorage.setItem('hopesCornerHideTour', 'true');
+                }
+            }
+
+            document.addEventListener('click', (e) => {
+                if (e.target && e.target.id === 'tour-next') {
+                    const modal = document.getElementById('quick-tour-modal');
+                    const step = parseInt(modal.dataset.step || 0, 10);
+                    if (step < TOUR_STEPS.length - 1) renderQuickTourStep(step + 1);
+                    else closeQuickTour(true);
+                } else if (e.target && e.target.id === 'tour-prev') {
+                    const modal = document.getElementById('quick-tour-modal');
+                    const step = parseInt(modal.dataset.step || 0, 10);
+                    if (step > 0) renderQuickTourStep(step - 1);
+                } else if (e.target && e.target.id === 'tour-skip') {
+                    closeQuickTour(true);
+                }
+            });
 
             function setupAutoSort() {
                 if (gameState.autoSortTimer) clearInterval(gameState.autoSortTimer);
@@ -1474,6 +1543,7 @@
             }
 
             viewLeaderboardBtn.addEventListener('click', showLeaderboard);
+            // Quick Tour now appears automatically after starting the game; no start modal button needed.
             closeLeaderboardBtn.addEventListener('click', () => {
                 document.getElementById('leaderboard-modal').classList.add('hidden');
                 document.body.classList.remove('modal-open');
