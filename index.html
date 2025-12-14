@@ -1186,7 +1186,9 @@
                 playSound('start');
                 // After starting, show a quick tour if the user hasn\'t opted out
                 setTimeout(() => {
-                    if (!localStorage.getItem('hopesCornerHideTour')) showQuickTour();
+                    const isAutomatedEnv = !!(navigator && navigator.webdriver);
+                    const isMobileDevice = IS_MOBILE();
+                    if (!localStorage.getItem('hopesCornerHideTour') && !isAutomatedEnv && isMobileDevice) showQuickTour();
                 }, 250);
             }
 
@@ -1305,6 +1307,7 @@
                 <div class="progress-bar-fill" style="background-color: var(--primary); width: 0%;"></div>
             </div>`;
                 cookingSlotsEl.appendChild(progressCard);
+                playSound('start-cook');
 
                 const timerId = setInterval(() => {
                     const cookingMeal = gameState.cooking.find(m => m.id === mealId);
@@ -1449,6 +1452,7 @@
                 updateScoreUI();
                 updateCoinsUI();
                 updateStatsUI();
+                playSound('guest-served');
                 playSound('serve');
                 if (gameState.stats.guestsServed === 3) showTutorial('upgrades');
             }
@@ -1743,8 +1747,10 @@
                     'donation': new Howl({ src: ['https://cdn.freesound.org/previews/792/792438_123355-lq.mp3'], volume: 0.2 }),
                     'sort': new Howl({ src: ['https://cdn.pixabay.com/audio/2022/10/16/audio_12b6b6b2e2.mp3'], volume: 0.15 }),
                     'cook': new Howl({ src: ['https://cdn.pixabay.com/audio/2022/03/15/audio_731c5520a7.mp3'], volume: 0.2, loop: true }),
+                    'start-cook': new Howl({ src: ['https://cdn.pixabay.com/audio/2023/11/29/audio_5cae1df87d.mp3'], volume: 0.25 }),
                     'meal-ready': new Howl({ src: ['https://cdn.freesound.org/previews/267/267009_4830131-lq.mp3'], volume: 0.2 }),
                     'serve': new Howl({ src: ['https://cdn.pixabay.com/audio/2022/09/23/audio_247a329c35.mp3'], volume: 0.2 }),
+                    'guest-served': new Howl({ src: ['https://cdn.pixabay.com/audio/2022/03/15/audio_e01a889c5e.mp3'], volume: 0.25 }),
                     'guest-arrive': new Howl({ src: ['https://cdn.freesound.org/previews/449/449084_9269717-lq.mp3'], volume: 0.2 }),
                     'guest-angry': new Howl({ src: ['https://cdn.freesound.org/previews/333/333270_995865-lq.mp3'], volume: 0.2 }),
                     'level-up': new Howl({ src: ['https://cdn.freesound.org/previews/320/320654_5260872-lq.mp3'], volume: 0.2 }),
