@@ -9,7 +9,7 @@ const config = {
     reuseExistingServer: !process.env.CI,
   },
   use: {
-    baseURL: 'https://karangattu.github.io/hopes-corner-sort-and-serve',
+    baseURL: 'http://localhost:3000',
     headless: true,
   },
 };

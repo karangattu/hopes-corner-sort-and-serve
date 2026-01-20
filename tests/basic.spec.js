@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test('welcome screen and start game', async ({ page }) => {
-  await page.goto('https://karangattu.github.io/hopes-corner-sort-and-serve/');
+  await page.goto('/');
   
   // Verify welcome modal content
   await expect(page.getByRole('heading', { name: 'Pantry to Plate' })).toBeVisible();
@@ -27,7 +27,7 @@ test('welcome screen and start game', async ({ page }) => {
 });
 
 test('game stations are functional', async ({ page }) => {
-  await page.goto('https://karangattu.github.io/hopes-corner-sort-and-serve/');
+  await page.goto('/');
   
   // Start the game
   await page.getByRole('button', { name: 'Play Now' }).click();
@@ -53,7 +53,7 @@ test('game stations are functional', async ({ page }) => {
 });
 
 test('leaderboard modal opens', async ({ page }) => {
-  await page.goto('https://karangattu.github.io/hopes-corner-sort-and-serve/');
+  await page.goto('/');
   
   // Click on View Leaderboard button
   await page.getByRole('button', { name: 'View Leaderboard' }).click();
