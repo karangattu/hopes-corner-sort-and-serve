@@ -32,7 +32,7 @@ test('qualifying score can be submitted and appears with the player’s rank', a
       savedScore = route.request().postDataJSON();
       return route.fulfill({ status: 201 });
     }
-    const entries = [{ player_name: 'Riley', score: 100 }, { player_name: '<em>Sam</em>', score: 10 }];
+    const entries = [{ player_name: 'Riley', score: 1000 }, { player_name: '<em>Sam</em>', score: 10 }];
     if (savedScore) {
       if (!failedRankRefresh) {
         failedRankRefresh = true;
@@ -72,7 +72,7 @@ test('game over can retry a failed leaderboard load and shows the cutoff', async
   await page.route(leaderboardApi, route => {
     requests++;
     if (requests === 1) return route.fulfill({ status: 503 });
-    return route.fulfill({ json: [100, 95, 90, 85, 80].map((score, index) => ({
+    return route.fulfill({ json: [1200, 1150, 1100, 1050, 1000].map((score, index) => ({
       player_name: `Player ${index + 1}`, score
     })) });
   });
@@ -82,6 +82,6 @@ test('game over can retry a failed leaderboard load and shows the cutoff', async
   await expect(board.getByText('Could not load the leaderboard.')).toBeVisible();
   await board.getByRole('button', { name: 'Retry leaderboard' }).click();
   await expect(board.getByRole('listitem')).toHaveCount(5);
-  await expect(board.getByText('Score at least 81 to enter the top five.')).toBeVisible();
+  await expect(board.getByText('Score at least 1,001 to enter the top five.')).toBeVisible();
   await expect(board.getByRole('button', { name: 'Submit Score' })).toBeHidden();
 });

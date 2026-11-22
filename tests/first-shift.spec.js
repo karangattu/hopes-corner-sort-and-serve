@@ -68,7 +68,7 @@ test.describe('phone layout', () => {
   });
 });
 
-test('service ramps up after the first ten arrivals in the same shift', async ({ page }) => {
+test('service ramps up after the first five arrivals in the same shift', async ({ page }) => {
   await page.clock.install();
   await page.addInitScript(() => { Math.random = () => 0.4; });
   await page.goto('/');
@@ -87,23 +87,28 @@ test('service ramps up after the first ten arrivals in the same shift', async ({
   await expect(broccoli.locator('img')).toHaveAttribute('src', /broccoli\.webp$/);
 
   // Jump across arrival timers without running every patience tick.
-  for (let guest = 1; guest < 10; guest++) {
+  for (let guest = 1; guest < 5; guest++) {
     await page.clock.fastForward(22000);
     await expect(page.locator(`#guest-${guest}`)).toBeAttached();
   }
+  const rosa = page.getByRole('button', { name: 'Serve Rosa' });
+  await expect(rosa).toBeVisible();
+  const portrait = rosa.locator('.guest-portrait');
+  await expect(portrait).toHaveAttribute('src', /rosa-arrived\.webp$/);
+  await expect.poll(() => portrait.evaluate(img => img.naturalWidth)).toBeGreaterThan(0);
   await expect(page.locator('#rush-status')).toBeEmpty();
-  await expect(page.locator('#guest-10')).toHaveCount(0);
+  await expect(page.locator('#guest-5')).toHaveCount(0);
 
-  await page.clock.fastForward(14000);
-  await expect(page.locator('#guest-10')).toBeAttached();
+  await page.clock.fastForward(15000);
+  await expect(page.locator('#guest-5')).toBeAttached();
   await expect(page.locator('#rush-status')).toHaveText('Rush 1');
 
-  for (let guest = 11; guest <= 14; guest++) {
-    await page.clock.fastForward(14000);
+  for (let guest = 6; guest <= 9; guest++) {
+    await page.clock.fastForward(15000);
     await expect(page.locator(`#guest-${guest}`)).toBeAttached();
   }
   await expect(page.locator('#rush-status')).toHaveText('Rush 1');
   await page.clock.fastForward(10000);
-  await expect(page.locator('#guest-15')).toBeAttached();
+  await expect(page.locator('#guest-10')).toBeAttached();
   await expect(page.locator('#rush-status')).toHaveText('Rush 2');
 });

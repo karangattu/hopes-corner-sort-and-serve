@@ -3,14 +3,20 @@ import { test, expect } from '@playwright/test';
 test('welcome screen and start game', async ({ page }) => {
   await page.goto('/');
   
-  // Verify welcome modal content
-  await expect(page.getByRole('heading', { name: 'Pantry to Plate' })).toBeVisible();
+  const landing = page.getByRole('main', { name: 'Pantry to Plate' });
+  await expect(landing.getByRole('heading', { name: 'Pantry to Plate' })).toBeVisible();
+  await expect(page.locator('#game-container')).toBeHidden();
+  const hero = landing.getByRole('img', { name: /In a community kitchen/ });
+  await expect(hero).toBeVisible();
+  await expect.poll(() => hero.evaluate(image => image.naturalWidth)).toBeGreaterThan(0);
   await expect(page.getByText('For the best experience, please enable sound on your device.')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'How to Play' })).toBeVisible();
   
   // Start the game
   await page.getByRole('button', { name: 'Play Now' }).click();
   
+  await expect(landing).toBeHidden();
+
   // After starting, verify the main game UI is visible
   // Note: Quick tour is not shown in automated/webdriver environments
   await expect(page.getByRole('heading', { name: 'Donations & Sorting' })).toBeVisible();
@@ -59,5 +65,9 @@ test('leaderboard modal opens', async ({ page }) => {
   await page.getByRole('button', { name: 'View Leaderboard' }).click();
   
   // Verify leaderboard modal opens
-  await expect(page.getByRole('heading', { name: 'Top 5 Scores' })).toBeVisible();
+  const leaderboard = page.getByRole('dialog', { name: 'Top 5 Scores' });
+  await expect(leaderboard).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(leaderboard).toBeHidden();
+  await expect(page.getByRole('button', { name: 'View Leaderboard' })).toBeFocused();
 });

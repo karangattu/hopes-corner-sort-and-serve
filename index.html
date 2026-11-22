@@ -4,11 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Hope's corner - Pantry to Plate Game</title>
+    <title>Pantry to Plate | Hope’s Corner</title>
     <link rel="icon" type="image/png"
         href="https://images.squarespace-cdn.com/content/5622cd82e4b0501d40689558/2aedb400-89b8-4f93-856f-cd2c7d5385e4/Hopes_Corner_Logo_Green.png?format=1500w&content-type=image%2Fpng">
     <meta name="description"
-        content="Help Hope's Corner feed the community by managing the pantry and preparing meals.">
+        content="Sort donations, cook meals, and serve your neighbors in a community kitchen game inspired by Hope’s Corner.">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -22,9 +22,67 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 
-<body class="bg-gray-200">
+<body class="bg-gray-200 landing-mode">
 
-    <div id="game-container" class="game-container p-2 md:p-4">
+    <main id="landing-page" class="landing" aria-labelledby="landing-title">
+        <header class="landing-header">
+            <a class="landing-brand" href="https://www.hopes-corner.org/">
+                <img src="assets/art/heart.webp" alt="" width="32" height="32">
+                Inspired by Hope’s Corner
+            </a>
+            <button id="view-leaderboard-btn" class="landing-leaderboard" type="button">
+                <img src="assets/art/trophy.webp" alt="" width="23" height="23">
+                View Leaderboard
+            </button>
+        </header>
+
+        <section class="landing-hero">
+            <div class="landing-intro">
+                <h1 id="landing-title">Pantry<br> <em>to Plate</em></h1>
+                <p class="landing-summary">Sort donated food, cook a hot meal, and serve your neighbors before the kitchen gets busy.</p>
+                <button id="start-game-btn" class="landing-play" type="button">
+                    <img src="assets/art/play.webp" alt="" width="32" height="32"> Play Now
+                </button>
+                <p class="landing-best">Your high score <strong id="high-score-modal">0</strong></p>
+            </div>
+            <figure class="landing-art">
+                <img src="assets/art/pantry-to-plate.webp"
+                    alt="In a community kitchen, a crate of donated food waits to be sorted while volunteers stir a pot and hand a guest a plate of tacos."
+                    width="1200" height="800" fetchpriority="high">
+            </figure>
+        </section>
+
+        <section class="landing-how" aria-labelledby="landing-how-title">
+            <div class="landing-how-header">
+                <h2 id="landing-how-title">How to Play</h2>
+                <p id="sound-tip" class="landing-sound" role="note">
+                    <img src="assets/art/sound.webp" alt="" width="20" height="20">
+                    For the best experience, please enable sound on your device.
+                </p>
+            </div>
+            <ol class="landing-steps">
+                <li>
+                    <img src="assets/art/crate.webp" alt="" width="55" height="55">
+                    <div><h3>Sort donations</h3><p>Open a crate and match ingredients to the pantry bins.</p></div>
+                </li>
+                <li>
+                    <img src="assets/art/pot.webp" alt="" width="55" height="55">
+                    <div><h3>Cook a batch</h3><p>Your first crate has everything for tacos.</p></div>
+                </li>
+                <li>
+                    <img src="assets/art/plate.webp" alt="" width="55" height="55">
+                    <div><h3>Serve your neighbors</h3><p>Tap a guest to serve. The rush starts after five arrivals.</p></div>
+                </li>
+            </ol>
+        </section>
+
+        <footer class="landing-footer">
+            <p>Hope’s Corner is a real community kitchen in Mountain View, California.</p>
+            <a href="https://www.hopes-corner.org/information-volunteers">Volunteer at Hope’s Corner <span aria-hidden="true">↗</span></a>
+        </footer>
+    </main>
+
+    <div id="game-container" class="game-container p-2 md:p-4" hidden>
         <header class="header">
             <div class="flex items-center gap-3 flex-shrink-0 justify-center">
                 <img src="https://images.squarespace-cdn.com/content/5622cd82e4b0501d40689558/2aedb400-89b8-4f93-856f-cd2c7d5385e4/Hopes_Corner_Logo_Green.png?format=1500w&content-type=image%2Fpng"
@@ -262,71 +320,8 @@
     </div>
 
     <div id="modal-overlay" class="hidden">
-        <div id="start-modal" class="modal !p-0 overflow-hidden">
-            <div class="relative w-full h-64 md:h-80 bg-gray-100">
-                <img src="poster.png" alt="Pantry to Plate Cover" class="w-full h-full object-cover" style="object-position: center 30%;">
-                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
-                <div class="absolute bottom-4 left-0 right-0 text-white text-center drop-shadow-md">
-                    <img src="https://images.squarespace-cdn.com/content/5622cd82e4b0501d40689558/2aedb400-89b8-4f93-856f-cd2c7d5385e4/Hopes_Corner_Logo_Green.png?format=1500w&content-type=image%2Fpng"
-                        alt="Hope's Corner Official Logo" class="h-12 md:h-16 mx-auto mb-2 brightness-0 invert"
-                        onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgNTAiPjxwYXRoIGQ9Ik0xMCAxMEgzMFYzMEgxMFoiIGZpbGw9IiNmZmZmZmYiLz48dGV4dCB4PSI0MCIgeT0iMzAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiBmaWxsPSIjZmZmZmZmIj5Ib3BlJ3MgQ29ybmVyPC90ZXh0Pjwvc3ZnPg=='">
-                    <h1 class="text-3xl md:text-5xl font-bold mb-1">Pantry to Plate</h1>
-                </div>
-            </div>
-            
-            <div class="p-6 md:p-8">
-                <p class="text-lg md:text-xl mb-4 text-center font-medium" style="color: var(--text-main);">Experience what it's like to volunteer at Hope's Corner!</p>
-                
-                <div class="text-center mb-6">
-                    <button id="start-game-btn" class="btn-primary text-xl md:text-2xl px-10 py-4 shadow-lg hover:scale-105 transition-transform"><img class="game-icon" src="assets/art/play.webp" alt="" draggable="false"> Play Now</button>
-                    <div class="mt-3">
-                        <p id="sound-tip" class="text-sm md:text-base font-semibold inline-flex items-center gap-2 px-3 py-2 rounded-md bg-yellow-50 border border-yellow-200 text-yellow-800 shadow-sm" role="note" aria-live="polite"><img class="game-icon" src="assets/art/sound.webp" alt="" draggable="false"> For the best experience, please enable sound on your device.</p>
-                    </div>
-                </div>
-            
-            <div class="my-4 p-4 rounded-lg" style="background: linear-gradient(135deg, rgba(132, 204, 22, 0.1) 0%, rgba(63, 98, 18, 0.1) 100%); border: 1px solid rgba(132, 204, 22, 0.3);">
-                <h2 class="text-lg font-bold mb-2" style="color: var(--primary-dark);"><img class="game-icon" src="assets/art/target.webp" alt="" draggable="false"> How to Play</h2>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-center">
-                    <div class="p-2">
-                        <div class="text-2xl mb-1"><img class="game-icon" src="assets/art/crate.webp" alt="" draggable="false"></div>
-                        <p class="text-xs font-semibold" style="color: var(--text-main);">Accept Donations</p>
-                    </div>
-                    <div class="p-2">
-                        <div class="text-2xl mb-1"><img class="game-icon" src="assets/art/veg-bin.webp" alt="" draggable="false"></div>
-                        <p class="text-xs font-semibold" style="color: var(--text-main);">Sort Food Items</p>
-                    </div>
-                    <div class="p-2">
-                        <div class="text-2xl mb-1"><img class="game-icon" src="assets/art/pot.webp" alt="" draggable="false"></div>
-                        <p class="text-xs font-semibold" style="color: var(--text-main);">Cook Meals</p>
-                    </div>
-                    <div class="p-2">
-                        <div class="text-2xl mb-1"><img class="game-icon" src="assets/art/plate.webp" alt="" draggable="false"></div>
-                        <p class="text-xs font-semibold" style="color: var(--text-main);">Serve Guests</p>
-                    </div>
-                </div>
-                    <p class="text-sm mt-2 font-medium" style="color: var(--text-main);">Your first crate has everything for tacos. Cook a batch and the first guest will arrive.</p>
-                    <p class="text-sm mt-2 font-medium" style="color: var(--accent);"><img class="game-icon" src="assets/art/warning.webp" alt="" draggable="false"> Don't let 5 guests leave angry!</p>
-            </div>
-
-            <div class="flex justify-center gap-3 mb-4">
-                <p class="text-base">Your High Score: <span id="high-score-modal" class="font-bold" style="color: var(--accent);">0</span></p>
-            </div>
-            
-            <button id="view-leaderboard-btn" class="btn-secondary"><img class="game-icon" src="assets/art/trophy.webp" alt="" draggable="false"> View Leaderboard</button>
-            
-            <div class="mt-4 pt-4 border-t border-gray-200">
-                <p class="text-sm" style="color: var(--text-light);">Inspired by <strong style="color: var(--primary);">Hope's Corner</strong> in Mountain View, CA</p>
-                <p class="text-sm mt-1">
-                    <a href="https://www.hopes-corner.org/" target="_blank" class="font-semibold hover:underline" style="color: var(--primary);"><img class="game-icon" src="assets/art/globe.webp" alt="" draggable="false"> Learn more about their mission</a>
-                    <span class="mx-2">|</span>
-                    <a href="https://www.hopes-corner.org/information-volunteers" target="_blank" class="font-semibold hover:underline" style="color: #6d28d9;"><img class="game-icon" src="assets/art/heart.webp" alt="" draggable="false"> Volunteer with them!</a>
-                </p>
-            </div>
-            </div>
-        </div>
-
-        <div id="leaderboard-modal" class="modal hidden">
-            <h2 class="text-3xl font-bold mb-4" style="color: var(--primary);">Top 5 Scores</h2>
+        <div id="leaderboard-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="leaderboard-title">
+            <h2 id="leaderboard-title" class="text-3xl font-bold mb-4" style="color: var(--primary);">Top 5 Scores</h2>
             <p class="leaderboard-status" data-leaderboard-status role="status"></p>
             <ol class="leaderboard-list" data-leaderboard-list aria-label="Top five scores"></ol>
             <button type="button" class="btn-secondary hidden" data-leaderboard-retry>Retry leaderboard</button>
@@ -506,7 +501,8 @@
             const sortInstructionTextEl = document.getElementById('sort-instruction-text');
             const gameOverReasonEl = document.getElementById('game-over-reason');
             const modalOverlay = document.getElementById('modal-overlay');
-            const startModal = document.getElementById('start-modal');
+            const landingPage = document.getElementById('landing-page');
+            const gameContainer = document.getElementById('game-container');
             const gameOverModal = document.getElementById('game-over-modal');
             const startGameBtn = document.getElementById('start-game-btn');
             const restartGameBtn = document.getElementById('restart-game-btn');
@@ -633,9 +629,15 @@
             const GUESTS = [
                 { name: 'Mei', portrait: 'mei' },
                 { name: 'Isaiah', portrait: 'isaiah' },
-                { name: 'Helen', portrait: 'helen' },
+                { name: 'Rosa', portrait: 'rosa' },
+                { name: 'Arthur', portrait: 'arthur' },
+                { name: 'Lihua', portrait: 'lihua' },
                 { name: 'Mateo', portrait: 'mateo' },
+                { name: 'Ruth', portrait: 'ruth' },
+                { name: 'Javier', portrait: 'javier' },
+                { name: 'Guowei', portrait: 'guowei' },
                 { name: 'Nia', portrait: 'nia' },
+                { name: 'Helen', portrait: 'helen' },
                 { name: 'Kenji', portrait: 'kenji' }
             ];
             const STARTER_CRATE = ['protein', 'veg', 'carbs', 'protein'];
@@ -653,7 +655,7 @@
             const CONFIG = {
                 MAX_OVERWHELM: 100, MAX_ANGRY_GUESTS: 5, OVERWHELM_PER_GUEST_TICK: 0.1, SCORE_PER_GUEST: 10,
                 MAX_DONATION_ITEMS: 8, BASE_COOKING_SLOTS: 3, COIN_PER_GUEST: 5,
-                OPENING_GUESTS: 10, GUESTS_PER_RUSH_WAVE: 5,
+                OPENING_GUESTS: 5, GUESTS_PER_RUSH_WAVE: 5,
                 ITEM_TYPES: {
                     veg: { label: 'Produce', icon: 'veg-bin', foods: ['carrot', 'cabbage', 'broccoli', 'strawberry', 'bananas', 'apple'] },
                     protein: { label: 'Protein', icon: 'protein-bin', foods: ['beans', 'egg', 'tofu', 'cheese', 'milk'] },
@@ -763,6 +765,8 @@
 
             function showLeaderboard() {
                 showModal(leaderboardModal);
+                landingPage.inert = true;
+                closeLeaderboardBtn.focus();
                 loadLeaderboard(leaderboardModal);
             }
 
@@ -1149,18 +1153,6 @@
                 });
             }
 
-            function showStartModal() {
-                modalOverlay.classList.remove('hidden');
-                startModal.classList.remove('hidden');
-                gameOverModal.classList.add('hidden');
-                achievementModal.classList.add('hidden');
-                levelUpModal.classList.add('hidden');
-                recipeUnlockModal.classList.add('hidden');
-                document.getElementById('leaderboard-modal').classList.add('hidden');
-                document.body.classList.add('modal-open');
-                loadHighScore();
-            }
-
             function showModal(modalEl) {
                 modalOverlay.classList.remove('hidden');
                 modalEl.classList.remove('hidden');
@@ -1176,8 +1168,11 @@
                 initializeGameState();
                 gtag('event', 'game_start');
                 gameState.gameRunning = true;
+                landingPage.hidden = true;
+                gameContainer.hidden = false;
                 modalOverlay.classList.add('hidden');
-                document.body.classList.remove('modal-open');
+                document.body.classList.remove('landing-mode', 'modal-open');
+                window.scrollTo(0, 0);
                 if (!soundsLoaded) loadSounds();
                 draggedItem = null;
                 setSortSelection(null);
@@ -1192,6 +1187,7 @@
                 gameLoopInterval = setInterval(gameLoop, 100);
                 activateStation('donations-station', false);
                 refreshDonationButton();
+                acceptDonationBtn.focus({ preventScroll: true });
                 updateShiftGuide();
                 updateScoreUI(); updateCoinsUI(); updateDayUI(); updateAngryGuestsUI(); updateInventoryUI(); updateCookingSlotsUI(); updateStatsUI();
                 renderRecipes();
@@ -1655,11 +1651,16 @@
             }
 
             viewLeaderboardBtn.addEventListener('click', showLeaderboard);
-            // Quick Tour now appears automatically after starting the game; no start modal button needed.
-            closeLeaderboardBtn.addEventListener('click', () => {
-                document.getElementById('leaderboard-modal').classList.add('hidden');
+            function closeLeaderboard() {
+                leaderboardModal.classList.add('hidden');
+                modalOverlay.classList.add('hidden');
                 document.body.classList.remove('modal-open');
-                showStartModal();
+                landingPage.inert = false;
+                viewLeaderboardBtn.focus({ preventScroll: true });
+            }
+            closeLeaderboardBtn.addEventListener('click', closeLeaderboard);
+            leaderboardModal.addEventListener('keydown', event => {
+                if (event.key === 'Escape') closeLeaderboard();
             });
             leaderboardForm.addEventListener('submit', handleScoreSubmit);
             playerNameInput.addEventListener('input', () => playerNameInput.setCustomValidity(''));
@@ -1972,7 +1973,7 @@
             const shiftAction = document.getElementById('shift-action');
             shiftAction.addEventListener('click', () => activateStation(shiftAction.dataset.station || 'donations-station'));
 
-            showStartModal();
+            loadHighScore();
         });
     </script>
 </body>
