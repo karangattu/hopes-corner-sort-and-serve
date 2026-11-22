@@ -1617,6 +1617,7 @@ body {
 [data-type="veg"] { --food-bg: #edf7df; --food-edge: #557633; }
 [data-type="protein"] { --food-bg: #fcece2; --food-edge: #a7482f; }
 [data-type="carbs"] { --food-bg: #fff3cd; --food-edge: #865a18; }
+.donation-item[data-food="milk"] { --food-bg: #f1f7fb; }
 
 .donation-item {
   display: grid;
