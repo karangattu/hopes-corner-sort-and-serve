@@ -39,7 +39,7 @@ test('game stations are functional', async ({ page }) => {
   await expect(page.getByRole('button', { name: 'Accept Donation' })).toBeVisible();
   
   // Verify storage bins are visible
-  await expect(page.getByText('Veggies')).toBeVisible();
+  await expect(page.getByText('Produce')).toBeVisible();
   await expect(page.getByText('Protein')).toBeVisible();
   await expect(page.getByText('Carbs')).toBeVisible();
   

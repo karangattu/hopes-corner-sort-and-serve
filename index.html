@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Hope's corner - Pantry to Plate Game</title>
     <link rel="icon" type="image/png"
         href="https://images.squarespace-cdn.com/content/5622cd82e4b0501d40689558/2aedb400-89b8-4f93-856f-cd2c7d5385e4/Hopes_Corner_Logo_Green.png?format=1500w&content-type=image%2Fpng">
@@ -11,7 +11,6 @@
         content="Help Hope's Corner feed the community by managing the pantry and preparing meals.">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-SHMY0176JE"></script>
     <script>
@@ -71,67 +70,83 @@
             </div>
         </header>
 
+        <div class="shift-guide" role="region" aria-label="Next step">
+            <img class="game-icon" id="shift-icon" src="assets/art/crate.webp" alt="">
+            <div>
+                <strong id="shift-title">Open your first crate</strong>
+                <p id="shift-detail" role="status">It has everything you need to cook tacos.</p>
+            </div>
+            <button id="shift-action" class="btn-primary" type="button">Go to Sort</button>
+        </div>
+
         <div id="donations-station" class="station active">
             <div class="station-header">
-                <h2 class="text-xl font-semibold" style="color: var(--text-main);">
-                    <span class="station-icon"><i class="fa-solid fa-box"></i></span> Donations & Sorting
+                <h2 tabindex="-1" class="text-xl font-semibold" style="color: var(--text-main);">
+                    <span class="station-icon"><img class="game-icon" src="assets/art/crate.webp" alt="" draggable="false"></span> Donations & Sorting
                 </h2>
                 <span id="sorting-level" class="badge badge-primary">Level 1</span>
             </div>
-            <div id="donation-arrival-area"
-                class="h-24 border-b-2 border-gray-200 mb-2 flex items-center justify-center relative">
-                <button id="accept-donation-btn"
-                    class="text-white font-bold py-3 px-5 rounded-lg transition duration-300 opacity-50 btn-primary"
-                    disabled>Accept Donation</button>
-            </div>
-            <div class="p-2 bg-indigo-100 border border-indigo-200 rounded-md mb-2"
-                style="background-color: rgba(132, 204, 22, 0.1); border-color: rgba(132, 204, 22, 0.3);">
-                <h3 class="font-semibold text-center" style="color: var(--primary-dark);">How to Sort:</h3>
-                <p id="sort-instruction-text" class="text-center" style="color: var(--text-main);">Tap a donation to select it, then tap the matching bin</p>
-            </div>
-            <div id="sorting-area" class="flex-grow p-2 rounded-md min-h-[150px] grid grid-cols-3 gap-2"
-                style="background-color: rgba(0, 0, 0, 0.03);"></div>
+            <div class="sort-workspace">
+                <div class="incoming-donations">
+                    <div id="donation-arrival-area"
+                        class="flex items-center justify-center">
+                        <button id="accept-donation-btn"
+                            class="text-white font-bold py-3 px-5 rounded-lg transition duration-300 btn-primary"
+                            disabled><img class="game-icon" src="assets/art/crate.webp" alt="" draggable="false"> Accept Donation</button>
+                    </div>
+                    <div class="sort-help p-2 bg-indigo-100 border border-indigo-200 rounded-md mb-2"
+                        style="background-color: rgba(132, 204, 22, 0.1); border-color: rgba(132, 204, 22, 0.3);">
+                        <h3 class="font-semibold text-center" style="color: var(--primary-dark);">Match each item to its bin</h3>
+                        <p id="sort-instruction-text" class="text-center" style="color: var(--text-main);" aria-live="polite">Pick an ingredient, then choose the highlighted bin.</p>
+                    </div>
+                    <div id="sorting-area" class="rounded-md"
+                        style="background-color: rgba(0, 0, 0, 0.03);"></div>
 
-            <h3 class="font-semibold mt-4 mb-2 text-center" style="color: var(--primary-dark);">Storage Bins</h3>
-            <div class="grid grid-cols-3 gap-2 md:gap-4 mb-4">
-                <div id="veg-bin" class="storage-bin p-2 rounded-lg text-center" data-type="veg">
-                    <div class="icon"><i class="fa-solid fa-leaf" style="color: #22c55e;"></i></div>
-                    <span class="text-xs font-semibold" style="color: var(--text-main)">Veggies</span>
-                    <strong id="veg-count" class="block text-xl font-bold" style="color: var(--primary)">0</strong>
                 </div>
-                <div id="protein-bin" class="storage-bin p-2 rounded-lg text-center" data-type="protein">
-                    <div class="icon"><i class="fa-solid fa-drumstick-bite" style="color: #ef4444;"></i></div>
-                    <span class="text-xs font-semibold" style="color: var(--text-main)">Protein</span>
-                    <strong id="protein-count" class="block text-xl font-bold" style="color: var(--primary)">0</strong>
-                </div>
-                <div id="carbs-bin" class="storage-bin p-2 rounded-lg text-center" data-type="carbs">
-                    <div class="icon"><i class="fa-solid fa-bread-slice" style="color: #eab308;"></i></div>
-                    <span class="text-xs font-semibold" style="color: var(--text-main)">Carbs</span>
-                    <strong id="carbs-count" class="block text-xl font-bold" style="color: var(--primary)">0</strong>
+                <div class="storage-panel">
+                    <h3 class="font-semibold mb-2 text-center" style="color: var(--primary-dark);">Storage Bins</h3>
+                    <div class="bin-grid">
+                        <button type="button" id="veg-bin" class="storage-bin p-2 rounded-lg text-center" data-type="veg">
+                            <span class="icon"><img class="game-icon" src="assets/art/veg-bin.webp" alt="" draggable="false"></span>
+                            <span class="text-xs font-semibold" style="color: var(--text-main)">Produce</span>
+                            <strong id="veg-count" class="block text-xl font-bold" style="color: var(--primary)">0</strong>
+                        </button>
+                        <button type="button" id="protein-bin" class="storage-bin p-2 rounded-lg text-center" data-type="protein">
+                            <span class="icon"><img class="game-icon" src="assets/art/protein-bin.webp" alt="" draggable="false"></span>
+                            <span class="text-xs font-semibold" style="color: var(--text-main)">Protein</span>
+                            <strong id="protein-count" class="block text-xl font-bold" style="color: var(--primary)">0</strong>
+                        </button>
+                        <button type="button" id="carbs-bin" class="storage-bin p-2 rounded-lg text-center" data-type="carbs">
+                            <span class="icon"><img class="game-icon" src="assets/art/carbs-bin.webp" alt="" draggable="false"></span>
+                            <span class="text-xs font-semibold" style="color: var(--text-main)">Carbs</span>
+                            <strong id="carbs-count" class="block text-xl font-bold" style="color: var(--primary)">0</strong>
+                        </button>
+                    </div>
+
                 </div>
             </div>
 
             <div id="sorting-upgrade-area" class="mt-4 p-3 border-t-2 border-gray-200">
                 <h3 class="font-semibold mb-2" style="color: var(--text-main);">Sorting Upgrades</h3>
                 <div class="power-up" id="auto-sort-upgrade">
-                    <div class="power-up-icon"><i class="fa-solid fa-robot" style="color: #6366f1;"></i></div>
+                    <div class="power-up-icon"><img class="game-icon" src="assets/art/robot.webp" alt="" draggable="false"></div>
                     <div class="power-up-info">
                         <div class="power-up-name">Auto-Sort Assistant</div>
                         <div class="power-up-desc">Automatically sorts 1 item every 10 seconds</div>
                     </div>
-                    <button class="power-up-cost">100 <i class="fa-solid fa-coins" style="color: #eab308;"></i></button>
+                    <button class="power-up-cost">100 <img class="game-icon" src="assets/art/coin.webp" alt="" draggable="false"></button>
                 </div>
             </div>
         </div>
 
         <div id="kitchen-station" class="station lg:col-span-1">
             <div class="station-header">
-                <h2 class="text-xl font-semibold" style="color: var(--text-main);">
-                    <span class="station-icon"><i class="fa-solid fa-fire-burner" style="color: #f97316;"></i></span> Storage & Kitchen
+                <h2 tabindex="-1" class="text-xl font-semibold" style="color: var(--text-main);">
+                    <span class="station-icon"><img class="game-icon" src="assets/art/pot.webp" alt="" draggable="false"></span> Storage & Kitchen
                 </h2>
                 <span id="kitchen-level" class="badge badge-primary">Level 1</span>
             </div>
-            <div class="mb-4 border-t-2 pt-4">
+            <div id="cooking-panel" class="mb-4 border-t-2 pt-4">
                 <div class="flex justify-between items-center mb-2">
                     <h3 class="font-medium">Currently Cooking</h3>
                     <span id="cooking-slots-display" class="text-sm font-medium" style="color: var(--text-light);">0/3
@@ -141,43 +156,52 @@
             </div>
             <div id="recipe-area" class="flex-grow space-y-4 border-t-2 pt-4">
                 <h3 class="font-medium text-center mb-2">Available Recipes</h3>
-                <div class="swipe-indicator">← Swipe to see more recipes →</div>
                 <div id="recipe-list" class="space-y-2"></div>
             </div>
 
             <div id="kitchen-upgrade-area" class="mt-4 p-3 border-t-2 border-gray-200">
                 <h3 class="font-semibold mb-2" style="color: var(--text-main);">Kitchen Upgrades</h3>
                 <div class="power-up" id="faster-cooking-upgrade">
-                    <div class="power-up-icon"><i class="fa-solid fa-bolt" style="color: #eab308;"></i></div>
+                    <div class="power-up-icon"><img class="game-icon" src="assets/art/bolt.webp" alt="" draggable="false"></div>
                     <div class="power-up-info">
                         <div class="power-up-name">Faster Cooking</div>
                         <div class="power-up-desc">Reduces cooking time by 10%</div>
                     </div>
-                    <button class="power-up-cost">150 <i class="fa-solid fa-coins" style="color: #eab308;"></i></button>
+                    <button class="power-up-cost">150 <img class="game-icon" src="assets/art/coin.webp" alt="" draggable="false"></button>
                 </div>
                 <div class="power-up" id="extra-slot-upgrade">
-                    <div class="power-up-icon"><i class="fa-solid fa-plus" style="color: #22c55e;"></i></div>
+                    <div class="power-up-icon"><img class="game-icon" src="assets/art/plus.webp" alt="" draggable="false"></div>
                     <div class="power-up-info">
                         <div class="power-up-name">Extra Cooking Slot</div>
-                        <div class="power-up-desc">Add one more cooking slot (max 5)</div>
+                        <div class="power-up-desc">Add one more cooking slot (up to two upgrades)</div>
                     </div>
-                    <button class="power-up-cost">300 <i class="fa-solid fa-coins" style="color: #eab308;"></i></button>
+                    <button class="power-up-cost">300 <img class="game-icon" src="assets/art/coin.webp" alt="" draggable="false"></button>
                 </div>
             </div>
         </div>
 
         <div id="serving-station" class="station">
             <div class="station-header">
-                <h2 class="text-xl font-semibold" style="color: var(--text-main);">
-                    <span class="station-icon"><i class="fa-solid fa-utensils" style="color: #8b5cf6;"></i></span> Serving Area
+                <h2 tabindex="-1" class="text-xl font-semibold" style="color: var(--text-main);">
+                    <span class="station-icon"><img class="game-icon" src="assets/art/plate.webp" alt="" draggable="false"></span> Serving Area
                 </h2>
                 <span id="serving-level" class="badge badge-primary">Level 1</span>
             </div>
             <div class="p-2 rounded-md mb-4"
                 style="background-color: rgba(132, 204, 22, 0.1); border: 1px solid rgba(132, 204, 22, 0.3);">
                 <h3 class="font-semibold text-center" style="color: var(--primary-dark);">How to Serve:</h3>
-                <p id="instruction-text" class="text-center" style="color: var(--text-main);">1. Click a ready meal to
-                    select it.</p>
+                <p id="instruction-text" class="text-center" style="color: var(--text-main);" aria-live="polite">Tap a guest to serve the first ready meal. Pick a dish to serve it instead.</p>
+            </div>
+
+            <div class="serving-workspace">
+                <section>
+                    <h3 class="font-medium">Ready Meals</h3>
+                    <div id="ready-meals-area"></div>
+                </section>
+                <section>
+                    <h3 class="font-medium">Waiting Guests</h3>
+                    <div id="guest-area"></div>
+                </section>
             </div>
 
             <div class="mb-2">
@@ -196,33 +220,23 @@
                     </div>
                 </div>
             </div>
-            <div class="flex justify-between items-center mb-2">
-                <h3 class="font-medium">Ready Meals</h3>
-                <h3 class="font-medium">Waiting Guests</h3>
-            </div>
-            <div class="flex flex-grow h-full min-h-[200px]">
-                <div id="ready-meals-area" class="w-1/3 pr-2 border-r-2 border-gray-200 space-y-2 overflow-y-auto">
-                </div>
-                <div id="guest-area" class="w-2/3 pl-2 space-y-2 overflow-y-auto"></div>
-            </div>
-
             <div id="serving-upgrade-area" class="mt-4 p-3 border-t-2 border-gray-200">
                 <h3 class="font-semibold mb-2" style="color: var(--text-main);">Serving Upgrades</h3>
                 <div class="power-up" id="guest-patience-upgrade">
-                    <div class="power-up-icon"><i class="fa-solid fa-stopwatch" style="color: #3b82f6;"></i></div>
+                    <div class="power-up-icon"><img class="game-icon" src="assets/art/stopwatch.webp" alt="" draggable="false"></div>
                     <div class="power-up-info">
                         <div class="power-up-name">Guest Patience</div>
                         <div class="power-up-desc">Guests wait 15% longer before getting angry</div>
                     </div>
-                    <button class="power-up-cost">200 <i class="fa-solid fa-coins" style="color: #eab308;"></i></button>
+                    <button class="power-up-cost">200 <img class="game-icon" src="assets/art/coin.webp" alt="" draggable="false"></button>
                 </div>
                 <div class="power-up" id="bonus-points-upgrade">
-                    <div class="power-up-icon"><i class="fa-solid fa-star" style="color: #eab308;"></i></div>
+                    <div class="power-up-icon"><img class="game-icon" src="assets/art/award.webp" alt="" draggable="false"></div>
                     <div class="power-up-info">
                         <div class="power-up-name">Bonus Points</div>
                         <div class="power-up-desc">Earn +2 points per satisfied guest</div>
                     </div>
-                    <button class="power-up-cost">250 <i class="fa-solid fa-coins" style="color: #eab308;"></i></button>
+                    <button class="power-up-cost">250 <img class="game-icon" src="assets/art/coin.webp" alt="" draggable="false"></button>
                 </div>
             </div>
         </div>
@@ -230,15 +244,15 @@
         <!-- Mobile Bottom Navigation -->
         <nav class="mobile-nav">
             <button class="mobile-nav-btn active" data-station="donations-station">
-                <span class="icon"><i class="fa-solid fa-box"></i></span>
+                <span class="icon"><img class="game-icon" src="assets/art/crate.webp" alt="" draggable="false"></span>
                 <span>Sort</span>
             </button>
             <button class="mobile-nav-btn" data-station="kitchen-station">
-                <span class="icon"><i class="fa-solid fa-fire-burner" style="color: #f97316;"></i></span>
+                <span class="icon"><img class="game-icon" src="assets/art/pot.webp" alt="" draggable="false"></span>
                 <span>Cook</span>
             </button>
             <button class="mobile-nav-btn" data-station="serving-station">
-                <span class="icon"><i class="fa-solid fa-utensils" style="color: #8b5cf6;"></i></span>
+                <span class="icon"><img class="game-icon" src="assets/art/plate.webp" alt="" draggable="false"></span>
                 <span>Serve</span>
             </button>
         </nav>
@@ -261,48 +275,48 @@
                 <p class="text-lg md:text-xl mb-4 text-center font-medium" style="color: var(--text-main);">Experience what it's like to volunteer at Hope's Corner!</p>
                 
                 <div class="text-center mb-6">
-                    <button id="start-game-btn" class="btn-primary text-xl md:text-2xl px-10 py-4 shadow-lg hover:scale-105 transition-transform"><i class="fa-solid fa-play"></i> Play Now</button>
+                    <button id="start-game-btn" class="btn-primary text-xl md:text-2xl px-10 py-4 shadow-lg hover:scale-105 transition-transform"><img class="game-icon" src="assets/art/play.webp" alt="" draggable="false"> Play Now</button>
                     <div class="mt-3">
-                        <p id="sound-tip" class="text-sm md:text-base font-semibold inline-flex items-center gap-2 px-3 py-2 rounded-md bg-yellow-50 border border-yellow-200 text-yellow-800 shadow-sm" role="note" aria-live="polite"><i class="fa-solid fa-volume-high"></i> For the best experience, please enable sound on your device.</p>
+                        <p id="sound-tip" class="text-sm md:text-base font-semibold inline-flex items-center gap-2 px-3 py-2 rounded-md bg-yellow-50 border border-yellow-200 text-yellow-800 shadow-sm" role="note" aria-live="polite"><img class="game-icon" src="assets/art/sound.webp" alt="" draggable="false"> For the best experience, please enable sound on your device.</p>
                     </div>
                 </div>
             
             <div class="my-4 p-4 rounded-lg" style="background: linear-gradient(135deg, rgba(132, 204, 22, 0.1) 0%, rgba(63, 98, 18, 0.1) 100%); border: 1px solid rgba(132, 204, 22, 0.3);">
-                <h2 class="text-lg font-bold mb-2" style="color: var(--primary-dark);"><i class="fa-solid fa-bullseye"></i> How to Play</h2>
+                <h2 class="text-lg font-bold mb-2" style="color: var(--primary-dark);"><img class="game-icon" src="assets/art/target.webp" alt="" draggable="false"> How to Play</h2>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-center">
                     <div class="p-2">
-                        <div class="text-2xl mb-1"><i class="fa-solid fa-box" style="color: #84cc16;"></i></div>
+                        <div class="text-2xl mb-1"><img class="game-icon" src="assets/art/crate.webp" alt="" draggable="false"></div>
                         <p class="text-xs font-semibold" style="color: var(--text-main);">Accept Donations</p>
                     </div>
                     <div class="p-2">
-                        <div class="text-2xl mb-1"><i class="fa-solid fa-folder-open" style="color: #3b82f6;"></i></div>
+                        <div class="text-2xl mb-1"><img class="game-icon" src="assets/art/veg-bin.webp" alt="" draggable="false"></div>
                         <p class="text-xs font-semibold" style="color: var(--text-main);">Sort Food Items</p>
                     </div>
                     <div class="p-2">
-                        <div class="text-2xl mb-1"><i class="fa-solid fa-fire-burner" style="color: #f97316;"></i></div>
+                        <div class="text-2xl mb-1"><img class="game-icon" src="assets/art/pot.webp" alt="" draggable="false"></div>
                         <p class="text-xs font-semibold" style="color: var(--text-main);">Cook Meals</p>
                     </div>
                     <div class="p-2">
-                        <div class="text-2xl mb-1"><i class="fa-solid fa-utensils" style="color: #8b5cf6;"></i></div>
+                        <div class="text-2xl mb-1"><img class="game-icon" src="assets/art/plate.webp" alt="" draggable="false"></div>
                         <p class="text-xs font-semibold" style="color: var(--text-main);">Serve Guests</p>
                     </div>
                 </div>
-                    <p class="text-sm mt-2 font-medium" style="color: var(--text-main);">Tip: Balance your time between Sort, Cook, Serve, and Upgrades — neglecting any  one area makes it harder to keep guests happy.</p>
-                    <p class="text-sm mt-2 font-medium" style="color: var(--accent);"><i class="fa-solid fa-triangle-exclamation"></i> Don't let 5 guests leave angry!</p>
+                    <p class="text-sm mt-2 font-medium" style="color: var(--text-main);">Your first crate has everything for tacos. Cook a batch and the first guest will arrive.</p>
+                    <p class="text-sm mt-2 font-medium" style="color: var(--accent);"><img class="game-icon" src="assets/art/warning.webp" alt="" draggable="false"> Don't let 5 guests leave angry!</p>
             </div>
 
             <div class="flex justify-center gap-3 mb-4">
                 <p class="text-base">Your High Score: <span id="high-score-modal" class="font-bold" style="color: var(--accent);">0</span></p>
             </div>
             
-            <button id="view-leaderboard-btn" class="btn-secondary"><i class="fa-solid fa-trophy" style="color: #eab308;"></i> View Leaderboard</button>
+            <button id="view-leaderboard-btn" class="btn-secondary"><img class="game-icon" src="assets/art/trophy.webp" alt="" draggable="false"> View Leaderboard</button>
             
             <div class="mt-4 pt-4 border-t border-gray-200">
                 <p class="text-sm" style="color: var(--text-light);">Inspired by <strong style="color: var(--primary);">Hope's Corner</strong> in Mountain View, CA</p>
                 <p class="text-sm mt-1">
-                    <a href="https://www.hopes-corner.org/" target="_blank" class="font-semibold hover:underline" style="color: var(--primary);"><i class="fa-solid fa-globe"></i> Learn more about their mission</a>
+                    <a href="https://www.hopes-corner.org/" target="_blank" class="font-semibold hover:underline" style="color: var(--primary);"><img class="game-icon" src="assets/art/globe.webp" alt="" draggable="false"> Learn more about their mission</a>
                     <span class="mx-2">|</span>
-                    <a href="https://www.hopes-corner.org/information-volunteers" target="_blank" class="font-semibold hover:underline" style="color: #6d28d9;"><i class="fa-solid fa-heart" style="color: #8b5cf6;"></i> Volunteer with them!</a>
+                    <a href="https://www.hopes-corner.org/information-volunteers" target="_blank" class="font-semibold hover:underline" style="color: #6d28d9;"><img class="game-icon" src="assets/art/heart.webp" alt="" draggable="false"> Volunteer with them!</a>
                 </p>
             </div>
             </div>
@@ -338,11 +352,11 @@
                 </div>
             </div>
 
-            <p id="new-high-score-msg" class="text-xl font-semibold hidden mb-3" style="color: var(--primary);"><i class="fa-solid fa-party-horn" style="color: #eab308;"></i> New High Score!</p>
+            <p id="new-high-score-msg" class="text-xl font-semibold hidden mb-3" style="color: var(--primary);"><img class="game-icon" src="assets/art/party.webp" alt="" draggable="false"> New High Score!</p>
 
             <!-- Hope's Corner Impact Section -->
             <div class="mb-4 p-4 rounded-lg text-left" style="background: linear-gradient(135deg, rgba(109, 40, 217, 0.1) 0%, rgba(79, 70, 229, 0.1) 100%); border: 2px solid rgba(109, 40, 217, 0.3);">
-                <h3 class="text-lg font-bold mb-2 text-center" style="color: #6d28d9;"><i class="fa-solid fa-heart" style="color: #8b5cf6;"></i> Make a Real Impact!</h3>
+                <h3 class="text-lg font-bold mb-2 text-center" style="color: #6d28d9;"><img class="game-icon" src="assets/art/heart.webp" alt="" draggable="false"> Make a Real Impact!</h3>
                 <p class="text-sm mb-3" style="color: var(--text-main);">You just experienced a glimpse of what volunteers at <strong>Hope's Corner</strong> do every week! Since 2015, they've been serving hot meals and providing essential services to those in need in Mountain View, CA.</p>
                 <div class="grid grid-cols-3 gap-2 text-center mb-3">
                     <div class="p-2 rounded" style="background: rgba(255,255,255,0.7);">
@@ -362,32 +376,32 @@
                     <a href="https://www.hopes-corner.org/information-volunteers" target="_blank" 
                        class="inline-block px-4 py-2 rounded-lg font-bold text-white transition-all hover:scale-105"
                        style="background: linear-gradient(90deg, #6d28d9, #4f46e5);">
-                        <i class="fa-solid fa-hand-holding-heart"></i> Become a Volunteer
+                        <img class="game-icon" src="assets/art/help.webp" alt="" draggable="false"> Become a Volunteer
                     </a>
                 </div>
             </div>
 
             <div id="leaderboard-form" class="mt-3 p-3 rounded-lg" style="background: rgba(132, 204, 22, 0.1); border: 1px solid rgba(132, 204, 22, 0.3);">
-                <p class="mb-2 font-semibold" style="color: var(--primary-dark);"><i class="fa-solid fa-trophy" style="color: #eab308;"></i> Enter your name for the leaderboard!</p>
+                <p class="mb-2 font-semibold" style="color: var(--primary-dark);"><img class="game-icon" src="assets/art/trophy.webp" alt="" draggable="false"> Enter your name for the leaderboard!</p>
                 <input type="text" id="player-name-input" placeholder="Your name"
                     class="w-full p-2 border-2 rounded-lg mb-2 text-center font-medium" style="border-color: var(--primary);">
                 <button id="submit-score-btn" class="btn-primary w-full">Submit Score</button>
             </div>
 
             <div id="game-over-actions" class="hidden mt-4">
-                <button id="restart-game-btn" class="btn-primary"><i class="fa-solid fa-rotate-right"></i> Play Again</button>
-                <button id="share-score-btn" class="btn-secondary mt-2"><i class="fa-solid fa-share-from-square"></i> Share Score</button>
+                <button id="restart-game-btn" class="btn-primary"><img class="game-icon" src="assets/art/restart.webp" alt="" draggable="false"> Play Again</button>
+                <button id="share-score-btn" class="btn-secondary mt-2"><img class="game-icon" src="assets/art/share.webp" alt="" draggable="false"> Share Score</button>
             </div>
 
             <div class="mt-4 pt-3 border-t border-gray-200 text-center">
                 <a href="https://www.hopes-corner.org/" target="_blank" class="text-sm font-semibold hover:underline" style="color: var(--primary);">
-                    <i class="fa-solid fa-globe"></i> Visit Hope's Corner Website
+                    <img class="game-icon" src="assets/art/globe.webp" alt="" draggable="false"> Visit Hope's Corner Website
                 </a>
             </div>
         </div>
 
         <div id="achievement-modal" class="modal hidden">
-            <div class="achievement-icon text-5xl mb-2"><i class="fa-solid fa-trophy" style="color: #eab308;"></i></div>
+            <div id="achievement-modal-art" class="achievement-icon text-5xl mb-2"><img class="game-icon" src="assets/art/trophy.webp" alt="" draggable="false"></div>
             <h2 class="text-2xl font-bold mb-2" style="color: var(--primary);">Achievement Unlocked!</h2>
             <h3 id="achievement-modal-title" class="text-xl font-semibold mb-4" style="color: var(--text-main);"></h3>
             <p id="achievement-modal-desc" class="mb-6" style="color: var(--text-light);"></p>
@@ -397,7 +411,7 @@
         </div>
 
         <div id="level-up-modal" class="modal hidden">
-            <div class="text-5xl mb-2"><i class="fa-solid fa-champagne-glasses" style="color: #eab308;"></i></div>
+            <div class="text-5xl mb-2"><img class="game-icon" src="assets/art/party.webp" alt="" draggable="false"></div>
             <h2 class="text-2xl font-bold mb-2" style="color: var(--primary);">Level Up!</h2>
             <h3 id="level-up-title" class="text-xl font-semibold mb-4" style="color: var(--text-main);">Your kitchen is
                 now level 2!</h3>
@@ -407,20 +421,20 @@
         </div>
 
         <div id="recipe-unlock-modal" class="modal hidden">
-            <div class="text-5xl mb-2"><i class="fa-solid fa-fire-burner" style="color: #f97316;"></i></div>
+            <div class="text-5xl mb-2"><img class="game-icon" src="assets/art/pot.webp" alt="" draggable="false"></div>
             <h2 class="text-2xl font-bold mb-2" style="color: var(--primary);">New Recipe Unlocked!</h2>
             <div id="new-recipe-display" class="recipe-card-new mb-6">
                 <div class="recipe-banner"></div>
-                <div class="recipe-icon" id="recipe-unlock-emoji">🍜</div>
+                <div class="recipe-icon" id="recipe-unlock-art"></div>
                 <div class="recipe-body">
                     <div class="recipe-heading">
                         <h3 id="recipe-unlock-name" class="recipe-name">Chicken Noodle Soup</h3>
                         <span id="recipe-unlock-servings" class="recipe-servings">4 servings</span>
                     </div>
                     <div class="recipe-ingredients" id="recipe-unlock-ingredients">
-                        <span class="recipe-ingredient"><i class="fa-solid fa-drumstick-bite" style="color: #ef4444;"></i> x1</span>
-                        <span class="recipe-ingredient"><i class="fa-solid fa-leaf" style="color: #22c55e;"></i> x1</span>
-                        <span class="recipe-ingredient"><i class="fa-solid fa-bread-slice" style="color: #eab308;"></i> x2</span>
+                        <span class="recipe-ingredient"><img class="game-icon" src="assets/art/protein-bin.webp" alt="" draggable="false"> x1</span>
+                        <span class="recipe-ingredient"><img class="game-icon" src="assets/art/veg-bin.webp" alt="" draggable="false"> x1</span>
+                        <span class="recipe-ingredient"><img class="game-icon" src="assets/art/carbs-bin.webp" alt="" draggable="false"> x2</span>
                     </div>
                     <div class="recipe-stats">
                         <span>Cook time: <span id="recipe-unlock-time">10s</span></span>
@@ -433,12 +447,12 @@
         
         <div id="quick-tour-modal" class="modal hidden">
             <div class="text-center p-4 md:p-6">
-                <div id="tour-emoji" class="text-5xl md:text-6xl mb-3"><i class="fa-solid fa-box" style="color: #84cc16;"></i></div>
+                <div id="tour-art" class="text-5xl md:text-6xl mb-3"><img class="game-icon" src="assets/art/crate.webp" alt="" draggable="false"></div>
                 <h2 id="tour-title" class="text-xl md:text-2xl font-bold mb-2" style="color: var(--primary);">Quick Tour</h2>
                 <p id="tour-desc" class="text-sm md:text-base mb-4" style="color: var(--text-main);">This quick tour will highlight the main gameplay areas: Sort, Cook, Serve, and Upgrades.</p>
                 <div class="flex gap-2 items-center justify-center flex-col md:flex-row">
-                    <button id="tour-prev" class="btn-secondary px-4 py-3 w-full md:w-auto"><i class="fa-solid fa-chevron-left"></i> Prev</button>
-                    <button id="tour-next" class="btn-primary px-4 py-3 w-full md:w-auto">Next <i class="fa-solid fa-chevron-right"></i></button>
+                    <button id="tour-prev" class="btn-secondary px-4 py-3 w-full md:w-auto"><span aria-hidden="true">‹</span> Prev</button>
+                    <button id="tour-next" class="btn-primary px-4 py-3 w-full md:w-auto">Next <span aria-hidden="true">›</span></button>
                     <button id="tour-skip" class="btn-secondary px-4 py-3 w-full md:w-auto">Skip</button>
                 </div>
                 <div class="mt-3 text-sm text-center">
@@ -503,7 +517,7 @@
             const levelUpDesc = document.getElementById('level-up-desc');
             const closeLevelUpBtn = document.getElementById('close-level-up-btn');
             const recipeUnlockModal = document.getElementById('recipe-unlock-modal');
-            const recipeUnlockEmoji = document.getElementById('recipe-unlock-emoji');
+            const recipeUnlockArt = document.getElementById('recipe-unlock-art');
             const recipeUnlockName = document.getElementById('recipe-unlock-name');
             const recipeUnlockServings = document.getElementById('recipe-unlock-servings');
             const recipeUnlockIngredients = document.getElementById('recipe-unlock-ingredients');
@@ -539,83 +553,93 @@
             let selectedDonationForSort = null;
 
             const MASTER_RECIPE_LIST = [
-                { id: 'recipe-0', name: 'Tacos', emoji: '🌮', ingredients: { protein: 2, veg: 1, carbs: 1 }, cookTime: 8000, servings: 3, pointsPerServing: 3 },
-                { id: 'recipe-1', name: 'Fried Chicken', emoji: '🍗', ingredients: { protein: 2, carbs: 2 }, cookTime: 10000, servings: 4, pointsPerServing: 3 },
-                { id: 'recipe-2', name: 'Shepherd\'s Pie', emoji: '🥧', ingredients: { protein: 2, veg: 2, carbs: 1 }, cookTime: 12000, servings: 5, pointsPerServing: 4 },
-                { id: 'recipe-3', name: 'Chicken Noodle Soup', emoji: '🍜', ingredients: { protein: 1, veg: 1, carbs: 2 }, cookTime: 9000, servings: 4, pointsPerServing: 3 },
-                { id: 'recipe-4', name: 'Vegetable Chili', emoji: '🌶️', ingredients: { protein: 1, veg: 3, carbs: 0 }, cookTime: 11000, servings: 4, pointsPerServing: 3 },
-                { id: 'recipe-5', name: 'Mac & Cheese', emoji: '🧀', ingredients: { protein: 0, veg: 0, carbs: 3 }, cookTime: 7000, servings: 4, pointsPerServing: 2 },
-                { id: 'recipe-6', name: 'Veggie Burritos', emoji: '🌯', ingredients: { protein: 0, veg: 2, carbs: 2 }, cookTime: 9000, servings: 3, pointsPerServing: 3 },
-                { id: 'recipe-7', name: 'Italian Meatloaf', emoji: '🍞', ingredients: { protein: 3, veg: 1, carbs: 1 }, cookTime: 14000, servings: 6, pointsPerServing: 4 },
-                { id: 'recipe-8', name: 'Cheese Quesadillas', emoji: '🧀', ingredients: { protein: 0, carbs: 2 }, cookTime: 6000, servings: 2, pointsPerServing: 2 },
-                { id: 'recipe-9', name: 'Seafood Gumbo', emoji: '🍲', ingredients: { protein: 2, veg: 2, carbs: 1 }, cookTime: 16000, servings: 5, pointsPerServing: 5 },
-                { id: 'recipe-10', name: 'BBQ Pulled Pork', emoji: '🐷', ingredients: { protein: 3, carbs: 1 }, cookTime: 15000, servings: 5, pointsPerServing: 4 },
-                { id: 'recipe-11', name: 'Cornbread', emoji: '🌽', ingredients: { carbs: 2 }, cookTime: 5000, servings: 4, pointsPerServing: 2 },
-                { id: 'recipe-12', name: 'Vegetable Curry', emoji: '🍛', ingredients: { veg: 3, carbs: 1 }, cookTime: 12000, servings: 4, pointsPerServing: 3 },
-                { id: 'recipe-13', name: 'Fruit Salad', emoji: '🍎', ingredients: { veg: 4 }, cookTime: 4000, servings: 5, pointsPerServing: 2 },
-                { id: 'recipe-14', name: 'Lasagna', emoji: '🍝', ingredients: { protein: 2, veg: 1, carbs: 2 }, cookTime: 18000, servings: 6, pointsPerServing: 5 },
-                { id: 'recipe-15', name: 'Turkey Sandwiches', emoji: '🥪', ingredients: { protein: 1, veg: 1, carbs: 2 }, cookTime: 6000, servings: 4, pointsPerServing: 3 }
+                { id: 'recipe-0', name: 'Tacos', art: 'tacos', ingredients: { protein: 2, veg: 1, carbs: 1 }, cookTime: 5000, servings: 3, pointsPerServing: 3 },
+                { id: 'recipe-1', name: 'Fried Chicken', art: 'fried-chicken', ingredients: { protein: 2, carbs: 2 }, cookTime: 10000, servings: 4, pointsPerServing: 3 },
+                { id: 'recipe-2', name: 'Shepherd\'s Pie', art: 'shepherds-pie', ingredients: { protein: 2, veg: 2, carbs: 1 }, cookTime: 12000, servings: 5, pointsPerServing: 4 },
+                { id: 'recipe-3', name: 'Chicken Noodle Soup', art: 'chicken-noodle-soup', ingredients: { protein: 1, veg: 1, carbs: 2 }, cookTime: 9000, servings: 4, pointsPerServing: 3 },
+                { id: 'recipe-4', name: 'Vegetable Chili', art: 'vegetable-chili', ingredients: { protein: 1, veg: 3, carbs: 0 }, cookTime: 11000, servings: 4, pointsPerServing: 3 },
+                { id: 'recipe-5', name: 'Mac & Cheese', art: 'mac-and-cheese', ingredients: { protein: 0, veg: 0, carbs: 3 }, cookTime: 7000, servings: 4, pointsPerServing: 2 },
+                { id: 'recipe-6', name: 'Veggie Burritos', art: 'veggie-burritos', ingredients: { protein: 0, veg: 2, carbs: 2 }, cookTime: 9000, servings: 3, pointsPerServing: 3 },
+                { id: 'recipe-7', name: 'Italian Meatloaf', art: 'italian-meatloaf', ingredients: { protein: 3, veg: 1, carbs: 1 }, cookTime: 14000, servings: 6, pointsPerServing: 4 },
+                { id: 'recipe-8', name: 'Cheese Quesadillas', art: 'cheese-quesadillas', ingredients: { protein: 0, carbs: 2 }, cookTime: 6000, servings: 2, pointsPerServing: 2 },
+                { id: 'recipe-9', name: 'Seafood Gumbo', art: 'seafood-gumbo', ingredients: { protein: 2, veg: 2, carbs: 1 }, cookTime: 16000, servings: 5, pointsPerServing: 5 },
+                { id: 'recipe-10', name: 'BBQ Pulled Pork', art: 'pulled-pork', ingredients: { protein: 3, carbs: 1 }, cookTime: 15000, servings: 5, pointsPerServing: 4 },
+                { id: 'recipe-11', name: 'Cornbread', art: 'cornbread', ingredients: { carbs: 2 }, cookTime: 5000, servings: 4, pointsPerServing: 2 },
+                { id: 'recipe-12', name: 'Vegetable Curry', art: 'vegetable-curry', ingredients: { veg: 3, carbs: 1 }, cookTime: 12000, servings: 4, pointsPerServing: 3 },
+                { id: 'recipe-13', name: 'Fruit Salad', art: 'fruit-salad', ingredients: { veg: 4 }, cookTime: 4000, servings: 5, pointsPerServing: 2 },
+                { id: 'recipe-14', name: 'Lasagna', art: 'lasagna', ingredients: { protein: 2, veg: 1, carbs: 2 }, cookTime: 18000, servings: 6, pointsPerServing: 5 },
+                { id: 'recipe-15', name: 'Turkey Sandwiches', art: 'turkey-sandwiches', ingredients: { protein: 1, veg: 1, carbs: 2 }, cookTime: 6000, servings: 4, pointsPerServing: 3 }
             ];
 
 
             const DAILY_EVENTS = [
-                { description: "Second Harvest of Silicon Valley have donated a lot of fresh veggies!", effect: { type: 'donation_multiplier', item: 'veg', modifier: 2 }, icon: '🥦' },
-                { description: "The kitchen's oven is running extra hot today! Cooking is faster.", effect: { type: 'cooking_speed', modifier: 0.8 }, icon: '🔥' },
-                { description: "It's a chilly day, everyone is craving something warm. Guests are more patient.", effect: { type: 'guest_patience', modifier: 1.25 }, icon: '❄️' },
-                { description: "A generous Taqueria sponsored today's Tacos! Bonus points for serving them.", effect: { type: 'score_bonus', item: 'recipe-0', modifier: 5 }, icon: '🌮' },
-                { description: "A calm, quiet day. Business as usual.", effect: { type: 'nothing' }, icon: '☺️' },
-                { description: "Manresa bread donated fresh baked goods! Extra carbs today.", effect: { type: 'donation_multiplier', item: 'carbs', modifier: 2 }, icon: '🍞' },
-                { description: "Local butcher donated extra protein! Double protein in donations.", effect: { type: 'donation_multiplier', item: 'protein', modifier: 2 }, icon: '🥩' },
-                { description: "Community support day! All meals give +3 bonus points.", effect: { type: 'score_bonus', item: 'all', modifier: 3 }, icon: '💝' },
-                { description: "Rainy day rush: Guests arrive faster but are more understanding.", effect: { type: 'guest_arrival_speed', modifier: 1.5 }, icon: '🌧️' },
-                { description: "Volunteer shortage: Cooking is slower today.", effect: { type: 'cooking_speed', modifier: 1.3 }, icon: '⏱️' },
-                { description: "4th of July holiday! More guests, but they're extra patient.", effect: { type: 'guest_patience', modifier: 1.5 }, icon: '🎆' },
-                { description: "Brief power outage! No new meals can be cooked for a short time.", effect: { type: 'no_cooking', duration: 10000 }, icon: '⚡' },
-                { description: "Thanksgiving season! Guests are extra grateful.", effect: { type: 'guest_satisfaction', modifier: 1.2 }, icon: '🙏' },
-                { description: "Local restaurant partnering today! Cooking quality improved.", effect: { type: 'score_bonus', item: 'all', modifier: 2 }, icon: '👨‍🍳' },
-                { description: "Community drive! Bonus coins from each satisfied guest.", effect: { type: 'coin_bonus', modifier: 2 }, icon: '🪙' },
+                { description: "Second Harvest of Silicon Valley donated extra fresh veggies!", effect: { type: 'donation_multiplier', item: 'veg', modifier: 2 }, icon: 'cabbage' },
+                { description: "The kitchen's oven is running extra hot today! Cooking is faster.", effect: { type: 'cooking_speed', modifier: 0.8 }, icon: 'mitt' },
+                { description: "It's a chilly day, everyone is craving something warm. Guests are more patient.", effect: { type: 'guest_patience', modifier: 1.25 }, icon: 'snow' },
+                { description: "A generous Taqueria sponsored today's Tacos! Bonus points for serving them.", effect: { type: 'score_bonus', item: 'recipe-0', modifier: 5 }, icon: 'tacos' },
+                { description: "A calm, quiet day. Business as usual.", effect: { type: 'nothing' }, icon: 'heart' },
+                { description: "Manresa bread donated fresh baked goods! Extra carbs today.", effect: { type: 'donation_multiplier', item: 'carbs', modifier: 2 }, icon: 'bread' },
+                { description: "A local donor sent extra protein for every crate.", effect: { type: 'donation_multiplier', item: 'protein', modifier: 2 }, icon: 'beans' },
+                { description: "Community support day! All meals give +3 bonus points.", effect: { type: 'score_bonus', item: 'all', modifier: 3 }, icon: 'heart' },
+                { description: "Rainy day rush! Guests arrive faster.", effect: { type: 'guest_arrival_speed', modifier: 1.5 }, icon: 'rain' },
+                { description: "Volunteer shortage: Cooking is slower today.", effect: { type: 'cooking_speed', modifier: 1.3 }, icon: 'stopwatch' },
+                { description: "4th of July holiday! Guests are extra patient.", effect: { type: 'guest_patience', modifier: 1.5 }, icon: 'fireworks' },
+                { description: "Brief power outage! No new meals can be cooked for a short time.", effect: { type: 'no_cooking', duration: 10000 }, icon: 'bolt' },
+                { description: "Thanksgiving season! Guests are extra grateful.", effect: { type: 'guest_satisfaction', modifier: 1.2 }, icon: 'heart' },
+                { description: "Local restaurant partnering today! Cooking quality improved.", effect: { type: 'score_bonus', item: 'all', modifier: 2 }, icon: 'volunteer' },
+                { description: "Community drive! Bonus coins from each satisfied guest.", effect: { type: 'coin_bonus', modifier: 2 }, icon: 'coin' },
                 {
                     description: "Corporate volunteers! Sorting is faster today.",
                     effect: {
                         type: 'sorting_bonus',
                         modifier: 1.5
                     },
-                    icon: '🎒'
+                    icon: 'volunteer'
                 }
             ];
 
             const ACHIEVEMENTS = [
-                { id: 'first-day', title: 'First Day Complete', description: 'Survived your first day at Hope\'s Corner', reward: 50, icon: '🌟', unlocked: false, condition: state => state.day >= 2 },
-                { id: 'master-chef', title: 'Master Chef', description: 'Cook 50 meals for the community', reward: 100, icon: '👨‍🍳', unlocked: false, condition: state => state.stats.mealsPrepared >= 50 },
-                { id: 'perfect-service', title: 'Perfect Service', description: 'Serve 10 guests with 100% satisfaction', reward: 75, icon: '💯', unlocked: false, condition: state => state.stats.perfectServings >= 10 },
-                { id: 'donation-king', title: 'Donation King', description: 'Sort 100 donated items correctly', reward: 75, icon: '📦', unlocked: false, condition: state => state.stats.itemsSorted >= 100 },
-                { id: 'feeding-frenzy', title: 'Feeding Frenzy', description: 'Serve 25 guests in a single day', reward: 125, icon: '🍽️', unlocked: false, condition: state => state.stats.guestsServedToday >= 25 },
-                { id: 'ingredient-master', title: 'Ingredient Master', description: 'Collect 50 of each ingredient type', reward: 100, icon: '🥘', unlocked: false, condition: state => (state.totalInventory.veg >= 50 && state.totalInventory.protein >= 50 && state.totalInventory.carbs >= 50) },
-                { id: 'recipe-collector', title: 'Recipe Collector', description: 'Unlock all available recipes', reward: 150, icon: '📖', unlocked: false, condition: state => state.knownRecipes.length >= MASTER_RECIPE_LIST.length },
-                { id: 'overwhelmed', title: 'Crisis Manager', description: 'Recover from 90% overwhelm without game over', reward: 100, icon: '😰', unlocked: false, condition: state => state.stats.recoveredFromHighOverwhelm },
-                { id: 'marathon', title: 'Marathon Server', description: 'Complete 10 days without a game over', reward: 200, icon: '🏃', unlocked: false, condition: state => state.day >= 10 },
-                { id: 'tycoon', title: 'Donation Tycoon', description: 'Reach 500 coins', reward: 100, icon: '💰', unlocked: false, condition: state => state.coins >= 500 }
+                { id: 'first-day', title: 'First Day Complete', description: 'Survived your first day at Hope\'s Corner', reward: 50, icon: 'award', unlocked: false, condition: state => state.day >= 2 },
+                { id: 'master-chef', title: 'Master Chef', description: 'Cook 50 meals for the community', reward: 100, icon: 'volunteer', unlocked: false, condition: state => state.stats.mealsPrepared >= 50 },
+                { id: 'perfect-service', title: 'Perfect Service', description: 'Serve 10 guests with 100% satisfaction', reward: 75, icon: 'check', unlocked: false, condition: state => state.stats.perfectServings >= 10 },
+                { id: 'donation-king', title: 'Donation King', description: 'Sort 100 donated items correctly', reward: 75, icon: 'crate', unlocked: false, condition: state => state.stats.itemsSorted >= 100 },
+                { id: 'feeding-frenzy', title: 'Feeding Frenzy', description: 'Serve 25 guests in a single day', reward: 125, icon: 'plate', unlocked: false, condition: state => state.stats.guestsServedToday >= 25 },
+                { id: 'ingredient-master', title: 'Ingredient Master', description: 'Collect 50 of each ingredient type', reward: 100, icon: 'pot', unlocked: false, condition: state => (state.totalInventory.veg >= 50 && state.totalInventory.protein >= 50 && state.totalInventory.carbs >= 50) },
+                { id: 'recipe-collector', title: 'Recipe Collector', description: 'Unlock all available recipes', reward: 150, icon: 'cookbook', unlocked: false, condition: state => state.knownRecipes.length >= MASTER_RECIPE_LIST.length },
+                { id: 'overwhelmed', title: 'Crisis Manager', description: 'Recover from 90% overwhelm without game over', reward: 100, icon: 'warning', unlocked: false, condition: state => state.stats.recoveredFromHighOverwhelm },
+                { id: 'marathon', title: 'Marathon Server', description: 'Complete 10 days without a game over', reward: 200, icon: 'stopwatch', unlocked: false, condition: state => state.day >= 10 },
+                { id: 'tycoon', title: 'Donation Tycoon', description: 'Reach 500 coins', reward: 100, icon: 'coin', unlocked: false, condition: state => state.coins >= 500 }
             ];
 
-            const TUTORIALS = [
-                { id: 'sorting', message: "Drag and drop a donation item into the matching storage bin to sort it.", target: '#sorting-area', position: 'bottom', shown: false },
-                { id: 'cooking', message: "Use your ingredients to cook meals. Different recipes need different ingredients", target: '#recipe-area', position: 'left', shown: false },
-                { id: 'serving', message: "Click a meal, then click on a guest to serve them. Happy guests give more points!", target: '#ready-meals-area', position: 'right', shown: false },
-                { id: 'upgrades', message: "Use coins to buy upgrades that make your job easier", target: '#sorting-upgrade-area', position: 'top', shown: false }
+            const SORT_PROMPT = 'Pick an ingredient, then choose the highlighted bin.';
+            const SERVE_PROMPT = 'Tap a guest to serve the first ready meal. Pick a dish to serve it instead.';
+            const GUESTS = [
+                { name: 'Mei', portrait: 'mei' },
+                { name: 'Isaiah', portrait: 'isaiah' },
+                { name: 'Helen', portrait: 'helen' },
+                { name: 'Mateo', portrait: 'mateo' },
+                { name: 'Nia', portrait: 'nia' },
+                { name: 'Kenji', portrait: 'kenji' }
             ];
+            const STARTER_CRATE = ['protein', 'veg', 'carbs', 'protein'];
+
+            function art(name, className = '') {
+                return `<img class="game-icon ${className}" src="assets/art/${name}.webp" alt="" draggable="false">`;
+            }
+
             const TOUR_STEPS = [
-                { icon: 'fa-solid fa-box', iconColor: '#84cc16', title: 'Accept & Sort Donations', desc: 'Accept incoming donations and sort them into the correct storage bins so your kitchen has the ingredients to cook.' },
-                { icon: 'fa-solid fa-fire-burner', iconColor: '#f97316', title: 'Cook Meals', desc: 'Use sorted ingredients to cook meals. Different recipes use different ingredients and take varied times.' },
-                { icon: 'fa-solid fa-utensils', iconColor: '#8b5cf6', title: 'Serve Guests', desc: 'Serve ready meals to guests. Happy guests give more points and coins.' },
-                { icon: 'fa-solid fa-gear', iconColor: '#6366f1', title: 'Buy Upgrades', desc: 'Spend coins to buy upgrades like faster cooking, extra slots, and auto-sort to scale up your operation.' }
+                { icon: 'crate', title: 'Accept & Sort Donations', desc: 'Open your first crate. Pick an ingredient and tap the highlighted bin.' },
+                { icon: 'pot', title: 'Cook Meals', desc: 'Use sorted ingredients to cook meals. Different recipes use different ingredients and take varied times.' },
+                { icon: 'plate', title: 'Serve Guests', desc: 'Tap a guest to serve a ready meal. Serve them quickly to earn more points.' },
+                { icon: 'gear', title: 'Buy Upgrades', desc: 'Spend coins to buy upgrades like faster cooking, extra slots, and auto-sort to scale up your operation.' }
             ];
             const CONFIG = {
                 MAX_OVERWHELM: 100, MAX_ANGRY_GUESTS: 5, OVERWHELM_PER_GUEST_TICK: 0.1, SCORE_PER_GUEST: 10,
-                DONATION_SIZE: 3, MAX_COOKING_SLOTS: 3, COIN_PER_GUEST: 5,
+                MAX_DONATION_ITEMS: 8, BASE_COOKING_SLOTS: 3, COIN_PER_GUEST: 5,
                 ITEM_TYPES: {
-                    veg: { icon: 'fa-solid fa-leaf', iconColor: '#22c55e', color: 'bg-green-200' },
-                    protein: { icon: 'fa-solid fa-drumstick-bite', iconColor: '#ef4444', color: 'bg-red-200' },
-                    carbs: { icon: 'fa-solid fa-bread-slice', iconColor: '#eab308', color: 'bg-yellow-200' }
+                    veg: { label: 'Produce', icon: 'veg-bin', foods: ['carrot', 'cabbage', 'eggplant', 'strawberry', 'bananas', 'apple'] },
+                    protein: { label: 'Protein', icon: 'protein-bin', foods: ['beans', 'egg', 'tofu', 'cheese', 'milk'] },
+                    carbs: { label: 'Carbs', icon: 'carbs-bin', foods: ['bread', 'rice'] }
                 }
             };
 
@@ -741,7 +765,7 @@
                     score: 0, day: 1, overwhelm: 0, hungryGuestsLeft: 0, coins: 0,
                     inventory: { veg: 0, protein: 0, carbs: 0 },
                     totalInventory: { veg: 0, protein: 0, carbs: 0 },
-                    donationsInSorting: 0, guests: [], cooking: [], readyMeals: [], gameRunning: false,
+                    cratesOpened: 0, donationTimer: null, guestArrivalTimer: null, guests: [], cooking: [], readyMeals: [], gameRunning: false,
                     nextGuestId: 0, nextDonationId: 0, nextMealId: 0, selectedMealId: null,
                     dayDuration: 60000, dayTimer: null,
                     knownRecipes: MASTER_RECIPE_LIST.slice(0, 4),
@@ -761,7 +785,6 @@
                         guestsServed: 0, guestsServedToday: 0, mealsPrepared: 0, itemsSorted: 0, totalSatisfaction: 0, perfectServings: 0, recoveredFromHighOverwhelm: false, highestDayReached: 1
                     },
                     achievements: ACHIEVEMENTS.map(a => ({ ...a })),
-                    tutorials: TUTORIALS.map(t => ({ ...t })),
                     autoSortTimer: null
                 };
             }
@@ -770,7 +793,9 @@
                 if (!gameState.gameRunning) return;
                 gameState.gameRunning = false;
                 clearInterval(gameLoopInterval);
-                if (gameState.dayTimer) clearInterval(gameState.dayTimer);
+                clearInterval(gameState.dayTimer);
+                clearTimeout(gameState.donationTimer);
+                clearTimeout(gameState.guestArrivalTimer);
                 if (gameState.autoSortTimer) clearInterval(gameState.autoSortTimer);
                 gameState.guests.forEach(g => clearInterval(g.timer));
                 gameState.cooking.forEach(c => clearInterval(c.timerId));
@@ -837,7 +862,7 @@
                 if (gameState.guests && gameState.guests.length > 0) {
                     gameState.guests.forEach(g => { satisfactionPenalty += (1 - g.satisfaction) * CONFIG.OVERWHELM_PER_GUEST_TICK; });
                 }
-                if (sortingAreaEl.children.length > 8) satisfactionPenalty += 0.2;
+                if (gameState.day >= 3 && sortingAreaEl.children.length === CONFIG.MAX_DONATION_ITEMS) satisfactionPenalty += 0.08 / gameState.stationLevels.sorting;
 
                 gameState.overwhelm = Math.min(CONFIG.MAX_OVERWHELM, gameState.overwhelm + satisfactionPenalty);
                 gameState.overwhelm = Math.max(0, gameState.overwhelm - 0.05);
@@ -845,7 +870,6 @@
             }
 
             function startDayCycle() {
-                getDailyEvent(gameState.day);
                 gameState.dayTimer = setInterval(() => {
                     if (!gameState.gameRunning) { clearInterval(gameState.dayTimer); return; }
                     gameState.day++;
@@ -859,9 +883,8 @@
                     }
 
                     getDailyEvent(gameState.day);
+                    refreshDonationButton();
                     if (gameState.day > 1 && gameState.day % 2 === 0) learnNewRecipe();
-                    if (gameState.hasGuestsStarted) spawnGuest();
-                    if (gameState.day > 1) spawnDonation();
 
                     if (gameState.day === 3) levelUpStation('sorting');
                     if (gameState.day === 5) levelUpStation('kitchen');
@@ -883,15 +906,15 @@
 
                 switch (stationName) {
                     case 'sorting':
-                        levelUpDesc.textContent = "You can now sort items faster and have reduced overwhelm from unsorted donations.";
+                        levelUpDesc.textContent = "A full sorting tray adds less overwhelm.";
                         break;
                     case 'kitchen':
-                        levelUpDesc.textContent = "You can now cook meals faster and have a larger inventory capacity.";
-                        if (gameState.stationLevels.kitchen === 2) CONFIG.MAX_COOKING_SLOTS = 4;
+                        levelUpDesc.textContent = "You have one more cooking slot.";
+                        updateCookingSlotsUI();
+                        renderRecipes();
                         break;
                     case 'serving':
                         levelUpDesc.textContent = "Guests are more patient and give more points when satisfied.";
-                        CONFIG.SCORE_PER_GUEST = 10 + (gameState.stationLevels.serving - 1) * 5;
                         break;
                 }
                 showModal(levelUpModal);
@@ -905,7 +928,7 @@
                     gameState.knownRecipes.push(newRecipe);
                     renderRecipes();
                     gtag('event', 'learn_new_recipe', { recipe_name: newRecipe.name, day: gameState.day });
-                    recipeUnlockEmoji.textContent = newRecipe.emoji;
+                    recipeUnlockArt.innerHTML = art(newRecipe.art);
                     recipeUnlockName.textContent = newRecipe.name;
                     recipeUnlockServings.textContent = `${newRecipe.servings} servings`;
                     recipeUnlockIngredients.innerHTML = '';
@@ -913,7 +936,7 @@
                         if (amount > 0) {
                             const ingSpan = document.createElement('span');
                             ingSpan.className = 'recipe-ingredient';
-                            ingSpan.innerHTML = `<i class="${CONFIG.ITEM_TYPES[type].icon}" style="color: ${CONFIG.ITEM_TYPES[type].iconColor};"></i> x${amount}`;
+                            ingSpan.innerHTML = `${art(CONFIG.ITEM_TYPES[type].icon)} x${amount}`;
                             recipeUnlockIngredients.appendChild(ingSpan);
                         }
                     });
@@ -946,13 +969,16 @@
                     effectBadge.className = 'badge';
                     effectBadge.style.backgroundColor = 'rgba(132, 204, 22, 0.2)';
                     effectBadge.style.color = 'var(--primary)';
-                    effectBadge.textContent = icon;
+                    effectBadge.innerHTML = art(icon);
                     eventEffectsEl.appendChild(effectBadge);
                 }
 
                 switch (effect.type) {
                     case 'donation_multiplier':
                         gameState.eventModifiers.DONATION_MULTIPLIER = { ...{ veg: 1, protein: 1, carbs: 1 }, [effect.item]: effect.modifier || 2 };
+                        break;
+                    case 'guest_arrival_speed':
+                        gameState.eventModifiers.guest_arrival_speed = effect.modifier;
                         break;
                     case 'guest_patience':
                         gameState.eventModifiers.guest_patience = effect.modifier || 1.25;
@@ -983,7 +1009,8 @@
             function updateDayUI() { dayEl.textContent = gameState.day; }
             function updateAngryGuestsUI() { angryGuestsDisplay.textContent = `${gameState.hungryGuestsLeft} / ${CONFIG.MAX_ANGRY_GUESTS}`; }
             function updateInventoryUI() { Object.keys(storageCounts).forEach(type => { storageCounts[type].textContent = gameState.inventory[type]; }); }
-            function updateCookingSlotsUI() { cookingSlotsDisplay.textContent = `${gameState.cooking.length}/${CONFIG.MAX_COOKING_SLOTS} Slots`; }
+            function cookingCapacity() { return CONFIG.BASE_COOKING_SLOTS + gameState.upgrades.extraSlot.level + gameState.stationLevels.kitchen - 1; }
+            function updateCookingSlotsUI() { cookingSlotsDisplay.textContent = `${gameState.cooking.length}/${cookingCapacity()} Slots`; }
             function updateStatsUI() {
                 guestsServedToday.textContent = gameState.stats.guestsServedToday;
                 mealsPrepared.textContent = gameState.stats.mealsPrepared;
@@ -1001,14 +1028,16 @@
             function renderRecipes() {
                 recipeAreaEl.innerHTML = '';
                 gameState.knownRecipes.forEach(recipe => {
-                    const canCook = Object.keys(recipe.ingredients).every(ing => gameState.inventory[ing] >= recipe.ingredients[ing]) && gameState.cooking.length < CONFIG.MAX_COOKING_SLOTS;
+                    const missing = Object.entries(recipe.ingredients).filter(([type, amount]) => gameState.inventory[type] < amount);
+                    const slotsFull = gameState.cooking.length >= cookingCapacity();
+                    const canCook = missing.length === 0 && !slotsFull;
                     const cookingSpeedModifier = (gameState.eventModifiers.cooking_speed || 1) * (1 - (gameState.upgrades.fasterCooking.level * 0.1));
                     const cookTimeSec = Math.round((recipe.cookTime * cookingSpeedModifier) / 1000);
                     const recipeCard = document.createElement('div');
                     recipeCard.className = `recipe-card-new ${!canCook ? 'opacity-50' : ''}`;
                     recipeCard.innerHTML = `
                 <div class="recipe-banner"></div>
-                <div class="recipe-icon">${recipe.emoji}</div>
+                <div class="recipe-icon">${art(recipe.art)}</div>
                 <div class="recipe-body">
                     <div class="recipe-heading">
                         <h3 class="recipe-name">${recipe.name}</h3>
@@ -1016,13 +1045,16 @@
                     </div>
                     <div class="recipe-ingredients">
                         ${Object.entries(recipe.ingredients).map(([type, amount]) =>
-                        amount > 0 ? `<span class="recipe-ingredient ${gameState.inventory[type] >= amount ? '' : 'opacity-50'}"><i class="${CONFIG.ITEM_TYPES[type].icon}" style="color: ${CONFIG.ITEM_TYPES[type].iconColor};"></i> x${amount}</span>` : ''
+                        amount > 0 ? `<span class="recipe-ingredient ${gameState.inventory[type] >= amount ? 'stocked' : 'missing'}"
+                            title="${CONFIG.ITEM_TYPES[type].label}: ${gameState.inventory[type]} available, ${amount} needed">
+                            ${art(CONFIG.ITEM_TYPES[type].icon)} <span aria-label="${CONFIG.ITEM_TYPES[type].label}: ${gameState.inventory[type]} available, ${amount} needed">${Math.min(gameState.inventory[type], amount)}/${amount}</span>
+                        </span>` : ''
                     ).join('')}
                     </div>
                     <div class="recipe-stats">
                         <span>Cook time: ${cookTimeSec}s</span>
                         <button data-recipe-id="${recipe.id}" class="cook-btn btn-primary py-1 px-3 text-sm ${!canCook ? 'opacity-50 cursor-not-allowed' : ''}" ${!canCook ? 'disabled' : ''}>
-                            ${canCook ? 'Cook' : 'Needed'}
+                            ${canCook ? 'Cook' : slotsFull ? 'Slots full' : 'More food needed'}
                         </button>
                     </div>
                 </div>
@@ -1053,7 +1085,7 @@
                         button.classList.add('opacity-50', 'cursor-not-allowed');
                     } else {
                         const cost = config.cost * Math.pow(config.costMultiplier, config.level);
-                        button.textContent = `${cost} 🪙`;
+                        button.innerHTML = `${cost} ${art('coin')}`;
                         button.disabled = gameState.coins < cost;
                         button.classList.toggle('opacity-50', gameState.coins < cost);
                         button.classList.toggle('cursor-not-allowed', gameState.coins < cost);
@@ -1090,17 +1122,21 @@
                 modalOverlay.classList.add('hidden');
                 document.body.classList.remove('modal-open');
                 if (!soundsLoaded) loadSounds();
-                if (IS_MOBILE()) {
-                    sortInstructionTextEl.textContent = 'Tap a donation to select it, then tap the correct bin to sort it.';
-                } else {
-                    sortInstructionTextEl.textContent = 'Drag & drop donations into the correct bins.';
-                }
+                draggedItem = null;
+                setSortSelection(null);
+                storageBins.forEach(bin => bin.classList.remove('over'));
+                ['sorting', 'kitchen', 'serving'].forEach(name => {
+                    document.getElementById(`${name}-level`).textContent = 'Level 1';
+                });
+                instructionTextEl.textContent = SERVE_PROMPT;
+                eventEffectsEl.replaceChildren();
+                getDailyEvent(1);
                 gameLoopInterval = setInterval(gameLoop, 100);
-                startDayCycle();
-                spawnDonation();
+                activateStation('donations-station', false);
+                refreshDonationButton();
+                updateShiftGuide();
                 updateScoreUI(); updateCoinsUI(); updateDayUI(); updateAngryGuestsUI(); updateInventoryUI(); updateCookingSlotsUI(); updateStatsUI();
                 renderRecipes();
-                showTutorial('sorting');
                 setupAutoSort();
                 playSound('start');
                 // After starting, show a quick tour if the user hasn\'t opted out
@@ -1113,11 +1149,11 @@
 
             function renderQuickTourStep(index) {
                 const step = TOUR_STEPS[index];
-                document.getElementById('tour-emoji').innerHTML = `<i class="${step.icon}" style="color: ${step.iconColor};"></i>`;
+                document.getElementById('tour-art').innerHTML = art(step.icon);
                 document.getElementById('tour-title').textContent = step.title;
                 document.getElementById('tour-desc').textContent = step.desc;
                 document.getElementById('tour-prev').disabled = (index === 0);
-                document.getElementById('tour-next').innerHTML = (index === TOUR_STEPS.length - 1) ? 'Done' : 'Next <i class="fa-solid fa-chevron-right"></i>';
+                document.getElementById('tour-next').innerHTML = (index === TOUR_STEPS.length - 1) ? 'Done' : 'Next <span aria-hidden="true">›</span>';
                 document.getElementById('quick-tour-modal').dataset.step = index;
             }
 
@@ -1163,53 +1199,93 @@
             }
 
             function autoSort() {
-                const donationItems = Array.from(sortingAreaEl.querySelectorAll('.donation-item'));
-                if (donationItems.length > 0) {
-                    const randomItem = donationItems[Math.floor(Math.random() * donationItems.length)];
-                    const type = randomItem.dataset.type;
-                    createParticle(randomItem, '🤖');
-                    setTimeout(() => {
-                        if (!randomItem.parentElement) return;
-                        gameState.inventory[type]++;
-                        gameState.totalInventory[type]++;
-                        gameState.donationsInSorting--;
-                        gameState.stats.itemsSorted++;
-                        updateInventoryUI();
-                        renderRecipes();
-                        checkAchievements();
-                        randomItem.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
-                        randomItem.style.transform = 'scale(0)';
-                        randomItem.style.opacity = '0';
-                        setTimeout(() => { if (randomItem.parentElement) randomItem.remove(); }, 300);
-                        playSound('sort');
-                    }, 300);
+                const item = sortingAreaEl.querySelector('.donation-item');
+                if (item) sortDonation(item, item.dataset.type);
+            }
+
+            function setSortSelection(item) {
+                selectedDonationForSort?.classList.remove('selected');
+                selectedDonationForSort?.setAttribute('aria-pressed', 'false');
+                selectedDonationForSort = item;
+                item?.classList.add('selected');
+                item?.setAttribute('aria-pressed', 'true');
+                storageBins.forEach(bin => {
+                    bin.classList.toggle('can-drop', bin.dataset.type === item?.dataset.type);
+                });
+                sortInstructionTextEl.textContent = item
+                    ? `Put ${item.dataset.food} in ${CONFIG.ITEM_TYPES[item.dataset.type].label}.`
+                    : SORT_PROMPT;
+            }
+
+            function sortDonation(item, binType) {
+                if (!gameState.gameRunning || item.parentElement !== sortingAreaEl) return;
+                const type = item.dataset.type;
+                if (type !== binType) {
+                    setSortSelection(item);
+                    sortInstructionTextEl.textContent = `Try the highlighted ${CONFIG.ITEM_TYPES[type].label} bin for ${item.dataset.food}.`;
+                    playSound('error');
+                    return;
+                }
+
+                const keyboardFocus = document.activeElement === item || document.activeElement.classList.contains('storage-bin');
+                if (selectedDonationForSort === item) setSortSelection(null);
+                item.remove();
+                gameState.inventory[type]++;
+                gameState.totalInventory[type]++;
+                gameState.stats.itemsSorted++;
+                updateInventoryUI();
+                renderRecipes();
+                checkAchievements();
+                refreshDonationButton();
+                updateShiftGuide();
+                const bin = document.getElementById(`${type}-bin`);
+                createParticle(bin, 'check');
+                playSound('sort');
+                if (keyboardFocus) {
+                    (sortingAreaEl.querySelector('.donation-item') ||
+                        (acceptDonationBtn.disabled ? document.getElementById('shift-action') : acceptDonationBtn))
+                        .focus({ preventScroll: true });
                 }
             }
 
-            function createDonationItem(forcedType = null) {
-                if (sortingAreaEl.children.length >= 9) return;
-                gameState.donationsInSorting++;
-                const typeKeys = Object.keys(CONFIG.ITEM_TYPES);
-                const type = forcedType || typeKeys[Math.floor(Math.random() * typeKeys.length)];
-                const itemInfo = CONFIG.ITEM_TYPES[type];
-                const itemEl = document.createElement('div');
-                itemEl.id = `donation-${gameState.nextDonationId++}`;
-                itemEl.draggable = true;
-                const bgColorClass = itemInfo.color;
-                itemEl.className = `donation-item ${bgColorClass} font-bold`;
-                itemEl.innerHTML = `<i class="${itemInfo.icon}" style="color: ${itemInfo.iconColor};"></i>`;
-                itemEl.dataset.type = type;
-                sortingAreaEl.appendChild(itemEl);
-                if (gameState.donationsInSorting === 1) showTutorial('sorting');
+            function createDonationItem(type, fixedFood) {
+                const { label, foods } = CONFIG.ITEM_TYPES[type];
+                const food = fixedFood || foods[Math.floor(Math.random() * foods.length)];
+                const item = document.createElement('button');
+                item.type = 'button';
+                item.draggable = true;
+                item.className = 'donation-item';
+                item.dataset.type = type;
+                item.dataset.food = food;
+                item.setAttribute('aria-pressed', 'false');
+                item.innerHTML = `${art(food)}<strong>${food}</strong><span class="ingredient-tag">${label}</span>`;
+                sortingAreaEl.appendChild(item);
+            }
+
+            function nextCrateTypes() {
+                if (gameState.cratesOpened === 0) return STARTER_CRATE;
+
+                const extraType = Object.keys(gameState.eventModifiers.DONATION_MULTIPLIER || {})
+                    .find(type => gameState.eventModifiers.DONATION_MULTIPLIER[type] > 1);
+                return extraType ? [...STARTER_CRATE, extraType] : STARTER_CRATE;
+            }
+
+            function refreshDonationButton() {
+                const hasRoom = sortingAreaEl.children.length + nextCrateTypes().length <= CONFIG.MAX_DONATION_ITEMS;
+                acceptDonationBtn.disabled = Boolean(gameState.donationTimer) || !hasRoom;
+                const label = !hasRoom ? 'Clear some space' : gameState.donationTimer ? 'Crate on its way' : 'Accept Donation';
+                if (acceptDonationBtn.textContent.trim() !== label) {
+                    acceptDonationBtn.innerHTML = `${art('crate')} ${label}`;
+                }
             }
 
             function startCooking(recipe) {
-                if (gameState.cooking.length >= CONFIG.MAX_COOKING_SLOTS) return;
+                if (!gameState.gameRunning || gameState.cooking.length >= cookingCapacity() ||
+                    Object.entries(recipe.ingredients).some(([type, amount]) => gameState.inventory[type] < amount)) return;
                 gtag('event', 'cook_recipe', { recipe_name: recipe.name, day: gameState.day });
 
                 Object.entries(recipe.ingredients).forEach(([ing, amount]) => { gameState.inventory[ing] -= amount; });
                 updateInventoryUI();
-                renderRecipes();
 
                 const mealId = `cooking-${gameState.nextMealId++}`;
                 const cookingSpeedModifier = (gameState.eventModifiers.cooking_speed || 1) * (1 - (gameState.upgrades.fasterCooking.level * 0.1));
@@ -1219,7 +1295,7 @@
                 progressCard.className = 'bg-white rounded-lg p-3 shadow';
                 progressCard.innerHTML = `
             <div class="flex justify-between items-center mb-1 text-gray-800">
-                <span class="font-medium text-sm">${recipe.emoji} ${recipe.name}</span>
+                <span class="font-medium text-sm">${art(recipe.art)} ${recipe.name}</span>
                 <span class="text-xs cook-time-remaining">${Math.ceil(cookTime / 1000)}s</span>
             </div>
             <div class="progress-bar h-3 mt-1">
@@ -1253,36 +1329,41 @@
                         gameState.stats.mealsPrepared++;
                         checkAchievements();
                         updateCookingSlotsUI();
+                        renderRecipes();
                         updateStatsUI();
+                        updateShiftGuide();
                         playSound('meal-ready');
                     }
                 }, 100);
 
                 gameState.cooking.push({ id: mealId, recipe: recipe, timeLeft: cookTime, timerId: timerId });
                 updateCookingSlotsUI();
+                renderRecipes();
+                updateShiftGuide();
                 playSound('cook');
-                if (gameState.stats.mealsPrepared === 0) showTutorial('cooking');
             }
 
             function createReadyMeal(recipe) {
                 const mealId = `meal-${gameState.nextMealId++}`;
                 const newMeal = { id: mealId, recipe: recipe, servingsLeft: recipe.servings };
                 gameState.readyMeals.push(newMeal);
-                const mealEl = document.createElement('div');
+                const mealEl = document.createElement('button');
+                mealEl.type = 'button';
+                mealEl.setAttribute('aria-pressed', 'false');
                 mealEl.id = mealId;
                 mealEl.className = 'meal';
                 mealEl.style.backgroundColor = 'rgba(132, 204, 22, 0.2)';
                 mealEl.style.borderColor = 'rgba(132, 204, 22, 0.3)';
                 mealEl.innerHTML = `
-            <div class="flex justify-between items-center">
-                <span>${recipe.emoji} ${recipe.name}</span>
+            <span class="meal-name">
+                <span>${art(recipe.art)} ${recipe.name}</span>
                 <span class="servings-count font-bold ml-2 px-2 py-0.5 bg-white rounded-full text-sm" style="color: var(--primary)">x${newMeal.servingsLeft}</span>
-            </div>`;
+            </span>`;
                 readyMealsAreaEl.appendChild(mealEl);
 
                 if (gameState.eventModifiers.score_bonus_item === recipe.id || gameState.eventModifiers.score_bonus_item === 'all') {
-                    const bonusBadge = document.createElement('div');
-                    bonusBadge.className = 'text-xs mt-1 p-0.5 rounded text-center glow-animation';
+                    const bonusBadge = document.createElement('span');
+                    bonusBadge.className = 'block text-xs mt-1 p-0.5 rounded text-center glow-animation';
                     bonusBadge.style.backgroundColor = 'rgba(215, 119, 6, 0.2)';
                     bonusBadge.style.color = 'var(--accent)';
                     bonusBadge.textContent = `+${gameState.eventModifiers.score_bonus} Bonus Points!`;
@@ -1290,19 +1371,18 @@
                 }
 
                 if (!gameState.hasGuestsStarted) {
-                    const totalServings = gameState.readyMeals.reduce((total, meal) => total + meal.servingsLeft, 0);
-                    if (totalServings >= 5) {
-                        gameState.hasGuestsStarted = true;
-                        dailyEventTextEl.textContent = 'Guests are starting to arrive!';
-                        spawnGuest();
-                        showNotification("Guests have started arriving!", 'info');
-                        showTutorial('serving');
-                    }
+                    gameState.hasGuestsStarted = true;
+                    dailyEventTextEl.textContent = 'The kitchen is open!';
+                    startDayCycle();
+                    spawnGuest();
                 }
             }
 
             function serveGuest(guestId) {
-                const mealIndex = gameState.readyMeals.findIndex(m => m.id === gameState.selectedMealId);
+                if (!gameState.gameRunning) return;
+                const mealIndex = gameState.selectedMealId
+                    ? gameState.readyMeals.findIndex(m => m.id === gameState.selectedMealId)
+                    : 0;
                 const guestIndex = gameState.guests.findIndex(g => g.id === guestId);
                 if (mealIndex === -1 || guestIndex === -1) return;
                 const meal = gameState.readyMeals[mealIndex];
@@ -1317,7 +1397,7 @@
                 let bonusPoints = Math.floor(guest.satisfaction * 5) + recipeBonus;
                 if (gameState.upgrades.bonusPoints.level > 0) bonusPoints += gameState.upgrades.bonusPoints.level * 2;
 
-                const basePoints = CONFIG.SCORE_PER_GUEST + meal.recipe.pointsPerServing;
+                const basePoints = CONFIG.SCORE_PER_GUEST + meal.recipe.pointsPerServing + (gameState.stationLevels.serving - 1) * 5;
                 const totalPoints = basePoints + bonusPoints;
                 gtag('event', 'serve_guest', { recipe_name: meal.recipe.name, guest_satisfaction: guest.satisfaction, day: gameState.day });
                 gameState.score += totalPoints;
@@ -1335,17 +1415,18 @@
                 const guestEl = document.getElementById(guestId);
                 if (guestEl) {
                     createScorePopup(guestEl, `+${totalPoints}`);
-                    createCoinPopup(guestEl, `+${coinAward} 🪙`);
-                    if (guest.satisfaction > 0.8) createParticle(guestEl, '❤️');
+                    createCoinPopup(guestEl, coinAward);
+                    if (guest.satisfaction > 0.8) createParticle(guestEl, 'heart');
                 }
 
                 clearInterval(guest.timer);
                 gameState.guests.splice(guestIndex, 1);
                 if (guestEl) {
+                    setGuestMood(guestEl, 'served');
+                    guestEl.disabled = true;
                     guestEl.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
-                    guestEl.style.transform = 'scale(0)';
-                    guestEl.style.opacity = '0';
-                    setTimeout(() => { if (guestEl.parentElement) guestEl.remove(); }, 300);
+                    setTimeout(() => guestEl.classList.add('guest-departing'), 500);
+                    setTimeout(() => guestEl.remove(), 800);
                 }
 
                 meal.servingsLeft--;
@@ -1353,13 +1434,15 @@
                 if (meal.servingsLeft <= 0) {
                     gameState.readyMeals.splice(mealIndex, 1);
                     if (mealEl) {
+                        mealEl.disabled = true;
                         mealEl.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
                         mealEl.style.transform = 'scale(0)';
                         mealEl.style.opacity = '0';
                         setTimeout(() => { if (mealEl.parentElement) mealEl.remove(); }, 300);
                     }
                     gameState.selectedMealId = null;
-                    instructionTextEl.textContent = '1. Click a ready meal to select it.';
+                    mealEl?.classList.remove('ring-4');
+                    instructionTextEl.textContent = SERVE_PROMPT;
                 } else {
                     if (mealEl) {
                         const servingsSpan = mealEl.querySelector('.servings-count');
@@ -1373,51 +1456,68 @@
                 updateStatsUI();
                 playSound('guest-served');
                 playSound('serve');
-                if (gameState.stats.guestsServed === 3) showTutorial('upgrades');
+                updateShiftGuide();
+            }
+
+            const GUEST_MOOD_STATUS = {
+                arrived: 'Just arrived', waiting: 'Waiting', worried: 'Serve soon', served: 'Served'
+            };
+
+            function setGuestMood(guestEl, mood) {
+                if (guestEl.dataset.mood === mood) return;
+                guestEl.dataset.mood = mood;
+                guestEl.querySelector('.guest-portrait').src = `assets/art/${guestEl.dataset.portrait}-${mood}.webp`;
+                guestEl.querySelector('.guest-status').textContent = GUEST_MOOD_STATUS[mood];
             }
 
             function spawnGuest() {
                 if (!gameState.gameRunning) return;
                 const guestId = gameState.nextGuestId++;
                 const id = `guest-${guestId}`;
-                const baseWaitTime = 30000;
-                const patienceModifier = (gameState.eventModifiers.guest_patience || 1) * (1 + (gameState.upgrades.guestPatience.level * 0.15));
+                const baseWaitTime = Math.max(40000, 65000 - gameState.day * 5000);
+                const patienceModifier = (gameState.eventModifiers.guest_patience || 1) *
+                    (1 + gameState.upgrades.guestPatience.level * 0.15 + (gameState.stationLevels.serving - 1) * 0.15);
                 const waitTime = baseWaitTime * patienceModifier;
                 const guest = { id: id, satisfaction: 1, timer: null, waitTime: waitTime };
-                const guestEl = document.createElement('div');
+                const guestEl = document.createElement('button');
+                guestEl.type = 'button';
                 guestEl.id = id;
                 guestEl.className = 'guest';
                 guestEl.style.backgroundColor = 'rgba(147, 51, 234, 0.2)';
                 guestEl.style.borderColor = 'rgba(147, 51, 234, 0.3)';
-                const guestEmoji = ['👨', '👩', '👴', '👵', '👦', '👧', '🧑', '👱‍♂️', '👱‍♀️'][guestId % 9];
+                const person = GUESTS[guestId % GUESTS.length];
+                guestEl.dataset.portrait = person.portrait;
+                guestEl.dataset.mood = 'arrived';
+                guestEl.setAttribute('aria-label', `Serve ${person.name}`);
+                guestEl.setAttribute('aria-describedby', `${id}-status`);
                 guestEl.innerHTML = `
-            <div class="flex justify-between items-center text-sm">
-                <span>${guestEmoji} Guest #${guestId + 1}</span>
-                <span class="satisfaction-emoji">😊</span>
-            </div>
-            <div class="progress-bar h-2 mt-1">
-                <div class="satisfaction-bar progress-bar-fill bg-green-500" style="width: 100%;"></div>
-            </div>`;
+            <span class="guest-person">
+                ${art(`${person.portrait}-arrived`, 'guest-portrait')}
+                <span><strong>${person.name}</strong><small class="guest-status" id="${id}-status">Just arrived</small></span>
+            </span>
+            <span class="progress-bar guest-patience">
+                <span class="satisfaction-bar progress-bar-fill" style="width: 100%;"></span>
+            </span>`;
                 guestAreaEl.appendChild(guestEl);
+                ['waiting', 'worried', 'served'].forEach(mood => {
+                    const portrait = new Image();
+                    portrait.src = `assets/art/${person.portrait}-${mood}.webp`;
+                });
 
                 guest.timer = setInterval(() => {
                     const guestToUpdate = gameState.guests.find(g => g.id === id);
                     if (!guestToUpdate || !gameState.gameRunning) { clearInterval(guest.timer); return; }
-                    guestToUpdate.satisfaction -= 100 / guest.waitTime;
+                    guestToUpdate.satisfaction = Math.max(0, guestToUpdate.satisfaction - 100 / guest.waitTime);
                     const thisGuestEl = document.getElementById(id);
                     if (thisGuestEl) {
                         const satBar = thisGuestEl.querySelector('.satisfaction-bar');
-                        const satEmoji = thisGuestEl.querySelector('.satisfaction-emoji');
                         satBar.style.width = `${guestToUpdate.satisfaction * 100}%`;
                         if (guestToUpdate.satisfaction > 0.7) {
-                            satBar.className = 'satisfaction-bar progress-bar-fill bg-green-500';
-                            satEmoji.textContent = '😊';
+                            setGuestMood(thisGuestEl, 'arrived');
                         } else if (guestToUpdate.satisfaction > 0.3) {
-                            satBar.className = 'satisfaction-bar progress-bar-fill bg-yellow-500';
-                            satEmoji.textContent = '😐';
+                            setGuestMood(thisGuestEl, 'waiting');
                         } else {
-                            satBar.className = 'satisfaction-bar progress-bar-fill bg-red-500';
-                            satEmoji.textContent = '😠';
+                            setGuestMood(thisGuestEl, 'worried');
                             if (guestToUpdate.satisfaction < 0.15 && Math.random() < 0.05) {
                                 thisGuestEl.classList.add('shake');
                                 setTimeout(() => { if (thisGuestEl.parentElement) thisGuestEl.classList.remove('shake'); }, 500);
@@ -1426,17 +1526,19 @@
                     }
                     if (guestToUpdate.satisfaction <= 0) {
                         clearInterval(guest.timer);
+                        gameState.guests = gameState.guests.filter(g => g.id !== id);
                         gameState.hungryGuestsLeft++;
+                        updateShiftGuide();
                         updateAngryGuestsUI();
                         gtag('event', 'guest_left_angry', { day: gameState.day });
 
                         const guestElement = document.getElementById(id);
                         if (guestElement) {
                             guestElement.classList.add('shake');
-                            createParticle(guestElement, '😡');
+                            guestElement.disabled = true;
+                            createParticle(guestElement, 'warning');
                             setTimeout(() => {
                                 if (guestElement.parentElement) guestElement.remove();
-                                gameState.guests = gameState.guests.filter(g => g.id !== id);
                             }, 500);
                         }
 
@@ -1447,22 +1549,38 @@
 
                 gameState.guests.push(guest);
 
-                const baseDelay = 15000 - (gameState.day * 500);
-                const minDelay = 5000;
-                const nextGuestDelay = Math.max(minDelay, baseDelay / (gameState.eventModifiers.guest_arrival_speed || 1));
-
-                setTimeout(() => {
-                    if (gameState.gameRunning) spawnGuest();
-                }, nextGuestDelay);
-
+                const baseDelay = 22000 - (gameState.day - 1) * 1100;
+                const nextGuestDelay = Math.max(6000, baseDelay / (gameState.eventModifiers.guest_arrival_speed || 1));
+                gameState.guestArrivalTimer = setTimeout(spawnGuest, nextGuestDelay);
+                updateShiftGuide();
                 playSound('guest-arrive');
             }
 
-            function spawnDonation() {
-                if (!gameState.gameRunning) return;
-                acceptDonationBtn.disabled = false;
-                acceptDonationBtn.style.opacity = '1';
-                acceptDonationBtn.classList.add('pulse-animation');
+            function updateShiftGuide() {
+                let next = ['crate', 'Restock the pantry', 'Each crate comes with at least two protein ingredients.', 'Sort', 'donations-station'];
+                if (gameState.guests.length && gameState.readyMeals.length) {
+                    next = ['plate', 'Serve a guest', 'Tap a guest to give them a ready meal.', 'Serve', 'serving-station'];
+                } else if (gameState.cooking.length) {
+                    next = ['pot', 'Food is cooking', 'You can sort more ingredients while it cooks.', 'Kitchen', 'kitchen-station'];
+                } else if (gameState.knownRecipes.some(recipe =>
+                    Object.entries(recipe.ingredients).every(([type, amount]) => gameState.inventory[type] >= amount))) {
+                    next = ['pot', gameState.hasGuestsStarted ? 'Cook another meal' : 'Cook your first tacos',
+                        'Choose an available recipe in the kitchen.', 'Kitchen', 'kitchen-station'];
+                } else if (sortingAreaEl.children.length) {
+                    next = ['carrot', 'Sort your ingredients', 'Pick an ingredient and match it to the highlighted bin.', 'Sort', 'donations-station'];
+                } else if (!gameState.cratesOpened) {
+                    next = ['crate', 'Open your first crate', 'It has everything you need to cook tacos.', 'Sort', 'donations-station'];
+                } else if (gameState.readyMeals.length) {
+                    next = ['plate', 'Meals are ready', 'The next guest is on their way.', 'Serve', 'serving-station'];
+                }
+                const [icon, title, detail, action, station] = next;
+                document.getElementById('shift-icon').src = `assets/art/${icon}.webp`;
+                document.getElementById('shift-title').textContent = title;
+                const detailEl = document.getElementById('shift-detail');
+                if (detailEl.textContent !== detail) detailEl.textContent = detail;
+                const actionButton = document.getElementById('shift-action');
+                actionButton.textContent = `Go to ${action}`;
+                actionButton.dataset.station = station;
             }
 
             viewLeaderboardBtn.addEventListener('click', showLeaderboard);
@@ -1484,188 +1602,100 @@
 
             readyMealsAreaEl.addEventListener('click', e => {
                 const mealEl = e.target.closest('.meal');
-                if (!mealEl) return;
+                if (!mealEl || mealEl.disabled) return;
                 const mealId = mealEl.id;
                 if (gameState.selectedMealId === mealId) {
                     gameState.selectedMealId = null;
                     mealEl.classList.remove('ring-4');
-                    instructionTextEl.textContent = '1. Click a ready meal to select it.';
+                    mealEl.setAttribute('aria-pressed', 'false');
+                    instructionTextEl.textContent = SERVE_PROMPT;
                 } else {
-                    const currentlySelected = document.querySelector('.meal.ring-4');
-                    if (currentlySelected) currentlySelected.classList.remove('ring-4');
+                    const currentlySelected = readyMealsAreaEl.querySelector('.meal.ring-4');
+                    currentlySelected?.classList.remove('ring-4');
+                    currentlySelected?.setAttribute('aria-pressed', 'false');
                     gameState.selectedMealId = mealId;
                     mealEl.classList.add('ring-4');
-                    instructionTextEl.textContent = '2. Now click a guest to serve!';
+                    mealEl.setAttribute('aria-pressed', 'true');
+                    instructionTextEl.textContent = 'Tap a guest to serve the selected dish.';
                     playSound('select-meal');
                 }
             });
 
             guestAreaEl.addEventListener('click', e => {
                 const guestEl = e.target.closest('.guest');
-                if (guestEl && gameState.selectedMealId) serveGuest(guestEl.id);
+                if (!guestEl || guestEl.disabled) return;
+                if (!gameState.readyMeals.length) {
+                    showNotification('Cook a meal first, then tap a guest to serve it.');
+                    return;
+                }
+                serveGuest(guestEl.id);
             });
 
             acceptDonationBtn.addEventListener('click', () => {
-                if (acceptDonationBtn.disabled) return;
-                acceptDonationBtn.disabled = true;
-                acceptDonationBtn.style.opacity = '0.5';
-                acceptDonationBtn.classList.remove('pulse-animation');
-                let donationMultiplier = { veg: 1, protein: 1, carbs: 1 };
-                if (gameState.eventModifiers.DONATION_MULTIPLIER) {
-                    donationMultiplier = gameState.eventModifiers.DONATION_MULTIPLIER;
-                }
-                for (let i = 0; i < CONFIG.DONATION_SIZE; i++) {
-                    let type = null;
-                    if (donationMultiplier.veg > 1 && Math.random() < 0.33) type = 'veg';
-                    else if (donationMultiplier.protein > 1 && Math.random() < 0.33) type = 'protein';
-                    else if (donationMultiplier.carbs > 1 && Math.random() < 0.33) type = 'carbs';
-                    createDonationItem(type);
-                }
-                const totalInventoryCount = gameState.inventory.veg + gameState.inventory.protein + gameState.inventory.carbs;
-                if (!gameState.hasGuestsStarted && totalInventoryCount >= 20) {
-                    gameState.hasGuestsStarted = true;
-                    dailyEventTextEl.textContent = 'Guests are starting to arrive!';
-                    spawnGuest();
-                    showNotification("Guests have started arriving!", 'info');
-                    showTutorial('serving');
-                }
+                if (!gameState.gameRunning || acceptDonationBtn.disabled) return;
+                const firstCrate = gameState.cratesOpened === 0;
+                const starterFoods = ['beans', 'carrot', 'bread', 'egg'];
+                nextCrateTypes().forEach((type, index) => createDonationItem(type, firstCrate ? starterFoods[index] : null));
+                gameState.cratesOpened++;
+                gameState.donationTimer = setTimeout(() => {
+                    gameState.donationTimer = null;
+                    refreshDonationButton();
+                }, 2800 / (gameState.eventModifiers.sorting_bonus || 1));
+                refreshDonationButton();
+                updateShiftGuide();
+                sortingAreaEl.querySelector('.donation-item').focus({ preventScroll: true });
                 playSound('donation');
-                setTimeout(() => {
-                    if (gameState.gameRunning) spawnDonation();
-                }, 4000 / (gameState.eventModifiers.sorting_bonus || 1));
-            });
-
-            sortingAreaEl.addEventListener('dragstart', e => {
-                if (IS_MOBILE()) return;
-                if (e.target.classList.contains('donation-item')) {
-                    draggedItem = e.target;
-                    setTimeout(() => {
-                        e.target.classList.add('opacity-50');
-                    }, 0);
-                }
-            });
-
-            sortingAreaEl.addEventListener('dragend', e => {
-                if (draggedItem) {
-                    draggedItem.classList.remove('opacity-50');
-                    draggedItem = null;
-                }
-            });
-
-            storageBins.forEach(bin => {
-                bin.addEventListener('dragenter', e => {
-                    if (IS_MOBILE()) return;
-                    e.preventDefault();
-                    bin.classList.add('over');
-                });
-
-                bin.addEventListener('dragover', e => {
-                    if (IS_MOBILE()) return;
-                    e.preventDefault();
-                });
-
-                bin.addEventListener('dragleave', () => {
-                    if (IS_MOBILE()) return;
-                    bin.classList.remove('over');
-                });
-
-                bin.addEventListener('drop', e => {
-                    if (IS_MOBILE()) return;
-                    e.preventDefault();
-                    bin.classList.remove('over');
-                    if (!draggedItem) return;
-
-                    if (draggedItem.dataset.type === bin.dataset.type) {
-                        const type = draggedItem.dataset.type;
-                        gameState.inventory[type]++;
-                        gameState.totalInventory[type]++;
-                        gameState.donationsInSorting--;
-                        gameState.stats.itemsSorted++;
-                        updateInventoryUI();
-                        renderRecipes();
-                        checkAchievements();
-                        createParticle(draggedItem, '✅');
-                        playSound('sort');
-                        draggedItem.remove();
-                    } else {
-                        createParticle(draggedItem, '❌');
-                        playSound('error');
-                        draggedItem.classList.add('shake');
-                        setTimeout(() => draggedItem.classList.remove('shake'), 500);
-                        gameState.overwhelm = Math.min(CONFIG.MAX_OVERWHELM, gameState.overwhelm + 5);
-                        updateOverwhelmUI();
-                    }
-                    draggedItem = null;
-                });
             });
 
             sortingAreaEl.addEventListener('click', e => {
-                if (!IS_MOBILE()) return;
-                if (e.target.classList.contains('donation-item')) {
-                    if (selectedDonationForSort === e.target) {
-                        selectedDonationForSort.classList.remove('selected');
-                        selectedDonationForSort = null;
-                        // Remove highlight from all bins
-                        storageBins.forEach(b => b.classList.remove('can-drop'));
-                    } else {
-                        if (selectedDonationForSort) selectedDonationForSort.classList.remove('selected');
-                        selectedDonationForSort = e.target;
-                        selectedDonationForSort.classList.add('selected');
-                        playSound('select-meal');
-                        
-                        // Highlight matching bin
-                        const itemType = selectedDonationForSort.dataset.type;
-                        storageBins.forEach(b => {
-                            if (b.dataset.type === itemType) {
-                                b.classList.add('can-drop');
-                            } else {
-                                b.classList.remove('can-drop');
-                            }
-                        });
-                    }
+                const item = e.target.closest('.donation-item');
+                if (!item || !gameState.gameRunning) return;
+                setSortSelection(item === selectedDonationForSort ? null : item);
+                if (selectedDonationForSort) {
+                    document.getElementById(`${item.dataset.type}-bin`).focus({ preventScroll: true });
+                    playSound('select-meal');
                 }
             });
 
+            sortingAreaEl.addEventListener('dragstart', e => {
+                const item = e.target.closest('.donation-item');
+                if (!item || !gameState.gameRunning) return;
+                draggedItem = item;
+                setSortSelection(item);
+                e.dataTransfer.setData('text/plain', item.dataset.food);
+                e.dataTransfer.effectAllowed = 'move';
+            });
+
+            sortingAreaEl.addEventListener('dragend', () => {
+                draggedItem = null;
+                storageBins.forEach(bin => bin.classList.remove('over'));
+            });
+
             storageBins.forEach(bin => {
-                bin.addEventListener('click', e => {
-                    if (!IS_MOBILE() || !selectedDonationForSort) return;
-                    if (selectedDonationForSort.dataset.type === bin.dataset.type) {
-                        const type = selectedDonationForSort.dataset.type;
-                        gameState.inventory[type]++;
-                        gameState.totalInventory[type]++;
-                        gameState.donationsInSorting--;
-                        gameState.stats.itemsSorted++;
-                        updateInventoryUI();
-                        renderRecipes();
-                        checkAchievements();
-                        createParticle(selectedDonationForSort, '✅');
-                        playSound('sort');
-                        selectedDonationForSort.remove();
-                        selectedDonationForSort = null;
-                        // Clear all bin highlights
-                        storageBins.forEach(b => b.classList.remove('can-drop'));
-                    } else {
-                        createParticle(bin, '❌');
-                        playSound('error');
-                        bin.classList.add('shake');
-                        setTimeout(() => bin.classList.remove('shake'), 500);
-                        gameState.overwhelm = Math.min(CONFIG.MAX_OVERWHELM, gameState.overwhelm + 5);
-                        updateOverwhelmUI();
-                        selectedDonationForSort.classList.remove('selected');
-                        selectedDonationForSort = null;
-                        // Clear all bin highlights
-                        storageBins.forEach(b => b.classList.remove('can-drop'));
-                    }
+                bin.addEventListener('click', () => {
+                    if (selectedDonationForSort) sortDonation(selectedDonationForSort, bin.dataset.type);
+                });
+                bin.addEventListener('dragover', e => {
+                    if (!draggedItem) return;
+                    e.preventDefault();
+                    if (draggedItem.dataset.type === bin.dataset.type) bin.classList.add('over');
+                });
+                bin.addEventListener('dragleave', () => bin.classList.remove('over'));
+                bin.addEventListener('drop', e => {
+                    e.preventDefault();
+                    bin.classList.remove('over');
+                    if (draggedItem) sortDonation(draggedItem, bin.dataset.type);
+                    draggedItem = null;
                 });
             });
 
             function loadSounds() {
-                if (soundsLoaded) return;
+                if (soundsLoaded || typeof Howl === 'undefined') return;
                 sounds = {
                     'start': new Howl({ src: ['https://cdn.freesound.org/previews/269/269194_4409114-lq.mp3'], volume: 0.3 }),
                     'donation': new Howl({ src: ['https://cdn.freesound.org/previews/792/792438_123355-lq.mp3'], volume: 0.2 }),
                     'sort': new Howl({ src: ['https://cdn.pixabay.com/audio/2022/10/16/audio_12b6b6b2e2.mp3'], volume: 0.15 }),
-                    'cook': new Howl({ src: ['https://cdn.pixabay.com/audio/2022/03/15/audio_731c5520a7.mp3'], volume: 0.2, loop: true }),
+                    'cook': new Howl({ src: ['https://cdn.pixabay.com/audio/2022/03/15/audio_731c5520a7.mp3'], volume: 0.2 }),
                     'start-cook': new Howl({ src: ['https://cdn.pixabay.com/audio/2023/11/29/audio_5cae1df87d.mp3'], volume: 0.25 }),
                     'meal-ready': new Howl({ src: ['https://cdn.freesound.org/previews/267/267009_4830131-lq.mp3'], volume: 0.2 }),
                     'serve': new Howl({ src: ['https://cdn.pixabay.com/audio/2022/09/23/audio_247a329c35.mp3'], volume: 0.2 }),
@@ -1704,7 +1734,8 @@
             }
 
             function createScorePopup(target, text) {
-                const popup = document.createElement('div');
+                const popup = document.createElement('span');
+                popup.setAttribute('aria-hidden', 'true');
                 popup.textContent = text;
                 popup.style.position = 'absolute';
                 popup.style.left = '50%';
@@ -1721,9 +1752,9 @@
                 setTimeout(() => { popup.style.opacity = 0; }, 800);
                 setTimeout(() => { if (popup.parentElement) popup.remove(); }, 1200);
             }
-            function createCoinPopup(target, text) {
-                const popup = document.createElement('div');
-                popup.textContent = text;
+            function createCoinPopup(target, amount) {
+                const popup = document.createElement('span');
+                popup.innerHTML = `+${amount} ${art('coin')}`;
                 popup.className = 'coin-particle';
                 popup.style.left = '50%';
                 popup.style.top = '0';
@@ -1732,45 +1763,16 @@
                 setTimeout(() => { popup.style.opacity = 0; }, 800);
                 setTimeout(() => { if (popup.parentElement) popup.remove(); }, 1200);
             }
-            function createParticle(target, emoji) {
-                const rect = target.getBoundingClientRect();
-                const particle = document.createElement('div');
+            function createParticle(target, icon) {
+                const particle = document.createElement('span');
                 particle.className = 'heart-particle';
-                particle.textContent = emoji;
-                particle.style.left = `${rect.width / 2}px`;
+                particle.setAttribute('aria-hidden', 'true');
+                particle.innerHTML = art(icon);
+                particle.style.left = '50%';
                 particle.style.top = `0px`;
                 target.appendChild(particle);
                 setTimeout(() => { particle.style.opacity = 0; }, 800);
                 setTimeout(() => { if (particle.parentElement) particle.remove(); }, 1200);
-            }
-
-            function showTutorial(id) {
-                const tut = gameState.tutorials.find(t => t.id === id);
-                if (!tut || tut.shown) return;
-                tut.shown = true;
-                const target = document.querySelector(tut.target);
-                if (!target) return;
-                const tooltip = document.createElement('div');
-                tooltip.className = `tutorial-tooltip ${tut.position}`;
-                tooltip.textContent = tut.message;
-                document.body.appendChild(tooltip);
-                const rect = target.getBoundingClientRect();
-                tooltip.style.position = 'absolute';
-                if (tut.position === 'bottom') {
-                    tooltip.style.top = `${rect.bottom + window.scrollY + 8}px`;
-                    tooltip.style.left = `${rect.left + window.scrollX + rect.width / 2 - 120}px`;
-                } else if (tut.position === 'left') {
-                    tooltip.style.top = `${rect.top + window.scrollY}px`;
-                    tooltip.style.left = `${rect.left + window.scrollX - 260}px`;
-                } else if (tut.position === 'right') {
-                    tooltip.style.top = `${rect.top + window.scrollY}px`;
-                    tooltip.style.left = `${rect.right + window.scrollX + 8}px`;
-                } else if (tut.position === 'top') {
-                    tooltip.style.top = `${rect.top + window.scrollY - 60}px`;
-                    tooltip.style.left = `${rect.left + window.scrollX + rect.width / 2 - 120}px`;
-                }
-                setTimeout(() => { tooltip.style.opacity = 0; }, 3500);
-                setTimeout(() => { if (tooltip.parentElement) tooltip.remove(); }, 4000);
             }
 
             function checkAchievements() {
@@ -1784,6 +1786,7 @@
                 });
             }
             function showAchievementModal(a) {
+                document.getElementById('achievement-modal-art').innerHTML = art(a.icon);
                 achievementModalTitle.textContent = a.title;
                 achievementModalDesc.textContent = a.description;
                 achievementModalBonus.textContent = `+${a.reward} points!`;
@@ -1856,7 +1859,8 @@
                     gameState.coins -= cost;
                     upg.level++;
                     if (upgradeKey === 'autoSort') setupAutoSort();
-                    if (upgradeKey === 'extraSlot') CONFIG.MAX_COOKING_SLOTS = 3 + upg.level;
+                    updateCookingSlotsUI();
+                    renderRecipes();
 
                     updateCoinsUI();
                     playSound('level-up');
@@ -1873,58 +1877,24 @@
             const mobileNavBtns = document.querySelectorAll('.mobile-nav-btn');
             const stations = document.querySelectorAll('.station');
 
-            mobileNavBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const targetStation = btn.dataset.station;
-                    
-                    // Update active states
-                    mobileNavBtns.forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    
-                    // Show target station, hide others
-                    stations.forEach(station => {
-                        if (station.id === targetStation) {
-                            station.classList.add('active');
-                            station.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                        } else {
-                            station.classList.remove('active');
-                        }
-                    });
+            function activateStation(targetStation, navigate = true) {
+                mobileNavBtns.forEach(btn => {
+                    const active = btn.dataset.station === targetStation;
+                    btn.classList.toggle('active', active);
+                    if (active) btn.setAttribute('aria-current', 'true');
+                    else btn.removeAttribute('aria-current');
                 });
-            });
-
-            // Enhanced touch feedback for mobile
-            if (IS_MOBILE()) {
-                // Add visual feedback when selecting donations
-                sortingAreaEl.addEventListener('touchstart', (e) => {
-                    if (e.target.classList.contains('donation-item')) {
-                        e.target.style.transform = 'scale(1.05)';
-                    }
-                });
-                
-                sortingAreaEl.addEventListener('touchend', (e) => {
-                    if (e.target.classList.contains('donation-item')) {
-                        setTimeout(() => {
-                            if (!e.target.classList.contains('selected')) {
-                                e.target.style.transform = '';
-                            }
-                        }, 100);
-                    }
-                });
-
-                // Add visual feedback for storage bins
-                storageBins.forEach(bin => {
-                    bin.addEventListener('touchstart', () => {
-                        if (selectedDonationForSort) {
-                            bin.classList.add('can-drop');
-                        }
-                    });
-                    
-                    bin.addEventListener('touchend', () => {
-                        bin.classList.remove('can-drop');
-                    });
-                });
+                stations.forEach(station => station.classList.toggle('active', station.id === targetStation));
+                if (navigate) {
+                    const station = document.getElementById(targetStation);
+                    station.scrollIntoView({ block: 'start' });
+                    station.querySelector('h2').focus({ preventScroll: true });
+                }
             }
+
+            mobileNavBtns.forEach(btn => btn.addEventListener('click', () => activateStation(btn.dataset.station)));
+            const shiftAction = document.getElementById('shift-action');
+            shiftAction.addEventListener('click', () => activateStation(shiftAction.dataset.station || 'donations-station'));
 
             showStartModal();
         });

@@ -8,13 +8,13 @@ Navigate to the [game](https://karangattu.github.io/hopes-corner-sort-and-serve/
 
 ## How to Play
 
-- **Accept Donations:** Click the "Accept Donation" button to receive food items.
+- **Accept Donations:** Click the "Accept Donation" button to receive a crate. Every crate contains at least two protein ingredients.
 
-- **Sort Food:** Click a donation item, then click the correct storage bin (Veggies, Protein, Carbs).
+- **Sort Food:** Pick an ingredient, then tap the highlighted bin. You can also drag items into bins with a mouse.
 
-- **Cook Meals:** Use stored ingredients to cook available recipes in the kitchen.
+- **Cook Meals:** Sort the first crate to unlock a batch of tacos. Recipe cards show how many ingredients you have and how many you need.
 
-- **Serve Guests:** When you have ***5*** or more meal servings ready, guests will start to arrive. Select a meal, then click a guest to serve them.
+- **Serve Guests:** The first guest arrives when your first dish is ready. Tap a guest to serve the first ready dish, or select a dish first. Watch their expressions and patience bars as they wait.
 
 - **Buy Upgrades:** Use coins to purchase upgrades for sorting, cooking, and serving to make your job easier.
 
