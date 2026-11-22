@@ -67,3 +67,43 @@ test.describe('phone layout', () => {
     await expect(page.getByRole('heading', { name: 'Currently Cooking' })).toBeVisible();
   });
 });
+
+test('service ramps up after the first ten arrivals in the same shift', async ({ page }) => {
+  await page.clock.install();
+  await page.addInitScript(() => { Math.random = () => 0.4; });
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Play Now' }).click();
+  await page.getByRole('button', { name: 'Accept Donation' }).click();
+
+  for (const category of ['protein', 'veg', 'carbs', 'protein']) {
+    await page.locator(`.donation-item[data-type="${category}"]`).first().click();
+    await page.locator(`#${category}-bin`).click();
+  }
+  await page.locator('[data-recipe-id="recipe-0"]').click();
+  await page.clock.runFor(5100);
+  await page.getByRole('button', { name: 'Accept Donation' }).click();
+  const broccoli = page.getByRole('button', { name: 'broccoli produce' });
+  await expect(broccoli).toBeVisible();
+  await expect(broccoli.locator('img')).toHaveAttribute('src', /broccoli\.webp$/);
+
+  // Jump across arrival timers without running every patience tick.
+  for (let guest = 1; guest < 10; guest++) {
+    await page.clock.fastForward(22000);
+    await expect(page.locator(`#guest-${guest}`)).toBeAttached();
+  }
+  await expect(page.locator('#rush-status')).toBeEmpty();
+  await expect(page.locator('#guest-10')).toHaveCount(0);
+
+  await page.clock.fastForward(14000);
+  await expect(page.locator('#guest-10')).toBeAttached();
+  await expect(page.locator('#rush-status')).toHaveText('Rush 1');
+
+  for (let guest = 11; guest <= 14; guest++) {
+    await page.clock.fastForward(14000);
+    await expect(page.locator(`#guest-${guest}`)).toBeAttached();
+  }
+  await expect(page.locator('#rush-status')).toHaveText('Rush 1');
+  await page.clock.fastForward(10000);
+  await expect(page.locator('#guest-15')).toBeAttached();
+  await expect(page.locator('#rush-status')).toHaveText('Rush 2');
+});

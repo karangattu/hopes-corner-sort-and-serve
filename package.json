@@ -1,6 +1,6 @@
 {
   "name": "hopes-corner-sort-and-serve",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A web game for sorting and serving.",
   "scripts": {
     "test": "playwright test"

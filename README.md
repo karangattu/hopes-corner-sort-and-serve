@@ -14,7 +14,7 @@ Navigate to the [game](https://karangattu.github.io/hopes-corner-sort-and-serve/
 
 - **Cook Meals:** Sort the first crate to unlock a batch of tacos. Recipe cards show how many ingredients you have and how many you need.
 
-- **Serve Guests:** The first guest arrives when your first dish is ready. Tap a guest to serve the first ready dish, or select a dish first. Watch their expressions and patience bars as they wait.
+- **Serve Guests:** The first guest arrives when your first dish is ready. Tap a guest to serve the first ready dish, or select a dish first. Watch their expressions and patience bars as they wait. A rush starts after the first 10 arrivals, and service speeds up every five guests after that.
 
 - **Buy Upgrades:** Use coins to purchase upgrades for sorting, cooking, and serving to make your job easier.
 
