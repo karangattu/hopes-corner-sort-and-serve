@@ -16,8 +16,12 @@ async function finishFirstShift(page) {
   await page.locator('[data-recipe-id="recipe-0"]').click();
   await page.clock.runFor(5100);
   await page.getByRole('button', { name: 'Serve Mei' }).click();
-  await page.clock.runFor(160000);
-  await expect(page.getByRole('heading', { name: 'Game Over!' })).toBeVisible();
+  const gameOver = page.getByRole('heading', { name: 'Game Over!' });
+  // Stop advancing the game clock once the leaderboard request starts.
+  for (let elapsed = 0; elapsed < 160000 && !(await gameOver.isVisible()); elapsed += 5000) {
+    await page.clock.runFor(5000);
+  }
+  await expect(gameOver).toBeVisible();
 }
 
 test('qualifying score can be submitted and appears with the player’s rank', async ({ page }) => {

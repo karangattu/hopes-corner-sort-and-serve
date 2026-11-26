@@ -135,6 +135,8 @@
                 <p id="shift-detail" role="status">It has everything you need to cook tacos.</p>
             </div>
             <button id="shift-action" class="btn-primary" type="button">Go to Sort</button>
+            <p id="rush-preview" class="rush-update" role="status"></p>
+            <p id="rush-event" class="rush-update" role="status"></p>
         </div>
 
         <div id="donations-station" class="station active">
@@ -278,6 +280,10 @@
                     <div class="stat-row">
                         <span class="stat-label">Average Satisfaction</span>
                         <span id="avg-satisfaction" class="stat-value">0%</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Happy Streak</span>
+                        <span id="happy-streak" class="stat-value">0 / 3</span>
                     </div>
                 </div>
             </div>
@@ -496,6 +502,9 @@
             const readyMealsAreaEl = document.getElementById('ready-meals-area');
             const guestAreaEl = document.getElementById('guest-area');
             const rushStatus = document.getElementById('rush-status');
+            const rushPreview = document.getElementById('rush-preview');
+            const rushEventStatus = document.getElementById('rush-event');
+            const happyStreakDisplay = document.getElementById('happy-streak');
             const acceptDonationBtn = document.getElementById('accept-donation-btn');
             const instructionTextEl = document.getElementById('instruction-text');
             const sortInstructionTextEl = document.getElementById('sort-instruction-text');
@@ -662,12 +671,21 @@
                 MAX_OVERWHELM: 100, MAX_ANGRY_GUESTS: 5, OVERWHELM_PER_GUEST_TICK: 0.1, SCORE_PER_GUEST: 10,
                 MAX_DONATION_ITEMS: 8, BASE_COOKING_SLOTS: 3, COIN_PER_GUEST: 5,
                 OPENING_GUESTS: 5, GUESTS_PER_RUSH_WAVE: 5,
+                HAPPY_PATIENCE: 0.7, LAST_CALL_PATIENCE: 0.15,
+                HAPPY_STREAK_SIZE: 3, HAPPY_STREAK_BONUS: 6, JUST_IN_TIME_BONUS: 5,
+                VOLUNTEER_DURATION: 20000, VOLUNTEER_SORT_INTERVAL: 2000,
                 ITEM_TYPES: {
                     veg: { label: 'Produce', icon: 'veg-bin', foods: ['carrot', 'cabbage', 'broccoli', 'strawberry', 'bananas', 'apple'] },
                     protein: { label: 'Protein', icon: 'protein-bin', foods: ['beans', 'egg', 'tofu', 'cheese', 'milk'] },
                     carbs: { label: 'Carbs', icon: 'carbs-bin', foods: ['bread', 'rice'] }
                 }
             };
+
+            const RUSH_EVENTS = [
+                { title: 'Group Arrival', preview: 'Three guests are coming together. Have meals ready.', arrivals: 3 },
+                { title: 'Surplus Donation', preview: 'Extra ingredients are on the way.', stock: { veg: 2, protein: 4, carbs: 2 } },
+                { title: 'Volunteer Help', preview: 'A volunteer will sort donations for 20 seconds.', volunteer: true }
+            ];
 
             let gameLoopInterval = null;
 
@@ -838,6 +856,7 @@
                     cratesOpened: 0, donationTimer: null, guestArrivalTimer: null, guests: [], cooking: [], readyMeals: [], gameRunning: false,
                     nextGuestId: 0, nextDonationId: 0, nextMealId: 0, selectedMealId: null,
                     dayDuration: 60000, dayTimer: null,
+                    volunteerTimer: null, volunteerEndTimer: null,
                     knownRecipes: MASTER_RECIPE_LIST.slice(0, 4),
                     eventModifiers: {},
                     hasGuestsStarted: false,
@@ -852,7 +871,8 @@
                         sorting: 1, kitchen: 1, serving: 1
                     },
                     stats: {
-                        guestsServed: 0, guestsServedToday: 0, mealsPrepared: 0, itemsSorted: 0, totalSatisfaction: 0, perfectServings: 0, recoveredFromHighOverwhelm: false, highestDayReached: 1
+                        guestsServed: 0, guestsServedToday: 0, mealsPrepared: 0, itemsSorted: 0, totalSatisfaction: 0,
+                        happyStreak: 0, perfectServings: 0, recoveredFromHighOverwhelm: false, highestDayReached: 1
                     },
                     achievements: ACHIEVEMENTS.map(a => ({ ...a })),
                     autoSortTimer: null
@@ -866,6 +886,8 @@
                 clearInterval(gameState.dayTimer);
                 clearTimeout(gameState.donationTimer);
                 clearTimeout(gameState.guestArrivalTimer);
+                clearInterval(gameState.volunteerTimer);
+                clearTimeout(gameState.volunteerEndTimer);
                 if (gameState.autoSortTimer) clearInterval(gameState.autoSortTimer);
                 gameState.guests.forEach(g => clearInterval(g.timer));
                 gameState.cooking.forEach(c => clearInterval(c.timerId));
@@ -1082,6 +1104,7 @@
                 mealsPrepared.textContent = gameState.stats.mealsPrepared;
                 const avgSatisfactionValue = gameState.stats.guestsServed > 0 ? Math.round((gameState.stats.totalSatisfaction / gameState.stats.guestsServed) * 100) : 0;
                 avgSatisfaction.textContent = `${avgSatisfactionValue}%`;
+                happyStreakDisplay.textContent = `${gameState.stats.happyStreak} / ${CONFIG.HAPPY_STREAK_SIZE}`;
             }
             function updateOverwhelmUI() {
                 overwhelmBarEl.style.width = `${gameState.overwhelm}%`;
@@ -1188,6 +1211,8 @@
                 });
                 instructionTextEl.textContent = SERVE_PROMPT;
                 rushStatus.textContent = '';
+                rushPreview.textContent = '';
+                rushEventStatus.textContent = '';
                 eventEffectsEl.replaceChildren();
                 getDailyEvent(1);
                 gameLoopInterval = setInterval(gameLoop, 100);
@@ -1259,8 +1284,8 @@
             }
 
             function autoSort() {
-                const item = sortingAreaEl.querySelector('.donation-item');
-                if (item) sortDonation(item, item.dataset.type);
+                const item = sortingAreaEl.querySelector('.donation-item:not(.selected)') || selectedDonationForSort;
+                if (item) sortDonation(item, item.dataset.type, false);
             }
 
             function setSortSelection(item) {
@@ -1277,7 +1302,7 @@
                     : SORT_PROMPT;
             }
 
-            function sortDonation(item, binType) {
+            function sortDonation(item, binType, moveFocus = true) {
                 if (!gameState.gameRunning || item.parentElement !== sortingAreaEl) return;
                 const type = item.dataset.type;
                 if (type !== binType) {
@@ -1287,7 +1312,8 @@
                     return;
                 }
 
-                const keyboardFocus = document.activeElement === item || document.activeElement.classList.contains('storage-bin');
+                const keyboardFocus = moveFocus &&
+                    (document.activeElement === item || document.activeElement.classList.contains('storage-bin'));
                 if (selectedDonationForSort === item) setSortSelection(null);
                 item.remove();
                 gameState.inventory[type]++;
@@ -1455,6 +1481,17 @@
                 }
 
                 let bonusPoints = Math.floor(guest.satisfaction * 5) + recipeBonus;
+                gameState.stats.happyStreak = guest.satisfaction > CONFIG.HAPPY_PATIENCE
+                    ? gameState.stats.happyStreak + 1 : 0;
+                if (gameState.stats.happyStreak === CONFIG.HAPPY_STREAK_SIZE) {
+                    bonusPoints += CONFIG.HAPPY_STREAK_BONUS;
+                    gameState.stats.happyStreak = 0;
+                    showNotification(`Happy Streak! +${CONFIG.HAPPY_STREAK_BONUS} points`, 'event');
+                }
+                if (guest.satisfaction <= CONFIG.LAST_CALL_PATIENCE) {
+                    bonusPoints += CONFIG.JUST_IN_TIME_BONUS;
+                    showNotification(`Just in Time! +${CONFIG.JUST_IN_TIME_BONUS} points`, 'event');
+                }
                 if (gameState.upgrades.bonusPoints.level > 0) bonusPoints += gameState.upgrades.bonusPoints.level * 2;
 
                 const basePoints = CONFIG.SCORE_PER_GUEST + meal.recipe.pointsPerServing + (gameState.stationLevels.serving - 1) * 5;
@@ -1534,16 +1571,62 @@
                 return Math.max(0, Math.floor((guestIndex - CONFIG.OPENING_GUESTS) / CONFIG.GUESTS_PER_RUSH_WAVE) + 1);
             }
 
+            function rushEventFor(wave) {
+                return RUSH_EVENTS[(wave - 1) % RUSH_EVENTS.length];
+            }
+
+            function startVolunteerHelp() {
+                clearInterval(gameState.volunteerTimer);
+                clearTimeout(gameState.volunteerEndTimer);
+                rushEventStatus.textContent = 'Volunteer on duty for 20 seconds.';
+                gameState.volunteerTimer = setInterval(autoSort, CONFIG.VOLUNTEER_SORT_INTERVAL);
+                gameState.volunteerEndTimer = setTimeout(() => {
+                    clearInterval(gameState.volunteerTimer);
+                    rushEventStatus.textContent = '';
+                }, CONFIG.VOLUNTEER_DURATION);
+            }
+
+            function startRushEvent(wave, event) {
+                rushStatus.textContent = `Rush ${wave}`;
+                rushPreview.textContent = '';
+                showNotification(`Rush ${wave}: ${event.title}!`, 'event');
+                if (event.stock) {
+                    for (const [type, amount] of Object.entries(event.stock)) {
+                        gameState.inventory[type] += amount;
+                        gameState.totalInventory[type] += amount;
+                    }
+                    updateInventoryUI();
+                    renderRecipes();
+                    checkAchievements();
+                    showNotification('Pantry stocked: +2 Produce, +4 Protein, +2 Carbs.', 'event');
+                }
+                if (event.volunteer) startVolunteerHelp();
+            }
+
             function spawnGuest() {
                 if (!gameState.gameRunning) return;
+                const wave = rushWave(gameState.nextGuestId);
+                const event = wave > rushWave(gameState.nextGuestId - 1) ? rushEventFor(wave) : null;
+                if (event) startRushEvent(wave, event);
+
+                for (let i = 0; i < (event?.arrivals ?? 1); i++) createGuest(wave);
+
+                const nextWave = rushWave(gameState.nextGuestId);
+                if (nextWave > wave) {
+                    const upcoming = rushEventFor(nextWave);
+                    rushPreview.textContent = `Next rush: ${upcoming.title}. ${upcoming.preview}`;
+                }
+                const openingDelay = Math.max(6000, 22000 - (gameState.day - 1) * 1100);
+                const nextGuestDelay = Math.max(nextWave ? 3500 : 6000,
+                    openingDelay * 0.7 ** nextWave / (gameState.eventModifiers.guest_arrival_speed || 1));
+                gameState.guestArrivalTimer = setTimeout(spawnGuest, nextGuestDelay);
+                updateShiftGuide();
+                playSound('guest-arrive');
+            }
+
+            function createGuest(wave) {
                 const guestId = gameState.nextGuestId++;
                 const id = `guest-${guestId}`;
-                const wave = rushWave(guestId);
-                if (wave > 0 && wave !== rushWave(guestId - 1)) {
-                    rushStatus.textContent = `Rush ${wave}`;
-                    showNotification(wave === 1 ? 'The rush is on! Guests arrive faster and have less time to wait.'
-                        : `Rush ${wave}! More guests are on their way.`);
-                }
                 const openingWaitTime = Math.max(40000, 65000 - gameState.day * 5000);
                 const baseWaitTime = Math.max(16000, openingWaitTime * 0.8 ** wave);
                 const patienceModifier = (gameState.eventModifiers.guest_patience || 1) *
@@ -1583,13 +1666,13 @@
                     if (thisGuestEl) {
                         const satBar = thisGuestEl.querySelector('.satisfaction-bar');
                         satBar.style.width = `${guestToUpdate.satisfaction * 100}%`;
-                        if (guestToUpdate.satisfaction > 0.7) {
+                        if (guestToUpdate.satisfaction > CONFIG.HAPPY_PATIENCE) {
                             setGuestMood(thisGuestEl, 'arrived');
                         } else if (guestToUpdate.satisfaction > 0.3) {
                             setGuestMood(thisGuestEl, 'waiting');
                         } else {
                             setGuestMood(thisGuestEl, 'worried');
-                            if (guestToUpdate.satisfaction < 0.15 && Math.random() < 0.05) {
+                            if (guestToUpdate.satisfaction <= CONFIG.LAST_CALL_PATIENCE && Math.random() < 0.05) {
                                 thisGuestEl.classList.add('shake');
                                 setTimeout(() => { if (thisGuestEl.parentElement) thisGuestEl.classList.remove('shake'); }, 500);
                             }
@@ -1599,6 +1682,8 @@
                         clearInterval(guest.timer);
                         gameState.guests = gameState.guests.filter(g => g.id !== id);
                         gameState.hungryGuestsLeft++;
+                        gameState.stats.happyStreak = 0;
+                        updateStatsUI();
                         updateShiftGuide();
                         updateAngryGuestsUI();
                         gtag('event', 'guest_left_angry', { day: gameState.day });
@@ -1619,14 +1704,6 @@
                 }, 100);
 
                 gameState.guests.push(guest);
-
-                const nextWave = rushWave(gameState.nextGuestId);
-                const openingDelay = Math.max(6000, 22000 - (gameState.day - 1) * 1100);
-                const nextGuestDelay = Math.max(nextWave ? 3500 : 6000,
-                    openingDelay * 0.7 ** nextWave / (gameState.eventModifiers.guest_arrival_speed || 1));
-                gameState.guestArrivalTimer = setTimeout(spawnGuest, nextGuestDelay);
-                updateShiftGuide();
-                playSound('guest-arrive');
             }
 
             function updateShiftGuide() {

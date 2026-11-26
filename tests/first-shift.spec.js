@@ -36,7 +36,11 @@ test('the first crate covers tacos and guests arrive after cooking', async ({ pa
   await expect(mei).toContainText('Serve soon');
   await expect(mei.locator('img')).toHaveAttribute('src', /mei-worried\.webp$/);
 
+  await page.clock.runFor(9200);
+  const previousScore = Number(await page.locator('#score').textContent());
   await mei.click();
+  await expect(page.getByText('Just in Time! +5 points')).toBeVisible();
+  await expect(page.locator('#score')).toHaveText(String(previousScore + 18));
   await expect(page.locator('#guests-served-today')).toHaveText('1');
   await expect(mei.locator('.guest-portrait')).toHaveAttribute('src', /mei-served\.webp$/);
 });
@@ -68,7 +72,7 @@ test.describe('phone layout', () => {
   });
 });
 
-test('service ramps up after the first five arrivals in the same shift', async ({ page }) => {
+test('each rush previews and starts a different event after five arrivals', async ({ page }) => {
   await page.clock.install();
   await page.addInitScript(() => { Math.random = () => 0.4; });
   await page.goto('/');
@@ -96,19 +100,66 @@ test('service ramps up after the first five arrivals in the same shift', async (
   const portrait = rosa.locator('.guest-portrait');
   await expect(portrait).toHaveAttribute('src', /rosa-arrived\.webp$/);
   await expect.poll(() => portrait.evaluate(img => img.naturalWidth)).toBeGreaterThan(0);
+  const preview = page.locator('#rush-preview');
   await expect(page.locator('#rush-status')).toBeEmpty();
   await expect(page.locator('#guest-5')).toHaveCount(0);
+  await expect(preview).toContainText('Next rush: Group Arrival');
 
   await page.clock.fastForward(15000);
-  await expect(page.locator('#guest-5')).toBeAttached();
   await expect(page.locator('#rush-status')).toHaveText('Rush 1');
+  await expect(page.locator('#guest-5, #guest-6, #guest-7')).toHaveCount(3);
+  await expect(page.locator('#guest-8')).toHaveCount(0);
 
-  for (let guest = 6; guest <= 9; guest++) {
+  for (let guest = 8; guest <= 9; guest++) {
     await page.clock.fastForward(15000);
     await expect(page.locator(`#guest-${guest}`)).toBeAttached();
   }
   await expect(page.locator('#rush-status')).toHaveText('Rush 1');
+  await expect(preview).toContainText('Next rush: Surplus Donation');
   await page.clock.fastForward(10000);
-  await expect(page.locator('#guest-10')).toBeAttached();
   await expect(page.locator('#rush-status')).toHaveText('Rush 2');
+  await expect(page.locator('#veg-count')).toHaveText('2');
+  await expect(page.locator('#protein-count')).toHaveText('4');
+  await expect(page.locator('#carbs-count')).toHaveText('2');
+
+  for (let guest = 11; guest <= 14; guest++) {
+    await page.clock.fastForward(10000);
+    await expect(page.locator(`#guest-${guest}`)).toBeAttached();
+  }
+  await expect(preview).toContainText('Next rush: Volunteer Help');
+  const donationItems = page.locator('.donation-item');
+  const itemsBeforeHelper = await donationItems.count();
+  await page.clock.fastForward(7000);
+  await expect(page.locator('#rush-status')).toHaveText('Rush 3');
+  await expect(page.locator('#rush-event')).toContainText('Volunteer on duty');
+  await page.clock.runFor(2000);
+  await expect(donationItems).toHaveCount(itemsBeforeHelper - 1);
+  await page.clock.fastForward(18000);
+  await expect(page.locator('#rush-event')).toBeEmpty();
+  const itemsAfterHelper = await donationItems.count();
+  expect(itemsAfterHelper).toBeGreaterThan(0);
+  await page.clock.runFor(2500);
+  await expect(donationItems).toHaveCount(itemsAfterHelper);
+});
+
+test('serving three smiling guests earns a Happy Streak bonus', async ({ page }) => {
+  await page.clock.install();
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Play Now' }).click();
+  await page.getByRole('button', { name: 'Accept Donation' }).click();
+  for (const category of ['protein', 'veg', 'carbs', 'protein']) {
+    await page.locator(`.donation-item[data-type="${category}"]`).first().click();
+    await page.locator(`#${category}-bin`).click();
+  }
+  await page.locator('[data-recipe-id="recipe-0"]').click();
+  await page.clock.runFor(5100);
+
+  for (let guest = 0; guest < 2; guest++) {
+    await page.locator(`#guest-${guest}`).click();
+    await expect(page.locator('#happy-streak')).toHaveText(`${guest + 1} / 3`);
+    await page.clock.fastForward(22000);
+  }
+  await page.locator('#guest-2').click();
+  await expect(page.getByText('Happy Streak! +6 points')).toBeVisible();
+  await expect(page.locator('#happy-streak')).toHaveText('0 / 3');
 });

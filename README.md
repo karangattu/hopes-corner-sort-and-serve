@@ -16,6 +16,10 @@ Navigate to the [game](https://karangattu.github.io/hopes-corner-sort-and-serve/
 
 - **Serve Guests:** The first guest arrives when your first dish is ready. Tap a guest to serve the first ready dish, or select a dish first. Watch their expressions and patience bars as they wait. A rush starts after the first five arrivals, and service speeds up every five guests after that.
 
+- **Watch for Rush Events:** Look for a preview above the stations. A group arrival brings three guests together, a surplus donation stocks enough ingredients for two batches of tacos, and a volunteer sorts one ingredient every two seconds for 20 seconds.
+
+- **Earn Service Bonuses:** Serve a guest with 15% patience or less for 5 Just in Time points. Serve three smiling guests in a row for 6 Happy Streak points.
+
 - **Buy Upgrades:** Use coins to purchase upgrades for sorting, cooking, and serving to make your job easier.
 
 - **Unlock Achievements:** Complete special tasks to earn bonus points and unlock achievements.

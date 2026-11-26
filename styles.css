@@ -2139,3 +2139,13 @@ body.landing-mode {
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+.shift-guide .rush-update {
+  grid-column: 1 / -1;
+  color: #704315;
+  font-weight: 800;
+}
+
+.rush-update:empty {
+  display: none;
+}
